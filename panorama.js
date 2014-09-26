@@ -19,14 +19,67 @@ function init() {
 	dragContainer = new createjs.Container();
 	stage.addChild(dragContainer);
 
-	var bitmap = new createjs.Bitmap("teste.jpg"); //Container não possuem width e height definido, por isso estou pegando os da imagem
+	var bitmap = new createjs.Bitmap("teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
 	dragContainer.width = bitmap.image.width;
 	dragContainer.height = bitmap.image.height;
-	dragContainer.maxPositionX = -(dragContainer.width - stage.canvas.width); //Limites de posicionamento dele
-	dragContainer.maxPositionY = -(dragContainer.height - stage.canvas.height);
+	dragContainer.maxPositionX = - (dragContainer.width - stage.canvas.width); //Limites de posicionamento dele
+	dragContainer.maxPositionY = - (dragContainer.height - stage.canvas.height);
 	
 	dragContainer.y = dragContainer.maxPositionY; //Só para começar no canto esquerdo de baixo
 	dragContainer.addChild(bitmap);
+	dragContainer.addChild(criaRelogio());
+	dragContainer.addChild(criaBela());
+}
+
+function criaRelogio(){
+	
+	var data = {
+		framerate: 10,
+		images: ["relogio.png"],
+		frames: {
+			width:100, height:100
+		},
+		animations: {
+			idle:0,
+			run:[0, 15, "idle", 0.5]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 1300;
+	animation.y = 800;
+	
+	animation.on("click", function move(evt){
+		animation.gotoAndPlay("run");
+	});
+	
+	return animation;
+}
+
+function criaBela(){
+	var data = {
+		framerate: 10,
+		images: ["bela.png"],
+		frames: {
+			width:150, height:150
+		},
+		animations: {
+			idle: 0,
+			run: [0, 19, "idle", 0.5]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 1800;
+	animation.y = 1000;
+	
+	animation.on("click", function move(evt){
+		animation.gotoAndPlay("run");
+	});
+	
+	return animation;
 }
 
 var offset = new createjs.Point();
@@ -39,11 +92,10 @@ function startDrag(event) {
 function doDrag(event) {
 	var positionX = event.stageX - offset.x;
 	var positionY = event.stageY - offset.y;
-	console.log(dragContainer.maxPositionY)
-	if(positionX <=0 && positionX >= dragContainer.maxPositionX)
+	if (positionX <= 0 && positionX >= dragContainer.maxPositionX)
 		dragContainer.x = event.stageX - offset.x;
-	
-	if(positionY <=0 && positionY >= dragContainer.maxPositionY)
+
+	if (positionY <= 0 && positionY >= dragContainer.maxPositionY)
 		dragContainer.y = event.stageY - offset.y;
 }
 
