@@ -50,8 +50,19 @@ function criaRelogio(){
 	animation.x = 1300;
 	animation.y = 800;
 	
+	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+ 
+    var audioPath = "audio/";
+    var manifest = [
+        {id:"poim", src:"poim.mp3"},
+    ];
+ 
+    createjs.Sound.alternateExtensions = ["mp3"];
+    createjs.Sound.registerManifest(manifest, audioPath);
+	
 	animation.on("click", function move(evt){
 		animation.gotoAndPlay("run");
+		createjs.Sound.play("poim");
 	});
 	
 	return animation;
@@ -69,14 +80,25 @@ function criaBela(){
 			run: [0, 19, "idle", 0.5]
 		}
 	};
-
+	
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = 1800;
 	animation.y = 1000;
+
+	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+ 
+    var audioPath = "audio/";
+    var manifest = [
+        {id:"magia", src:"magia.mp3"},
+    ];
+ 
+    createjs.Sound.alternateExtensions = ["mp3"];
+    createjs.Sound.registerManifest(manifest, audioPath);
 	
 	animation.on("click", function move(evt){
 		animation.gotoAndPlay("run");
+		createjs.Sound.play("magia");
 	});
 	
 	return animation;
