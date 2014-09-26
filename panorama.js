@@ -19,7 +19,7 @@ function init() {
 	dragContainer = new createjs.Container();
 	stage.addChild(dragContainer);
 
-	var bitmap = new createjs.Bitmap("teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
+	var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
 	dragContainer.width = bitmap.image.width;
 	dragContainer.height = bitmap.image.height;
 	dragContainer.maxPositionX = - (dragContainer.width - stage.canvas.width); //Limites de posicionamento dele
@@ -35,7 +35,7 @@ function criaRelogio(){
 	
 	var data = {
 		framerate: 10,
-		images: ["relogio.png"],
+		images: ["Sprites/relogio.png"],
 		frames: {
 			width:100, height:100
 		},
@@ -60,7 +60,7 @@ function criaRelogio(){
 function criaBela(){
 	var data = {
 		framerate: 10,
-		images: ["bela.png"],
+		images: ["Sprites/bela.png"],
 		frames: {
 			width:150, height:150
 		},
