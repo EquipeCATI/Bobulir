@@ -1,24 +1,16 @@
 var stage;
 var dragContainer; //Cenário como todo
+var right ;
+var left ;
 
 function init() {
 	stage = new createjs.Stage("canvas");
 	createjs.Ticker.addEventListener("tick", tick);
-
-	//Área de detecção de toque do dragBox
-	//Necessário porque, por padrão, o createJS detecta interações somente onde há pixels e nosso dragBox não contém nenhum.
-	var rect = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width, stage.canvas.height));
-
-	//Aqui está ele, sem o 'beginFill()'
-	var dragBox = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
-	dragBox.hitArea = rect; //E aqui a atribuição de toque
-	dragBox.addEventListener("mousedown", startDrag);
-	stage.addChild(dragBox);
-
+	stage.enableMouseOver(20);  
 	//Cenário
 	dragContainer = new createjs.Container();
 	stage.addChild(dragContainer);
-
+	
 	var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
 	dragContainer.width = bitmap.image.width;
 	dragContainer.height = bitmap.image.height;
@@ -29,6 +21,53 @@ function init() {
 	dragContainer.addChild(bitmap);
 	dragContainer.addChild(criaRelogio());
 	dragContainer.addChild(criaBela());
+	
+	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.95, 0, stage.canvas.width*0.05, stage.canvas.height));
+
+	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
+	dragRight.hitArea = rectRight;
+	dragRight.addEventListener("mouseover", dragR);
+	
+	stage.addChild(dragRight);	
+	
+	var rectLeft = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width*0.05, stage.canvas.height));
+
+	var dragLeft = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
+	dragLeft.hitArea = rectLeft; 
+	dragLeft.addEventListener("mouseover", dragL);
+	stage.addChild(dragLeft);
+	
+	right = new createjs.Bitmap("cenarios/setad.png");
+	right.x = stage.canvas.width - 110;
+	right.y = stage.canvas.height /2 - 50;
+	stage.addChild(right);
+	
+	left = new createjs.Bitmap("cenarios/setae.png");
+	left.x = 10;
+	left.y = stage.canvas.height /2 - 50;
+	stage.addChild(left);
+}
+
+function dragR(event){
+	var positionX = dragContainer.x - stage.canvas.width;
+	
+	if(positionX >= dragContainer.maxPositionX){
+		createjs.Tween.get(dragContainer).to({x:positionX,visible:true},2000, createjs.Ease.getElasticOut(1, 2));
+		}
+	else{
+		createjs.Tween.get(dragContainer).to({ x : dragContainer.maxPositionX } , 2500, createjs.Ease.getElasticOut(1, 2));
+		}
+}
+
+function dragL(event){
+	var positionX = dragContainer.x + stage.canvas.width;
+	
+	if(positionX <= 0){
+		createjs.Tween.get(dragContainer).to({x:positionX,visible:true},2000, createjs.Ease.getElasticOut(1, 2));
+		}
+	else{
+		createjs.Tween.get(dragContainer).to({ x : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
+		}
 }
 
 function criaRelogio(){
@@ -103,7 +142,7 @@ function criaBela(){
 	
 	return animation;
 }
-
+/*
 var offset = new createjs.Point();
 function startDrag(event) {
 	offset.x = stage.mouseX - dragContainer.x;
@@ -120,8 +159,22 @@ function doDrag(event) {
 	if (positionY <= 0 && positionY >= dragContainer.maxPositionY)
 		dragContainer.y = event.stageY - offset.y;
 }
+*/
 
 // Update the stage
 function tick(event) {
 	stage.update();
+	
+	if(dragContainer.x <= dragContainer.maxPositionX)
+		createjs.Tween.get(right).to({ alpha : 0} , 500);
+	else
+		createjs.Tween.get(right).to({ alpha : 100} , 500);
+		
+	if(dragContainer.x >= 0)
+		createjs.Tween.get(left).to({ alpha : 0} , 500);
+	else
+		createjs.Tween.get(left).to({ alpha : 100} , 500);
+
+		
+	
 }
