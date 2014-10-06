@@ -1,40 +1,60 @@
 var stage;
-var dragContainer; //Cenário como todo
-var right ;
+
+var dragContainer = new createjs.Container(); //Cenário como todo
+var secao1 = new createjs.Container(); //Praça
+var secao2 = new createjs.Container(); //Lagoa
+
+//Setas
+var right ; 
 var left ;
+
+ //Booleanos de controle da camera
+var moveLeft;
+var moveRight;
 
 function init() {
 	stage = new createjs.Stage("canvas");
 	createjs.Ticker.addEventListener("tick", tick);
 	stage.enableMouseOver(20);  
-	//Cenário
-	dragContainer = new createjs.Container();
 	stage.addChild(dragContainer);
 	
 	var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
-	dragContainer.width = bitmap.image.width;
-	dragContainer.height = bitmap.image.height;
-	dragContainer.maxPositionX = - (dragContainer.width - stage.canvas.width); //Limites de posicionamento dele
-	dragContainer.maxPositionY = - (dragContainer.height - stage.canvas.height);
+	secao1.width = bitmap.image.width;
+	secao1.height = bitmap.image.height;
 	
+	dragContainer.maxPositionX = - (secao1.width - stage.canvas.width); //Limites de posicionamento dele
+	dragContainer.maxPositionY = - (secao1.height - stage.canvas.height);
 	dragContainer.y = dragContainer.maxPositionY; //Só para começar no canto esquerdo de baixo
-	dragContainer.addChild(bitmap);
-	dragContainer.addChild(criaRelogio());
-	dragContainer.addChild(criaBela());
 	
+	
+	secao1.addChild(bitmap);
+	secao1.addChild(criaRelogio());
+	secao1.addChild(criaBela());
+	
+	
+	var bitmap2 = new createjs.Bitmap("cenarios/teste2.jpg"); 
+	secao2.width = bitmap2.image.width;
+	secao2.x = secao1.width;
+	secao2.addChild(bitmap2);
+	
+	dragContainer.addChild(secao1);
+	dragContainer.addChild(secao2);
 	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.95, 0, stage.canvas.width*0.05, stage.canvas.height));
 
 	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragRight.hitArea = rectRight;
-	dragRight.addEventListener("mouseover", dragR);
-	
+	dragRight.addEventListener("mouseover", overR);
+	dragRight.addEventListener("mouseout", function (evt){ moveRight = false});
+	dragRight.addEventListener("click", clickR);
 	stage.addChild(dragRight);	
 	
 	var rectLeft = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width*0.05, stage.canvas.height));
 
 	var dragLeft = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragLeft.hitArea = rectLeft; 
-	dragLeft.addEventListener("mouseover", dragL);
+	dragLeft.addEventListener("mouseover", overL);
+	dragLeft.addEventListener("mouseout", function (evt){ moveLeft = false});
+	dragLeft.addEventListener("click", clickL);
 	stage.addChild(dragLeft);
 	
 	right = new createjs.Bitmap("cenarios/setad.png");
@@ -48,30 +68,36 @@ function init() {
 	stage.addChild(left);
 }
 
-function dragR(event){
-	var positionX = dragContainer.x - stage.canvas.width;
-	
-	if(positionX >= dragContainer.maxPositionX){
-		createjs.Tween.get(dragContainer).to({x:positionX,visible:true},2000, createjs.Ease.getElasticOut(1, 2));
-		}
-	else{
-		createjs.Tween.get(dragContainer).to({ x : dragContainer.maxPositionX } , 2500, createjs.Ease.getElasticOut(1, 2));
-		}
+function overR(event){
+		moveRight = true;
 }
 
-function dragL(event){
-	var positionX = dragContainer.x + stage.canvas.width;
-	
-	if(positionX <= 0){
-		createjs.Tween.get(dragContainer).to({x:positionX,visible:true},2000, createjs.Ease.getElasticOut(1, 2));
-		}
-	else{
-		createjs.Tween.get(dragContainer).to({ x : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
-		}
+function clickR(event){
+	var positionX = dragContainer.x - stage.canvas.width;
+	moveRight = false;
+	if(positionX >= dragContainer.maxPositionX)
+		createjs.Tween.get(dragContainer).to({x:positionX},2000, createjs.Ease.getElasticOut(1, 2));
+	else
+		createjs.Tween.get(dragContainer).to({ x : dragContainer.maxPositionX } , 2000, createjs.Ease.getElasticOut(1, 2));
 }
+
+function overL(event){
+		moveLeft = true;
+}
+
+function clickL(event){
+	var positionX = dragContainer.x + stage.canvas.width;
+	moveLeft = false;
+	
+	if(positionX <= 0)
+		createjs.Tween.get(dragContainer).to({x:positionX,visible:true},2000, createjs.Ease.getElasticOut(1, 2));
+	else
+		createjs.Tween.get(dragContainer).to({ x : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
+}
+
 
 function criaRelogio(){
-	
+	var  clicado = false;
 	var data = {
 		framerate: 10,
 		images: ["Sprites/relogio.png"],
@@ -102,6 +128,10 @@ function criaRelogio(){
 	animation.on("click", function move(evt){
 		animation.gotoAndPlay("run");
 		createjs.Sound.play("poim");
+		if(!clicado){
+			clicado = true;
+			dragContainer.maxPositionX -=  secao2.width;
+			}
 	});
 	
 	return animation;
@@ -142,39 +172,32 @@ function criaBela(){
 	
 	return animation;
 }
-/*
-var offset = new createjs.Point();
-function startDrag(event) {
-	offset.x = stage.mouseX - dragContainer.x;
-	offset.y = stage.mouseY - dragContainer.y;
-	event.addEventListener("mousemove", doDrag);
-}
 
-function doDrag(event) {
-	var positionX = event.stageX - offset.x;
-	var positionY = event.stageY - offset.y;
-	if (positionX <= 0 && positionX >= dragContainer.maxPositionX)
-		dragContainer.x = event.stageX - offset.x;
-
-	if (positionY <= 0 && positionY >= dragContainer.maxPositionY)
-		dragContainer.y = event.stageY - offset.y;
-}
-*/
 
 // Update the stage
 function tick(event) {
 	stage.update();
 	
-	if(dragContainer.x <= dragContainer.maxPositionX)
-		createjs.Tween.get(right).to({ alpha : 0} , 500);
-	else
-		createjs.Tween.get(right).to({ alpha : 100} , 500);
-		
-	if(dragContainer.x >= 0)
-		createjs.Tween.get(left).to({ alpha : 0} , 500);
-	else
-		createjs.Tween.get(left).to({ alpha : 100} , 500);
-
-		
+	if(dragContainer.x < dragContainer.maxPositionX){
+		moveRight = false;
+		right.alpha = 0;
+		}
+	else	
+		right.alpha = 100;
 	
+	if(dragContainer.x>=0){
+		moveLeft=false;
+		left.alpha=0;
+		}
+	else
+		left.alpha = 100;
+	
+	if (moveRight) {
+       dragContainer.x -= 10;
+	   }
+	   
+	else if (moveLeft) {
+       dragContainer.x += 10;
+	   }
+	   
 }
