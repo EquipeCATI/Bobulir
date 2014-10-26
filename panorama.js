@@ -3,7 +3,7 @@ var stage;
 var dragContainer = new createjs.Container(); //Cenário como todo
 var secao1 = new createjs.Container(); //Praça
 var secao2 = new createjs.Container(); //Lagoa
-var bitmap = new createjs.Bitmap("cenarios/teste.jpg");
+var bitmap = new createjs.Bitmap("cenarios/cenario1.png");
 var maxPositionX;
 //Setas
 var right ; 
@@ -29,10 +29,34 @@ function init() {
 	dragContainer.maxPositionX = maxPositionX; //Limites de posicionamento dele
 	//dragContainer.y = dragContainer.maxPositionY; //Só para começar no canto esquerdo de baixo
 	
+	/*
+	var lVideo = document.createElement('video');
+	var lParent = document.getElementById('videoContainer');
+		lVideo.src = "iron.mp4";
+		
+		lVideo.hidden   = false;
+
+ 		lVideo.width  = 400;
+ 		lVideo.height = 400;
+		
+		// Lets set the volume
+		lVideo.volume = 0.6;
+		lVideo.controls = true;
+
+		//lParent.appendChild(lVideo);
+
+		// Convert this to a dom element so that it can be added to our container (display list).
+		var lVideoDOMElement = new createjs.DOMElement(lVideo);
+		lVideoDOMElement.x = -100;
+		lVideoDOMElement.y = 10;*/
 	
 	secao1.addChild(bitmap);
+	//secao1.addChild(lVideoDOMElement);
 	secao1.addChild(criaRelogio());
-	
+	var olha = new createjs.Bitmap("sprites/olha.png");
+	olha.x = 600;
+	olha.y = 300;
+	secao1.addChild(olha);
 	
 	var bitmap2 = new createjs.Bitmap("cenarios/teste2.jpg"); 
 	secao2.width = bitmap2.image.width;
