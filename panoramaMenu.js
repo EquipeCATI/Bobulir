@@ -1,7 +1,9 @@
+var stage;
+
 var dragContainer = new createjs.Container(); //Cenário como todo
 var secao1 = new createjs.Container(); //Praça
 var secao2 = new createjs.Container(); //Lagoa
-
+var bitmap = new createjs.Bitmap("cenarios/cenario1.png");
 var maxPositionX;
 //Setas
 var right ; 
@@ -13,15 +15,12 @@ var moveRight;
 
 
 
-function panorama() {
-		createjs.Ticker.addEventListener("tick", tick);
-
+function init() {
 	stage.removeAllChildren();
-	stage.addChild(dragContainer);
+	
 
 	
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
-	var bitmap = new createjs.Bitmap("cenarios/cenario1.png");
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	maxPositionX = - (secao1.width - stage.canvas.width);
