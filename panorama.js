@@ -52,6 +52,9 @@ function init() {
 	var olha = new createjs.Bitmap("sprites/olha.png");
 	olha.x = 600;
 	olha.y = 300;
+	olha.on("click", function(event){
+		stage.addChild(getBalengo());
+		});
 	secao1.addChild(olha);
 	
 	var bitmap2 = new createjs.Bitmap("cenarios/teste2.jpg"); 
@@ -228,8 +231,6 @@ function criaBalao(animationAlvo){
 	balao.regY = 100;
 	balao.x = animationAlvo.x + animationAlvo.spriteSheet.getFrameBounds(0).width;
 	balao.y = animationAlvo.y;
-	
-	console.log(balao.isVisible());
 	
 	if(balao.y <= 10)
 	{

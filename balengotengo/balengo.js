@@ -1,4 +1,4 @@
-var stage;
+var containerBalengo = new createjs.Container();
 
 //Variáveis de controle do lançamento
 var angle;
@@ -12,8 +12,8 @@ var gravidade = -10;
 var t = 0;
 
 //Sprites
-var balengotengo = new createjs.Bitmap("balengotengo.png");
-var alvo = new createjs.Bitmap("alvo.png");
+var balengotengo = new createjs.Bitmap("balengotengo/balengotengo.png");
+var alvo = new createjs.Bitmap("balengotengo/alvo.png");
 var menino = criaMenino();
 
 function criaMenino()
@@ -21,7 +21,7 @@ function criaMenino()
 	var data = 
 	{
 		framerate: 10,
-		images: ["menino.jpg"],
+		images: ["balengotengo/menino.jpg"],
 		frames: 
 		{
 			width:104, height:100
@@ -38,11 +38,11 @@ function criaMenino()
 	return animation;
 }
 
-function init()
+function getBalengo()
 {
-	var canvas = document.getElementById("canvas");
-	stage = new createjs.Stage(canvas);
-	
+	//var canvas = document.getElementById("game");
+	//containerBalengo = new createjs.Stage(canvas);
+	containerBalengo = new createjs.Container();
 	menino.y = 550;
 	menino.x = 50;
 	
@@ -57,12 +57,16 @@ function init()
 	alvo.x = 300;
 	alvo.y = 100;
 
-	stage.addChild(alvo);
-	stage.addChild(menino);
-	stage.addChild(balengotengo);
+	containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
+	containerBalengo.addChild(alvo);
+	containerBalengo.addChild(menino);
+	containerBalengo.addChild(balengotengo);
 	
-	stage.on("stagemousedown", lancar);
-	createjs.Ticker.addEventListener("tick", tick);
+	containerBalengo.on("click", lancar);
+	containerBalengo.on("tick", tickBalengo);
+	
+	return containerBalengo;
+	//createjs.Ticker.addEventListener("tick", tickBalengo);
 }
 
 function lancar()
@@ -78,7 +82,7 @@ function lancar()
 	}
 }
 
-function tick(event) {
+function tickBalengo(event) {
 	//Faz o menino "olhar" para o mouse
 	angle = Math.atan2(stage.mouseY -menino.y, stage.mouseX -menino.x ); 
 	angle = angle * (180/Math.PI);
@@ -99,21 +103,22 @@ function tick(event) {
 	}
 	
 	//Caso o projétil saia da tela, se encerra o lançamento atual
-	if(balengotengo.x < 0 || balengotengo.x > 800 || balengotengo.y>600 || balengotengo.y<0)
+	if(balengotengo.x < 0 || balengotengo.x > stage.canvas.width
+	|| balengotengo.y>stage.canvas.height || balengotengo.y<0)
 	{
 		menino.gotoAndPlay("idle");
 		lancou = false;
 	}
 	
 	//Checagem de colisão
-	alvo.alpha = 0.2;
 	var ponto = balengotengo.localToLocal(0,0,alvo); //Posição do projétil relativo ao alvo
 	
 	//Checagem se este ponto está por cima de algum pixel do alvo
 	if (alvo.hitTest(ponto.x, ponto.y)) 
 	{
-		alvo.alpha = 1; 
+		lancou = false;
+		containerBalengo.removeAllChildren();
+		containerBalengo.removeAllEventListeners();
+		stage.removeChild(containerBalengo);
 	}
-		
-	stage.update();
 }
