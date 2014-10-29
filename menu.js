@@ -2,7 +2,6 @@ var stage;
 var bitmapStart = spriteBotao("iniciar.png");
 var bitmapCredit = spriteBotao("creditos.png");
 var seta = spriteBotao("setas.png")
-var update = true;
 
 function menu(){
 	var canvas = document.getElementById("canvas");
@@ -26,14 +25,7 @@ function menu(){
 	bitmapStart.addEventListener("mouseout", out);
 	bitmapStart.addEventListener("mousedown", down);
 
-	
-	
-
-
-
 	//botao dos creditos
-
-	
 
 	var creditBtnHit = new createjs.Shape();
 	creditBtnHit.graphics.beginFill("#000000").drawRect(0, 0, 150, 58);
@@ -49,15 +41,14 @@ function menu(){
 	bitmapCredit.addEventListener("mousedown", down);
 
 
-	createjs.Ticker.addEventListener("tick", tick);
-
-	
+	createjs.Ticker.on("tick", tick);
 }
 
 function btnClicked(event){
 	event.target.gotoAndPlay("click");
 	event.on("mouseup", up);
 	if(event.target == bitmapStart){
+		//stage.removeAllEventListeners();
 		panorama();
 	}
 	if(event.target == bitmapCredit){
@@ -108,7 +99,7 @@ function up(event){
 }
 
 function tick(){
-	stage.update()
+	stage.update();
 }
 
  function creditos(){

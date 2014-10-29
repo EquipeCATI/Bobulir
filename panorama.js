@@ -14,9 +14,9 @@ var moveRight;
 
 
 function panorama() {
-		createjs.Ticker.addEventListener("tick", tick);
-
 	stage.removeAllChildren();
+	createjs.Ticker.removeAllEventListeners();
+	createjs.Ticker.on("tick", tickPanorama);
 	stage.addChild(dragContainer);
 
 	
@@ -102,10 +102,6 @@ function panorama() {
 	stage.addChild(right);
 	
 
-}
-
-function tick(event) {
-	stage.update();
 }
 
 function btnClicked(event){
@@ -221,7 +217,7 @@ function criaBela(){
 
 
 // Update the stage
-function tick(event) {
+function tickPanorama(event) {
 	stage.update();
 	
 	if(dragContainer.x < dragContainer.maxPositionX){
