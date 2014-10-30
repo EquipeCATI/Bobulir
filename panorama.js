@@ -9,9 +9,6 @@ var balao = new createjs.Container();
 var moveLeft;
 var moveRight;
 
-
-
-
 function panorama() {
 	stage.removeAllChildren();
 	createjs.Ticker.removeAllEventListeners();
@@ -19,7 +16,7 @@ function panorama() {
 	stage.addChild(dragContainer);
 
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
-	var bitmap = new createjs.Bitmap("cenarios/cenario1.png");
+	var bitmap = new createjs.Bitmap("cenarios/cenario1.jpg");
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
@@ -55,10 +52,15 @@ function panorama() {
 	secao1.addChild(criaBela());
 	
 	var olha = new createjs.Bitmap("sprites/olha.png");
-	olha.x = 600;
+	olha.id = "Menina-raia";
+	olha.texto= "Bora desenganchar a raia!";
+	olha.x = 2250;
 	olha.y = 300;
+	olha.width = olha.image.width;
+	olha.height = olha.image.height;
 	olha.on("click", function(event){
 		stage.addChild(getBalengo());
+		criaBalao(event.target, 200, 100);
 		});
 	secao1.addChild(olha);
 	
@@ -168,6 +170,8 @@ function criaRelogio(){
 	
 	animation.id = "Relógio";
 	animation.texto= "tick tack";
+	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height;
  
     createjs.Sound.alternateExtensions = ["mp3"];
     createjs.Sound.registerManifest(manifest, audioPath);
@@ -181,7 +185,7 @@ function criaRelogio(){
 			}
 			
 		if(balao.balaoAtivo != animation.id)
-			criaBalao(animation);
+			criaBalao(animation, 200, 200);
 	});
 	
 	return animation;
@@ -202,7 +206,7 @@ function criaBela(){
 	
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.x = 500;
+	animation.x = 50;
 	animation.y = 300;
 
 	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
@@ -216,43 +220,47 @@ function criaBela(){
     createjs.Sound.registerManifest(manifest, audioPath);
 	
 	animation.id = "Bela";
-	animation.texto= "teste";
+	animation.texto= "Teste";
+	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height;
 	
 	animation.on("click", function move(evt){
 		animation.gotoAndPlay("run");
 		createjs.Sound.play("magia");
 		if(balao.balaoAtivo != animation.id)
-			criaBalao(animation);
+			criaBalao(animation, 200, 100);
 	});
 	
 	return animation;
 }
 
-function criaBalao(animationAlvo){
+function criaBalao(animationAlvo, width, height){
 	balao.removeAllChildren();
 
-	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRoundRect( 0, 0, 200, 100, 5 ));
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRoundRect( 0, 0, width, height, 5 ));
 	var texto = new createjs.Text(animationAlvo.texto, "20px Arial", "#FFFFFF");
+	texto.x = 10;
+	texto.y = 10;
+	texto.lineWidth = width - 10;
 	balao.addChild(shapeBalao);
 	balao.addChild(texto);
 	
 	balao.balaoAtivo = animationAlvo.id;
-	
-	balao.regX = 0;
+	balao.regX = 200;
 	balao.regY = 100;
-	balao.x = animationAlvo.x + animationAlvo.spriteSheet.getFrameBounds(0).width;
+	balao.x = animationAlvo.x ;
 	balao.y = animationAlvo.y;
 	
 	if(balao.y <= 10)
 	{
 		balao.regY = 0;
-		balao.y = animationAlvo.y + animationAlvo.spriteSheet.getFrameBounds(0).height;
+		balao.y = animationAlvo.y + animationAlvo.height;
 	}
 	
-	if(balao.x + 200 > -dragContainer.x + 800)
+	if(balao.x - 200 < -dragContainer.x)
 	{
-		balao.regX = 200;
-		balao.x = animationAlvo.x;
+		balao.regX = 0;
+		balao.x = animationAlvo.x + animationAlvo.width;
 	}
 		
 	animationAlvo.parent.addChild(balao);

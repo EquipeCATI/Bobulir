@@ -1,9 +1,9 @@
 var containerBalengo = new createjs.Container();
-
+var winBalengo = false;
 //Variáveis de controle do lançamento
 var angle;
 var lancou;
-var forca = 90;
+var forca = 80;
 
 //Variáveis do Lançamento Oblíquo
 var velocidadeInicialX ;
@@ -116,6 +116,11 @@ function tickBalengo(event) {
 	//Checagem se este ponto está por cima de algum pixel do alvo
 	if (alvo.hitTest(ponto.x, ponto.y)) 
 	{
+		if(!winBalengo)
+		{
+			dragContainer.maxPositionX -=  secao2.width;
+			winBalengo = true;
+		}
 		lancou = false;
 		containerBalengo.removeAllChildren();
 		containerBalengo.removeAllEventListeners();
