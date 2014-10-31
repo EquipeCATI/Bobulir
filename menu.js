@@ -1,7 +1,7 @@
 var stage;
-var bitmapStart = spriteBotao("iniciar.png");
-var bitmapCredit = spriteBotao("creditos.png");
-var seta = spriteBotao("setas.png")
+var bitmapStart = spriteBotao("assets/images/icons/iniciar.png");
+var bitmapCredit = spriteBotao("assets/images/icons/creditos.png");
+var seta = spriteBotao("assets/images/icons/setas.png")
 
 function menu(){
 	var canvas = document.getElementById("canvas");
