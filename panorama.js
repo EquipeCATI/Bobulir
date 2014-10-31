@@ -16,7 +16,7 @@ function panorama() {
 	stage.addChild(dragContainer);
 
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
-	var bitmap = new createjs.Bitmap("cenarios/cenario1.jpg");
+	var bitmap = new createjs.Bitmap("assets/images/cenarios/cenario1.jpg");
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
@@ -51,7 +51,7 @@ function panorama() {
 	secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
 	
-	var olha = new createjs.Bitmap("sprites/olha.png");
+	var olha = new createjs.Bitmap("assets/sprites/olha.png");
 	olha.id = "Menina-raia";
 	olha.texto= "Bora desenganchar a raia!";
 	olha.x = 2250;
@@ -64,7 +64,7 @@ function panorama() {
 		});
 	secao1.addChild(olha);
 	
-	var bitmap2 = new createjs.Bitmap("cenarios/teste2.jpg"); 
+	var bitmap2 = new createjs.Bitmap("assets/images/cenarios/teste2.jpg"); 
 	secao2.width = bitmap2.image.width;
 	secao2.height = bitmap2.image.height;
 	secao2.x = secao1.width;
@@ -89,12 +89,12 @@ function panorama() {
 	dragLeft.addEventListener("click", clickL);
 	stage.addChild(dragLeft);
 	
-	right = new createjs.Bitmap("cenarios/setad.png");
+	right = new createjs.Bitmap("assets/images/icons/setad.png");
 	right.x = stage.canvas.width - 110;
 	right.y = stage.canvas.height /2 - 50;
 	
 	
-	left = new createjs.Bitmap("cenarios/setae.png");
+	left = new createjs.Bitmap("assets/images/icons/setae.png");
 	left.x = 10;
 	left.y = stage.canvas.height /2 - 50;
 	
@@ -146,7 +146,7 @@ function criaRelogio(){
 	var  clicado = false;
 	var data = {
 		framerate: 10,
-		images: ["Sprites/relogio.png"],
+		images: ["assets/sprites/relogio.png"],
 		frames: {
 			width:100, height:100
 		},
@@ -163,7 +163,7 @@ function criaRelogio(){
 	
 	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
  
-    var audioPath = "audio/";
+    var audioPath = "assets/audio/";
     var manifest = [
         {id:"poim", src:"poim.mp3"},
     ];
@@ -194,7 +194,7 @@ function criaRelogio(){
 function criaBela(){
 	var data = {
 		framerate: 10,
-		images: ["Sprites/bela.png"],
+		images: ["assets/sprites/bela.png"],
 		frames: {
 			width:150, height:150
 		},
@@ -211,7 +211,7 @@ function criaBela(){
 
 	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
  
-    var audioPath = "audio/";
+    var audioPath = "assets/audio/";
     var manifest = [
         {id:"magia", src:"magia.mp3"},
     ];
@@ -219,8 +219,15 @@ function criaBela(){
     createjs.Sound.alternateExtensions = ["mp3"];
     createjs.Sound.registerManifest(manifest, audioPath);
 	
+	manifest = [
+		{src:"images/bila/1.jpg", id:"image0"},
+		{src:"images/bila/2.jpg", id:"image1"},
+	];
+	
+	criaImagens(manifest);
+	
 	animation.id = "Bela";
-	animation.texto= "Teste";
+	animation.texto= "Bila\n\nJogadores: 2 ou mais\n\nA bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
 	
@@ -228,7 +235,7 @@ function criaBela(){
 		animation.gotoAndPlay("run");
 		createjs.Sound.play("magia");
 		if(balao.balaoAtivo != animation.id)
-			criaBalao(animation, 200, 100);
+			criaBalao(animation, 250, 250);
 	});
 	
 	return animation;
@@ -238,7 +245,7 @@ function criaBalao(animationAlvo, width, height){
 	balao.removeAllChildren();
 
 	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRoundRect( 0, 0, width, height, 5 ));
-	var texto = new createjs.Text(animationAlvo.texto, "20px Arial", "#FFFFFF");
+	var texto = new createjs.Text(animationAlvo.texto, "14px Arial", "#FFFFFF");
 	texto.x = 10;
 	texto.y = 10;
 	texto.lineWidth = width - 10;
@@ -246,10 +253,19 @@ function criaBalao(animationAlvo, width, height){
 	balao.addChild(texto);
 	
 	balao.balaoAtivo = animationAlvo.id;
-	balao.regX = 200;
-	balao.regY = 100;
+	balao.regX = width;
+	balao.regY = height;
 	balao.x = animationAlvo.x ;
 	balao.y = animationAlvo.y;
+	
+	var regras = new createjs.Bitmap("assets/images/icons/regras.png");
+	regras.x = width - 80;
+	regras.y = height - 100;
+	balao.addChild(regras);
+	balao.addChild(imageContainer);
+	imageContainer.x = 80;
+	imageContainer.y = height - 80;
+	
 	
 	if(balao.y <= 10)
 	{
@@ -257,7 +273,7 @@ function criaBalao(animationAlvo, width, height){
 		balao.y = animationAlvo.y + animationAlvo.height;
 	}
 	
-	if(balao.x - 200 < -dragContainer.x)
+	if(balao.x - width < -dragContainer.x)
 	{
 		balao.regX = 0;
 		balao.x = animationAlvo.x + animationAlvo.width;
