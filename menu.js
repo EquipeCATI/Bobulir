@@ -1,7 +1,8 @@
 var stage;
 var bitmapStart = spriteBotao("assets/images/icons/iniciar.png");
 var bitmapCredit = spriteBotao("assets/images/icons/creditos.png");
-var seta = spriteBotao("assets/images/icons/setas.png")
+var seta = spriteBotao("assets/images/icons/setas.png");
+var pipa = spritePipa("assets/sprites/spritePipa.png");
 
 function menu(){
 	var canvas = document.getElementById("canvas");
@@ -34,6 +35,10 @@ function menu(){
 	bitmapCredit.x = 325;
 	bitmapCredit.y = 220;
 	stage.addChild(bitmapCredit);
+
+	pipa.x = 500;
+	pipa.y = 50;
+	stage.addChild(pipa);
 
 	bitmapCredit.on("click", btnClicked);
 	bitmapCredit.addEventListener("mouseover", over);
@@ -83,6 +88,29 @@ function spriteBotao(caminho){
 	
 	return botao;
 }
+
+function spritePipa(caminho){
+	//Configuração do spriteSheet do botao
+	var data = {
+		framerate: 10, //Velocidade de troca de frame - irrelevante
+		images: [caminho], //spriteSheet
+		frames: {
+			width:250, height:181, count:33 // tamanho dos frames
+		},
+		animations: { //Associação de nomes de animação aos frames
+			loop : [0, 32, 0, 0.7]
+			//flyOut :[ ]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animacao = new createjs.Sprite(spriteSheet, "normal");
+
+	
+	return animacao;
+}
+
+
 
 function over(event){
 	event.target.gotoAndPlay("over");

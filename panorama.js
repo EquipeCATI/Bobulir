@@ -16,7 +16,7 @@ function panorama() {
 	stage.addChild(dragContainer);
 
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
-	var bitmap = new createjs.Bitmap("assets/images/cenarios/cenario1.jpg");
+	var bitmap = new createjs.Bitmap("assets/images/cenarios/cenario1-cor2.png");
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
@@ -59,9 +59,16 @@ function panorama() {
 	olha.width = olha.image.width;
 	olha.height = olha.image.height;
 	olha.on("click", function(event){
-		stage.addChild(getBalengo());
 		criaBalao(event.target, 200, 100);
 		});
+		
+	var raia = new createjs.Bitmap("assets/sprites/raia.png");
+	raia.x = 2300;
+	raia.y = 10;
+	raia.on("click", function(event){
+		stage.addChild(getBalengo());
+		});
+	secao1.addChild(raia);
 	secao1.addChild(olha);
 	
 	var bitmap2 = new createjs.Bitmap("assets/images/cenarios/teste2.jpg"); 
@@ -222,6 +229,7 @@ function criaBela(){
 	manifest = [
 		{src:"images/bila/1.jpg", id:"image0"},
 		{src:"images/bila/2.jpg", id:"image1"},
+		{src:"images/bila/3.jpg", id:"image2"}
 	];
 	
 	criaImagens(manifest);
@@ -236,6 +244,7 @@ function criaBela(){
 		createjs.Sound.play("magia");
 		if(balao.balaoAtivo != animation.id)
 			criaBalao(animation, 250, 250);
+			addFotosRegras(250, 250);
 	});
 	
 	return animation;
@@ -256,16 +265,7 @@ function criaBalao(animationAlvo, width, height){
 	balao.regX = width;
 	balao.regY = height;
 	balao.x = animationAlvo.x ;
-	balao.y = animationAlvo.y;
-	
-	var regras = new createjs.Bitmap("assets/images/icons/regras.png");
-	regras.x = width - 80;
-	regras.y = height - 100;
-	balao.addChild(regras);
-	balao.addChild(imageContainer);
-	imageContainer.x = 80;
-	imageContainer.y = height - 80;
-	
+	balao.y = animationAlvo.y;	
 	
 	if(balao.y <= 10)
 	{
@@ -284,6 +284,16 @@ function criaBalao(animationAlvo, width, height){
 	balao.scaleX = 0;
 	balao.scaleY = 0;
 	createjs.Tween.get(balao).to({scaleX:1, scaleY:1, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+}
+
+function addFotosRegras(width, height){
+	var regras = new createjs.Bitmap("assets/images/icons/regras.png");
+	regras.x = width - 80;
+	regras.y = height - 100;
+	balao.addChild(regras);
+	balao.addChild(imageContainer);
+	imageContainer.x = 80;
+	imageContainer.y = height - 80;
 }
 
 
