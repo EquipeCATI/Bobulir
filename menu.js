@@ -1,17 +1,50 @@
 var stage;
-var bitmapStart = spriteBotao("assets/images/icons/iniciar.png");
-var bitmapCredit = spriteBotao("assets/images/icons/creditos.png");
-var seta = spriteBotao("assets/images/icons/setas.png");
-var pipa = spritePipa("assets/sprites/spritePipa.png");
+var bitmapStart;
+var bitmapCredit;
+var seta;
+var preloadMenu = new createjs.LoadQueue(false);
+//var pipa = spritePipa("assets/sprites/spritePipa.png");
 
-function menu(){
+
+function carregaAssets(){
+
 	var canvas = document.getElementById("canvas");
 	stage = new createjs.Stage(canvas);
 
 	stage.enableMouseOver(20);  
 
+	preloadMenu.on("complete", handleCompleteMenu);
+
+	var manifest = [
+		{src:"images/cenarios/cenario1-cor2.png", id:"secao1"},
+		{src:"images/cenarios/teste2.jpg", id:"secao2"},
+		{src:"sprites/raia.png", id:"raia"},
+		{src:"sprites/spritePipa.png", id:"pipa"},
+		{src:"images/icons/iniciar.png", id:"iniciar"},
+		{src:"images/icons/creditos.png", id:"creditos"},
+		{src:"images/icons/setas.png", id:"setas"},
+		{src:"sprites/relogio.png", id:"relogio"},
+		{src:"sprites/bela.png", id:"bila"},
+		{src:"sprites/menino-balengo.png", id:"menino-balengo"},
+		];
+	preloadMenu.loadManifest(manifest, true, "assets/");
+	}
+	
+function stop() {
+	if (preloadMenu != null) { preloadMenu.close(); }
+	}
+	
+function handleCompleteMenu(event) {
+	menu();
+}
+
+function menu(){
+
 	//criação do Botão start.
 	//bitmapStart = new createjs.Bitmap("startBtn.png");
+	bitmapStart = spriteBotao(preloadMenu.getResult('iniciar'));
+	bitmapCredit = spriteBotao(preloadMenu.getResult('creditos'));
+	seta = spriteBotao(preloadMenu.getResult('setas'));
 
 	var startBtnHit = new createjs.Shape();
 	startBtnHit.graphics.beginFill("#000000").drawRect(0, 0, 150, 58);
@@ -36,6 +69,7 @@ function menu(){
 	bitmapCredit.y = 220;
 	stage.addChild(bitmapCredit);
 
+	var pipa = spritePipa(preloadMenu.getResult('pipa'));
 	pipa.x = 500;
 	pipa.y = 50;
 	stage.addChild(pipa);
@@ -53,7 +87,6 @@ function btnClicked(event){
 	event.target.gotoAndPlay("click");
 	event.on("mouseup", up);
 	if(event.target == bitmapStart){
-		//stage.removeAllEventListeners();
 		panorama();
 	}
 	if(event.target == bitmapCredit){
@@ -73,7 +106,7 @@ function spriteBotao(caminho){
 		framerate: 10, //Velocidade de troca de frame - irrelevante
 		images: [caminho], //spriteSheet
 		frames: {
-			width:150, height:58 // tamanho dos frames
+			width:150, height:58// tamanho dos frames
 		},
 		animations: { //Associação de nomes de animação aos frames
 			normal : 0, 
@@ -95,10 +128,10 @@ function spritePipa(caminho){
 		framerate: 10, //Velocidade de troca de frame - irrelevante
 		images: [caminho], //spriteSheet
 		frames: {
-			width:250, height:181, count:33 // tamanho dos frames
+			width:250, height:181, count: 32 // tamanho dos frames
 		},
 		animations: { //Associação de nomes de animação aos frames
-			loop : [0, 32, 0, 0.7]
+			loop : [0, 32]
 			//flyOut :[ ]
 		}
 	};

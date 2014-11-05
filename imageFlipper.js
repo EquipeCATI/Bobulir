@@ -74,7 +74,7 @@ imageContainer.addChild(movieClip);
 
 function handleClick(event) {
 currentItem = event.target.parent;
-var tween = createjs.Tween.get(currentItem, {override:true}).to({alpha:0}, 200).call(tweenUpComplete).to({alpha:1}, 500);
+var tween = createjs.Tween.get(currentItem, {override:true}).to({alpha:0}, 500).call(tweenUpComplete).to({alpha:1}, 500);
 tween.on("change", handleTweenChange);
 }
 

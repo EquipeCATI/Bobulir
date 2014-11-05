@@ -16,7 +16,7 @@ function panorama() {
 	stage.addChild(dragContainer);
 
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
-	var bitmap = new createjs.Bitmap("assets/images/cenarios/cenario1-cor2.png");
+	var bitmap = new createjs.Bitmap(preloadMenu.getResult("secao1"));
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
@@ -71,7 +71,7 @@ function panorama() {
 	secao1.addChild(raia);
 	secao1.addChild(olha);
 	
-	var bitmap2 = new createjs.Bitmap("assets/images/cenarios/teste2.jpg"); 
+	var bitmap2 = new createjs.Bitmap(preloadMenu.getResult("secao2")); 
 	secao2.width = bitmap2.image.width;
 	secao2.height = bitmap2.image.height;
 	secao2.x = secao1.width;
@@ -153,7 +153,7 @@ function criaRelogio(){
 	var  clicado = false;
 	var data = {
 		framerate: 10,
-		images: ["assets/sprites/relogio.png"],
+		images: [preloadMenu.getResult("relogio")],
 		frames: {
 			width:100, height:100
 		},
@@ -186,10 +186,6 @@ function criaRelogio(){
 	animation.on("click", function move(evt){
 		animation.gotoAndPlay("run");
 		createjs.Sound.play("poim");
-		if(!clicado){
-			clicado = true;
-			dragContainer.maxPositionX -=  secao2.width;
-			}
 			
 		if(balao.balaoAtivo != animation.id)
 			criaBalao(animation, 200, 200);
@@ -201,7 +197,7 @@ function criaRelogio(){
 function criaBela(){
 	var data = {
 		framerate: 10,
-		images: ["assets/sprites/bela.png"],
+		images: [preloadMenu.getResult("bila")],
 		frames: {
 			width:150, height:150
 		},
