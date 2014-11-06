@@ -1,4 +1,5 @@
 var dragContainer = new createjs.Container(); //Cenário como todo
+var preloadPanorama = new createjs.LoadQueue(false);
 var secao1 = new createjs.Container(); //Praça
 var secao2 = new createjs.Container(); //Lagoa
 
@@ -9,14 +10,49 @@ var balao = new createjs.Container();
 var moveLeft;
 var moveRight;
 
+function carregaAssetsPanorama(){
+	preloadPanorama.on("complete", handleCompletePanorama);
+
+	var manifest = [
+		{src:"images/cenarios/cenario1-cor2.png", id:"secao1"},
+		{src:"images/cenarios/teste2.jpg", id:"secao2"},
+		{src:"sprites/raia.png", id:"raia"},
+		{src:"sprites/relogio.png", id:"relogio"},
+		{src:"sprites/bela.png", id:"bila"},
+		{src:"sprites/peao.png", id:"peao"},
+		{src:"images/icons/setad.png", id:"setad"},
+		{src:"images/icons/setae.png", id:"setae"},
+		];
+	preloadPanorama.loadManifest(manifest, true, "assets/");
+	}
+	
+function stop() {
+	if (preloadPanorama != null) { preloadPanorama.close(); }
+	}
+	
+function handleCompletePanorama(event) {
+	panorama();
+}
+
 function panorama() {
 	stage.removeAllChildren();
 	createjs.Ticker.removeAllEventListeners();
 	createjs.Ticker.on("tick", tickPanorama);
 	stage.addChild(dragContainer);
+	
+	criaSecao1();
+	
+	criaSecao2();
+	
+	criaHUD();
 
+	dragContainer.addChild(secao2);
+	dragContainer.addChild(secao1);
+}
+
+function criaSecao1(){
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
-	var bitmap = new createjs.Bitmap(preloadMenu.getResult("secao1"));
+	var bitmap = new createjs.Bitmap(preloadPanorama.getResult("secao1"));
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
@@ -70,14 +106,17 @@ function panorama() {
 		});
 	secao1.addChild(raia);
 	secao1.addChild(olha);
-	
-	var bitmap2 = new createjs.Bitmap(preloadMenu.getResult("secao2")); 
+}
+
+function criaSecao2(){
+	var bitmap2 = new createjs.Bitmap(preloadPanorama.getResult("secao2")); 
 	secao2.width = bitmap2.image.width;
 	secao2.height = bitmap2.image.height;
 	secao2.x = secao1.width;
 	secao2.addChild(bitmap2);
-	
+}
 
+function criaHUD(){
 	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.90, 0, stage.canvas.width*0.10, stage.canvas.height));
 
 	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
@@ -96,30 +135,18 @@ function panorama() {
 	dragLeft.addEventListener("click", clickL);
 	stage.addChild(dragLeft);
 	
-	right = new createjs.Bitmap("assets/images/icons/setad.png");
+	right = new createjs.Bitmap(preloadPanorama.getResult("setad"));
 	right.x = stage.canvas.width - 110;
 	right.y = stage.canvas.height /2 - 50;
 	
 	
-	left = new createjs.Bitmap("assets/images/icons/setae.png");
+	left = new createjs.Bitmap(preloadPanorama.getResult("setae"));
 	left.x = 10;
 	left.y = stage.canvas.height /2 - 50;
 	
-	
-	dragContainer.addChild(secao2);
-	dragContainer.addChild(secao1);
-
 	stage.addChild(left);
 	stage.addChild(right);
-	
-
 }
-
-function btnClicked(event){
-	console.log("Clickou");
-}
-
-
 
 function overR(event){
 		moveRight = true;
@@ -153,7 +180,7 @@ function criaRelogio(){
 	var  clicado = false;
 	var data = {
 		framerate: 10,
-		images: [preloadMenu.getResult("relogio")],
+		images: [preloadPanorama.getResult("relogio")],
 		frames: {
 			width:100, height:100
 		},
@@ -197,7 +224,7 @@ function criaRelogio(){
 function criaBela(){
 	var data = {
 		framerate: 10,
-		images: [preloadMenu.getResult("bila")],
+		images: [preloadPanorama.getResult("bila")],
 		frames: {
 			width:150, height:150
 		},

@@ -12,20 +12,15 @@ function carregaAssets(){
 	stage = new createjs.Stage(canvas);
 
 	stage.enableMouseOver(20);  
+	createjs.Ticker.on("tick", tick);
 
 	preloadMenu.on("complete", handleCompleteMenu);
 
 	var manifest = [
-		{src:"images/cenarios/cenario1-cor2.png", id:"secao1"},
-		{src:"images/cenarios/teste2.jpg", id:"secao2"},
-		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/spritePipa.png", id:"pipa"},
 		{src:"images/icons/iniciar.png", id:"iniciar"},
 		{src:"images/icons/creditos.png", id:"creditos"},
 		{src:"images/icons/setas.png", id:"setas"},
-		{src:"sprites/relogio.png", id:"relogio"},
-		{src:"sprites/bela.png", id:"bila"},
-		{src:"sprites/menino-balengo.png", id:"menino-balengo"},
 		];
 	preloadMenu.loadManifest(manifest, true, "assets/");
 	}
@@ -78,16 +73,13 @@ function menu(){
 	bitmapCredit.addEventListener("mouseover", over);
 	bitmapCredit.addEventListener("mouseout", out);
 	bitmapCredit.addEventListener("mousedown", down);
-
-
-	createjs.Ticker.on("tick", tick);
 }
 
 function btnClicked(event){
 	event.target.gotoAndPlay("click");
 	event.on("mouseup", up);
 	if(event.target == bitmapStart){
-		panorama();
+		carregaAssetsPanorama();
 	}
 	if(event.target == bitmapCredit){
 		creditos();

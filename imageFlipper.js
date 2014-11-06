@@ -76,6 +76,13 @@ function handleClick(event) {
 currentItem = event.target.parent;
 var tween = createjs.Tween.get(currentItem, {override:true}).to({alpha:0}, 500).call(tweenUpComplete).to({alpha:1}, 500);
 tween.on("change", handleTweenChange);
+var audioPath = "assets/audio/";
+    var manifest = [
+        {id:"flip", src:"flip.mp3"},
+    ];
+	createjs.Sound.alternateExtensions = ["mp3"];
+    createjs.Sound.registerManifest(manifest, audioPath);
+createjs.Sound.play("flip");
 }
 
 function handleTweenChange(tween) {
