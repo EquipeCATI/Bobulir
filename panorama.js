@@ -13,7 +13,7 @@ var moveRight;
 function carregaAssetsPanorama(){
 	preloadPanorama.on("complete", handleCompletePanorama);
 
-	var manifest = [
+	var manifestCenario = [
 		{src:"images/cenarios/cenario1-cor2.png", id:"secao1"},
 		{src:"images/cenarios/teste2.jpg", id:"secao2"},
 		{src:"sprites/raia.png", id:"raia"},
@@ -23,7 +23,27 @@ function carregaAssetsPanorama(){
 		{src:"images/icons/setad.png", id:"setad"},
 		{src:"images/icons/setae.png", id:"setae"},
 		];
-	preloadPanorama.loadManifest(manifest, true, "assets/");
+	preloadPanorama.loadManifest(manifestCenario, true, "assets/");
+	
+	var manifestBaloes = [
+		{src:"images/bila/1.jpg", id: "bila1"},
+		{src:"images/bila/2.jpg", id: "bila2"},
+		{src:"images/bila/3.jpg", id: "bila3"},
+		{src:"images/relogio/1.jpg", id: "relogio1"},
+		{src:"images/relogio/2.png", id: "relogio2"},
+		];
+	preloadPanorama.loadManifest(manifestBaloes, true, "assets/");
+	
+	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+ 
+	var audioPath = "assets/audio/";
+	var manifestAudio = [
+		{id:"flip", src:"flip.mp3"},
+		{id:"poim", src:"poim.mp3"},
+		{id:"magia", src:"magia.mp3"},
+	];
+	createjs.Sound.alternateExtensions = ["mp3"];
+	createjs.Sound.registerManifest(manifestAudio, audioPath);
 	}
 	
 function stop() {
@@ -61,27 +81,21 @@ function criaSecao1(){
 	
 
 	/*
-	var lVideo = document.createElement('video');
+	var lVideo = document.createElement('EMBED');
 	var lParent = document.getElementById('videoContainer');
-		lVideo.src = "iron.mp4";
-		
-		lVideo.hidden   = false;
-
- 		lVideo.width  = 400;
- 		lVideo.height = 400;
+		lVideo.src = "assets/images/cenarios/teste2.jpg";
+		lVideo.style.overflow = 'auto';
 		
 		// Lets set the volume
-		lVideo.volume = 0.6;
-		lVideo.controls = true;
+		//lVideo.volume = 0.6;
+		//lVideo.controls = true;
 
-		//lParent.appendChild(lVideo);
+		lParent.appendChild(lVideo);
 
 		// Convert this to a dom element so that it can be added to our container (display list).
 		var lVideoDOMElement = new createjs.DOMElement(lVideo);
-		lVideoDOMElement.x = -100;
-		lVideoDOMElement.y = 10;*/
-		//secao1.addChild(lVideoDOMElement);
-	
+		secao1.addChild(lVideoDOMElement);
+	*/
 	
 	secao1.addChild(bitmap);
 	secao1.addChild(criaRelogio());
@@ -175,6 +189,18 @@ function clickL(event){
 		createjs.Tween.get(dragContainer, {override : true}).to({ x : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
 }
 
+function anima(evt){
+	evt.target.gotoAndPlay("run");
+	createjs.Sound.play(evt.target.som);
+			
+	if(balao.balaoAtivo != evt.target.id){
+		criaBalao(evt.target, evt.target.balaoW, evt.target.balaoH);
+		criaImagens(evt.target.id, evt.target.numFotos);
+		addFotosRegras(evt.target.balaoW, evt.target.balaoH);
+		
+	}
+}
+
 
 function criaRelogio(){
 	var  clicado = false;
@@ -194,29 +220,17 @@ function criaRelogio(){
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = 800;
 	animation.y = 0; //secao1.height/2;
-	
-	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
- 
-    var audioPath = "assets/audio/";
-    var manifest = [
-        {id:"poim", src:"poim.mp3"},
-    ];
-	
-	animation.id = "Relógio";
-	animation.texto= "tick tack";
+	animation.som = "poim";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
  
-    createjs.Sound.alternateExtensions = ["mp3"];
-    createjs.Sound.registerManifest(manifest, audioPath);
-	
-	animation.on("click", function move(evt){
-		animation.gotoAndPlay("run");
-		createjs.Sound.play("poim");
-			
-		if(balao.balaoAtivo != animation.id)
-			criaBalao(animation, 200, 200);
-	});
+	animation.id = "relogio";
+	animation.texto= "BLABLA BLA BLABLA TICK TACK";
+	animation.balaoW = 200;
+	animation.balaoH = 200;
+	animation.numFotos = 2;
+		
+	animation.on("click", anima);
 	
 	return animation;
 }
@@ -237,38 +251,17 @@ function criaBela(){
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = 50;
-	animation.y = 300;
-
-	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
- 
-    var audioPath = "assets/audio/";
-    var manifest = [
-        {id:"magia", src:"magia.mp3"},
-    ];
- 
-    createjs.Sound.alternateExtensions = ["mp3"];
-    createjs.Sound.registerManifest(manifest, audioPath);
-	
-	manifest = [
-		{src:"images/bila/1.jpg", id:"image0"},
-		{src:"images/bila/2.jpg", id:"image1"},
-		{src:"images/bila/3.jpg", id:"image2"}
-	];
-	
-	criaImagens(manifest);
-	
-	animation.id = "Bela";
+	animation.y = 300;	
+	animation.som = "magia";
+	animation.id = "bila";
 	animation.texto= "Bila\n\nJogadores: 2 ou mais\n\nA bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
+	animation.balaoW = 250;
+	animation.balaoH = 250;
+	animation.numFotos = 3;
 	
-	animation.on("click", function move(evt){
-		animation.gotoAndPlay("run");
-		createjs.Sound.play("magia");
-		if(balao.balaoAtivo != animation.id)
-			criaBalao(animation, 250, 250);
-			addFotosRegras(250, 250);
-	});
+	animation.on("click", anima);
 	
 	return animation;
 }
@@ -303,7 +296,6 @@ function criaBalao(animationAlvo, width, height){
 	}
 		
 	animationAlvo.parent.addChild(balao);
-	
 	balao.scaleX = 0;
 	balao.scaleY = 0;
 	createjs.Tween.get(balao).to({scaleX:1, scaleY:1, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
