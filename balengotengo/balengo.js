@@ -1,12 +1,15 @@
 var containerBalengo = new createjs.Container();
+var line = new createjs.Shape();
 var preloadBalengo = new createjs.LoadQueue(false);
 var winBalengo = false;
 //Variáveis de controle do lançamento
 var angle;
-var lancou;
-var forca = 80;
+var lancou = false;
+var forca = 0;
 
 //Variáveis do Lançamento Oblíquo
+var pontoI = new createjs.Point(0,0);
+var pontoF = new createjs.Point(0,0);
 var velocidadeInicialX ;
 var velocidadeInicialY;
 var gravidade = -10;
@@ -86,21 +89,51 @@ function getBalengo()
 
 	containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
 	
-	
+	containerBalengo.addChild(line);
 	
 	containerBalengo.addChild(alvo);
 	containerBalengo.addChild(menino);
 	containerBalengo.addChild(balengotengo);
 	
-	containerBalengo.on("click", lancar);
+	containerBalengo.on("mousedown", mDown);
+	containerBalengo.on("pressmove", mMove);
+	containerBalengo.on("pressup", joga);
 	containerBalengo.on("tick", tickBalengo);
 	
 	return containerBalengo;
 	//createjs.Ticker.addEventListener("tick", tickBalengo);
 }
 
-function lancar()
+function mDown(){
+	pontoI.x = stage.mouseX;
+	pontoI.y = stage.mouseY;
+}
+
+function mMove(){
+	pontoF.x = stage.mouseX;
+	pontoF.y = stage.mouseY;
+	
+	forca = Math.sqrt(Math.pow(pontoI.x - pontoF.x, 2) + Math.pow(pontoI.y - pontoF.y, 2));
+	
+	if(forca<=75){
+		line.graphics.clear();
+		line.graphics.beginFill('#ff3333').drawCircle(pontoF.x, pontoF.y, 5);
+		line.graphics.setStrokeStyle(3);
+		line.graphics.beginStroke("#ff3333");
+		line.graphics.moveTo(pontoI.x, pontoI.y);
+		line.graphics.lineTo(pontoF.x, pontoF.y);
+	}
+	
+	else{
+			forca = 75;
+	}
+}
+
+function joga()
 {
+	angle = Math.atan2(pontoI.y - pontoF.y, pontoI.x - pontoF.x ); 
+	angle = angle * (180/Math.PI);
+	console.log(angle);
 	if(!lancou)
 	{
 		//Cálculo da força inicial, distribuída de acordo com o angulo
@@ -109,13 +142,15 @@ function lancar()
 		t=0;
 		menino.gotoAndPlay("joga");
 		lancou = true;
+		forca = 0;
 	}
 }
 
 function tickBalengo(event) {
 	//Faz o menino "olhar" para o mouse
-	angle = Math.atan2(stage.mouseY -menino.y, stage.mouseX -menino.x ); 
-	angle = angle * (180/Math.PI);
+	
+	
+	
 	
 	if(angle>-90 && angle<=0) //Limitação dos angulos que o menino olha
 	{ 
@@ -152,6 +187,7 @@ function tickBalengo(event) {
 			winBalengo = true;
 		}
 		lancou = false;
+		
 		containerBalengo.removeAllChildren();
 		containerBalengo.removeAllEventListeners();
 		stage.removeChild(containerBalengo);
