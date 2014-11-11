@@ -2,10 +2,13 @@ var containerBalengo = new createjs.Container();
 var line = new createjs.Shape();
 var preloadBalengo = new createjs.LoadQueue(false);
 var winBalengo = false;
+
 //Variáveis de controle do lançamento
 var angle;
 var lancou = false;
 var forca = 0;
+var distX;
+var distY;
 
 //Variáveis do Lançamento Oblíquo
 var pontoI = new createjs.Point(0,0);
@@ -113,19 +116,27 @@ function mMove(){
 	pontoF.x = stage.mouseX;
 	pontoF.y = stage.mouseY;
 	
-	forca = Math.sqrt(Math.pow(pontoI.x - pontoF.x, 2) + Math.pow(pontoI.y - pontoF.y, 2));
+	distX = pontoI.x - pontoF.x;
+	distY = pontoI.y - pontoF.y;
 	
-	if(forca<=75){
+	forca = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+	
+	if(forca<=75)
+	{
+		var lineX = menino.x - 60;
+		var lineY = menino.y - 40;
 		line.graphics.clear();
-		line.graphics.beginFill('#ff3333').drawCircle(pontoF.x, pontoF.y, 5);
+		
 		line.graphics.setStrokeStyle(3);
 		line.graphics.beginStroke("#ff3333");
-		line.graphics.moveTo(pontoI.x, pontoI.y);
-		line.graphics.lineTo(pontoF.x, pontoF.y);
+		line.graphics.moveTo(lineX,  lineY);
+		line.graphics.lineTo(lineX - distX,   lineY - distY);
+		line.graphics.beginFill('#ff3333').drawCircle(lineX - distX, lineY - distY, 5);
 	}
 	
-	else{
-			forca = 75;
+	else
+	{
+		forca = 75;
 	}
 }
 
@@ -171,6 +182,8 @@ function tickBalengo(event) {
 	if(balengotengo.x < 0 || balengotengo.x > stage.canvas.width
 	|| balengotengo.y>stage.canvas.height || balengotengo.y<0)
 	{
+		balengotengo.x =  menino.x - 60; 
+	balengotengo.y = menino.y - 40;
 		//menino.gotoAndPlay("mira");
 		lancou = false;
 	}

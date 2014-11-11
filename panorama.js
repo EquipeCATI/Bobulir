@@ -18,6 +18,7 @@ function carregaAssetsPanorama(){
 		{src:"images/cenarios/teste2.jpg", id:"secao2"},
 		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/relogio.png", id:"relogio"},
+		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
 		{src:"sprites/bela.png", id:"bila"},
 		{src:"sprites/peao.png", id:"peao"},
 		{src:"images/icons/setad.png", id:"setad"},
@@ -41,6 +42,7 @@ function carregaAssetsPanorama(){
 		{id:"flip", src:"flip.mp3"},
 		{id:"poim", src:"poim.mp3"},
 		{id:"magia", src:"magia.mp3"},
+		{id:"risada menina", src:"risada_menina.mp3"},
 	];
 	createjs.Sound.alternateExtensions = ["mp3"];
 	createjs.Sound.registerManifest(manifestAudio, audioPath);
@@ -55,9 +57,10 @@ function handleCompletePanorama(event) {
 }
 
 function panorama() {
-	stage.removeAllChildren();
-	createjs.Ticker.removeAllEventListeners();
-	createjs.Ticker.on("tick", tickPanorama);
+	dragContainer.y = 600;
+	
+	
+	
 	stage.addChild(dragContainer);
 	
 	criaSecao1();
@@ -68,7 +71,15 @@ function panorama() {
 
 	dragContainer.addChild(secao2);
 	dragContainer.addChild(secao1);
+	createjs.Tween.get(containerMenu, {override : true}).to({ y : -600} , 2500, createjs.Ease.getElasticOut(1, 2)).call(terminouMenu);
+	createjs.Tween.get(dragContainer, {override : true}).to({ y : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
 }
+
+ function terminouMenu(){
+	stage.removeChild(containerMenu);
+	createjs.Ticker.removeAllChildren();
+	createjs.Ticker.on("tick", tickPanorama);
+ }
 
 function criaSecao1(){
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
@@ -81,23 +92,11 @@ function criaSecao1(){
 	
 
 	/*
-	var lVideo = document.createElement('EMBED');
-	var lParent = document.getElementById('videoContainer');
-		lVideo.src = "assets/images/cenarios/teste2.jpg";
-		lVideo.style.overflow = 'auto';
-		
-		// Lets set the volume
-		//lVideo.volume = 0.6;
-		//lVideo.controls = true;
-
-		lParent.appendChild(lVideo);
-
-		// Convert this to a dom element so that it can be added to our container (display list).
-		var lVideoDOMElement = new createjs.DOMElement(lVideo);
-		secao1.addChild(lVideoDOMElement);
+	
 	*/
 	
 	secao1.addChild(bitmap);
+	secao1.addChild(criaBruxinha());
 	secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
 	
@@ -199,6 +198,39 @@ function anima(evt){
 		addFotosRegras(evt.target.balaoW, evt.target.balaoH);
 		
 	}
+}
+
+function criaBruxinha(){
+	var  clicado = false;
+	var data = {
+		framerate: 30,
+		images: [preloadPanorama.getResult("bruxinha")],
+		frames: {
+			width:550, height:531
+		},
+		animations: {
+			idle:[0, 34, true]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 1325;
+	animation.y = 350; //secao1.height/2;
+	animation.scaleX = animation.scaleY = 0.3;
+	animation.som = "risada menina";
+	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height;
+ 
+	animation.id = "bruxinha";
+	animation.texto= "bruxinhas";
+	animation.balaoW = 200;
+	animation.balaoH = 200;
+	animation.numFotos = 2;
+		
+	animation.on("click", anima);
+	
+	return animation;
 }
 
 
@@ -305,10 +337,27 @@ function addFotosRegras(width, height){
 	var regras = new createjs.Bitmap("assets/images/icons/regras.png");
 	regras.x = width - 80;
 	regras.y = height - 100;
+	regras.on("click",createPopup);
 	balao.addChild(regras);
 	balao.addChild(imageContainer);
 	imageContainer.x = 80;
 	imageContainer.y = height - 80;
+}
+
+function createPopup(){
+
+var windowhandle=window.open("", "newwin", "height=260, width=340");
+windowhandle.document.write('<title>My Video</title>');
+windowhandle.document.write('<embed src="raia.avi" width=330 height=250 />');
+/*
+Shadowbox.open({
+        content:    'raia.m4v',
+		player: 'm4v',
+        title:      "Raia",
+        height:     240,
+        width:      320
+    });
+	*/
 }
 
 

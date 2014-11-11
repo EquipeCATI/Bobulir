@@ -1,4 +1,5 @@
 var stage;
+var containerMenu = new createjs.Container();
 var bitmapStart;
 var bitmapCredit;
 var seta;
@@ -35,6 +36,10 @@ function handleCompleteMenu(event) {
 
 function menu(){
 
+    var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 800, 600));
+
+	containerMenu.addChild(fundo);
+
 	//criação do Botão start.
 	//bitmapStart = new createjs.Bitmap("startBtn.png");
 	bitmapStart = spriteBotao(preloadMenu.getResult('iniciar'));
@@ -47,7 +52,7 @@ function menu(){
 
 	bitmapStart.x = 325;
 	bitmapStart.y = 150;
-	stage.addChild(bitmapStart);
+	containerMenu.addChild(bitmapStart);
 
 	bitmapStart.on("click", btnClicked);
 	bitmapStart.addEventListener("mouseover", over);
@@ -62,12 +67,14 @@ function menu(){
 
 	bitmapCredit.x = 325;
 	bitmapCredit.y = 220;
-	stage.addChild(bitmapCredit);
+	containerMenu.addChild(bitmapCredit);
 
 	var pipa = spritePipa(preloadMenu.getResult('pipa'));
 	pipa.x = 500;
 	pipa.y = 50;
-	stage.addChild(pipa);
+	containerMenu.addChild(pipa);
+	stage.addChild(containerMenu);
+
 
 	bitmapCredit.on("click", btnClicked);
 	bitmapCredit.addEventListener("mouseover", over);
@@ -171,6 +178,8 @@ function tick(){
 	seta.addEventListener("mouseover", over);
 	seta.addEventListener("mouseout", out);
 	seta.addEventListener("mousedown", down);
-
-
+ }
+ 
+ function terminouMenu(){
+	stage.removeChild(containerMenu);
  }

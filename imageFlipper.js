@@ -41,7 +41,6 @@ function handleClick(event) {
 	createjs.Sound.play("flip");
 	currentItem = event.target.parent;
 	var tween = createjs.Tween.get(currentItem, {override:true}).to({alpha:0}, 500).call(tweenUpComplete).to({alpha:1}, 500);
-	tween.on("change", handleTweenChange);
 }
 
 function tweenUpComplete() {
