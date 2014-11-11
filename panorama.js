@@ -57,28 +57,26 @@ function handleCompletePanorama(event) {
 }
 
 function panorama() {
+	console.log("teste");
 	dragContainer.y = 600;
-	
-	
-	
+
+	createjs.Ticker.on("tick", tickPanorama);
 	stage.addChild(dragContainer);
 	
 	criaSecao1();
-	
 	criaSecao2();
-	
-	criaHUD();
-
 	dragContainer.addChild(secao2);
 	dragContainer.addChild(secao1);
-	createjs.Tween.get(containerMenu, {override : true}).to({ y : -600} , 2500, createjs.Ease.getElasticOut(1, 2)).call(terminouMenu);
-	createjs.Tween.get(dragContainer, {override : true}).to({ y : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
+	
+	
+	createjs.Tween.get(containerMenu, {override : true}).to({ y : -600} , 2500, createjs.Ease.getPowOut(2));
+	createjs.Tween.get(dragContainer,  {override : true}).to({ y : 0} , 2500, createjs.Ease.getPowOut(2)).call(terminouMenu);
 }
 
  function terminouMenu(){
 	stage.removeChild(containerMenu);
-	createjs.Ticker.removeAllChildren();
-	createjs.Ticker.on("tick", tickPanorama);
+	criaHUD();
+	createjs.Tween.removeAllTweens();
  }
 
 function criaSecao1(){
@@ -168,8 +166,9 @@ function overR(event){
 function clickR(event){
 	var positionX = dragContainer.x - stage.canvas.width;
 	moveRight = false;
-	if(positionX >= dragContainer.maxPositionX)
+	if(positionX >= dragContainer.maxPositionX){
 		createjs.Tween.get(dragContainer, {override : true}).to({x:positionX},2000, createjs.Ease.getElasticOut(1, 2));
+		}
 	else
 		createjs.Tween.get(dragContainer, {override : true}).to({ x : dragContainer.maxPositionX } , 2000, createjs.Ease.getElasticOut(1, 2));
 }
@@ -363,8 +362,6 @@ Shadowbox.open({
 
 // Update the stage
 function tickPanorama(event) {
-	stage.update();
-	
 	if(dragContainer.x < dragContainer.maxPositionX){
 		moveRight = false;
 		right.alpha = 0;
@@ -386,5 +383,7 @@ function tickPanorama(event) {
 	else if (moveLeft) {
        dragContainer.x += 10;
 	   }
+	   
+	  
 	   
 }
