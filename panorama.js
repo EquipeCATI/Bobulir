@@ -19,7 +19,7 @@ function carregaAssetsPanorama(){
 		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/relogio.png", id:"relogio"},
 		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
-		{src:"sprites/bela.png", id:"bila"},
+		{src:"sprites/bela.png", id:"Bila"},
 		{src:"sprites/peao.png", id:"peao"},
 		{src:"images/icons/setad.png", id:"setad"},
 		{src:"images/icons/setae.png", id:"setae"},
@@ -27,9 +27,9 @@ function carregaAssetsPanorama(){
 	preloadPanorama.loadManifest(manifestCenario, true, "assets/");
 	
 	var manifestBaloes = [
-		{src:"images/bila/1.jpg", id: "bila1"},
-		{src:"images/bila/2.jpg", id: "bila2"},
-		{src:"images/bila/3.jpg", id: "bila3"},
+		{src:"images/bila/1.jpg", id: "Bila1"},
+		{src:"images/bila/2.jpg", id: "Bila2"},
+		{src:"images/bila/3.jpg", id: "Bila3"},
 		{src:"images/relogio/1.jpg", id: "relogio1"},
 		{src:"images/relogio/2.png", id: "relogio2"},
 		];
@@ -99,7 +99,7 @@ function criaSecao1(){
 	secao1.addChild(criaBela());
 	
 	var olha = new createjs.Bitmap("assets/sprites/olha.png");
-	olha.id = "Menina-raia";
+	olha.id = "";
 	olha.texto= "Bora desenganchar a raia!";
 	olha.x = 2250;
 	olha.y = 300;
@@ -218,7 +218,7 @@ function criaBruxinha(){
 	animation.y = 350; //secao1.height/2;
 	animation.scaleX = animation.scaleY = 0.3;
 	animation.som = "risada menina";
-	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.width = animation.spriteSheet.getFrameBounds(0).width*0.3;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
  
 	animation.id = "bruxinha";
@@ -269,7 +269,7 @@ function criaRelogio(){
 function criaBela(){
 	var data = {
 		framerate: 10,
-		images: [preloadPanorama.getResult("bila")],
+		images: [preloadPanorama.getResult("Bila")],
 		frames: {
 			width:150, height:150
 		},
@@ -284,11 +284,11 @@ function criaBela(){
 	animation.x = 50;
 	animation.y = 300;	
 	animation.som = "magia";
-	animation.id = "bila";
-	animation.texto= "Bila\n\nJogadores: 2 ou mais\n\nA bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
+	animation.id = "Bila";
+	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
-	animation.balaoW = 250;
+	animation.balaoW = 400;
 	animation.balaoH = 250;
 	animation.numFotos = 3;
 	
@@ -300,12 +300,18 @@ function criaBela(){
 function criaBalao(animationAlvo, width, height){
 	balao.removeAllChildren();
 
-	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRoundRect( 0, 0, width, height, 5 ));
-	var texto = new createjs.Text(animationAlvo.texto, "14px Arial", "#FFFFFF");
-	texto.x = 10;
-	texto.y = 10;
-	texto.lineWidth = width - 10;
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#fff4dd").drawRoundRect( 0, 0, width, height, 5 ));
+	var titulo = new createjs.Text(animationAlvo.id, "36px CreakyFrank", "#000000");
+	titulo.x = 10;
+	titulo.y = 10;
+	
+	var texto = new createjs.Text(animationAlvo.texto, "24px Bahiana", "#000000");
+	texto.x = 20;
+	texto.y = 50;
+	texto.lineWidth = width - 40;
+	texto.lineHeight = 30;
 	balao.addChild(shapeBalao);
+	balao.addChild(titulo);
 	balao.addChild(texto);
 	
 	balao.balaoAtivo = animationAlvo.id;
@@ -347,7 +353,7 @@ function createPopup(){
 
 var windowhandle=window.open("", "newwin", "height=260, width=340");
 windowhandle.document.write('<title>My Video</title>');
-windowhandle.document.write('<embed src="raia.avi" width=330 height=250 />');
+windowhandle.document.write('<embed src="raia.m4v" width=330 height=250 />');
 /*
 Shadowbox.open({
         content:    'raia.m4v',
@@ -362,7 +368,7 @@ Shadowbox.open({
 
 // Update the stage
 function tickPanorama(event) {
-	if(dragContainer.x < dragContainer.maxPositionX){
+	if(dragContainer.x <= dragContainer.maxPositionX){
 		moveRight = false;
 		right.alpha = 0;
 		}
@@ -378,10 +384,14 @@ function tickPanorama(event) {
 	
 	if (moveRight) {
        dragContainer.x -= 10;
+	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+	   balao.balaoAtivo = "";
 	   }
 	   
 	else if (moveLeft) {
        dragContainer.x += 10;
+	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+	   balao.balaoAtivo = "";
 	   }
 	   
 	  
