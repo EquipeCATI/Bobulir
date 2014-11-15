@@ -41,7 +41,8 @@ function stop() {
 	}
 	
 function handleCompleteBalengo(event) {
-	//stage.addChild();
+	carregaAssetsZerim();
+	getBalengo();
 }
 
 
@@ -70,7 +71,6 @@ function criaMenino()
 
 function getBalengo()
 {
-	carregaAssetsBalengo();
 	containerBalengo = new createjs.Container();
 	menino = criaMenino();
 	balengotengo = new createjs.Bitmap(preloadBalengo.getResult("balengotengo"));
@@ -102,8 +102,6 @@ function getBalengo()
 	containerBalengo.on("pressmove", mMove);
 	containerBalengo.on("pressup", joga);
 	containerBalengo.on("tick", tickBalengo);
-	
-	return containerBalengo;
 	//createjs.Ticker.addEventListener("tick", tickBalengo);
 }
 
@@ -158,16 +156,6 @@ function joga()
 }
 
 function tickBalengo(event) {
-	//Faz o menino "olhar" para o mouse
-	
-	
-	
-	
-	if(angle>-90 && angle<=0) //Limitação dos angulos que o menino olha
-	{ 
-		//menino.rotation = angle;
-	}
-	
 	if(lancou) //Processo de lançamento
 	{ 
 		//Fórmulas do lançamento oblíquo
@@ -183,7 +171,7 @@ function tickBalengo(event) {
 	|| balengotengo.y>stage.canvas.height || balengotengo.y<0)
 	{
 		balengotengo.x =  menino.x - 60; 
-	balengotengo.y = menino.y - 40;
+		balengotengo.y = menino.y - 40;
 		//menino.gotoAndPlay("mira");
 		lancou = false;
 	}
@@ -200,9 +188,11 @@ function tickBalengo(event) {
 			winBalengo = true;
 		}
 		lancou = false;
-		
+		line.graphics.clear();
 		containerBalengo.removeAllChildren();
 		containerBalengo.removeAllEventListeners();
+		containerBalengo = undefined;
+		stage.addChild(getZerim());
 		stage.removeChild(containerBalengo);
 	}
 }

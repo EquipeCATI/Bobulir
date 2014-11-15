@@ -14,7 +14,7 @@ function carregaAssetsPanorama(){
 	preloadPanorama.on("complete", handleCompletePanorama);
 
 	var manifestCenario = [
-		{src:"images/cenarios/cenario1-cor2.png", id:"secao1"},
+		{src:"images/cenarios/cenarioArvores.png", id:"secao1"},
 		{src:"images/cenarios/teste2.jpg", id:"secao2"},
 		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/relogio.png", id:"relogio"},
@@ -53,6 +53,7 @@ function stop() {
 	}
 	
 function handleCompletePanorama(event) {
+	carregaAssetsBalengo();
 	panorama();
 }
 
@@ -68,7 +69,8 @@ function panorama() {
 	dragContainer.addChild(secao2);
 	dragContainer.addChild(secao1);
 	
-	
+	this.document.onkeydown = keyPressed;
+	this.document.onkeyup = keyUp;
 	createjs.Tween.get(containerMenu, {override : true}).to({ y : -600} , 2500, createjs.Ease.getPowOut(2));
 	createjs.Tween.get(dragContainer,  {override : true}).to({ y : 0} , 2500, createjs.Ease.getPowOut(2)).call(terminouMenu);
 }
@@ -82,6 +84,7 @@ function panorama() {
 function criaSecao1(){
 	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
 	var bitmap = new createjs.Bitmap(preloadPanorama.getResult("secao1"));
+	bitmap.y = -280;
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
@@ -113,15 +116,18 @@ function criaSecao1(){
 	raia.x = 2300;
 	raia.y = 10;
 	raia.on("click", function(event){
-		stage.addChild(getBalengo());
+		if(!containerBalengo)
+			getBalengo();
+		stage.addChild(containerBalengo);
 		});
 	secao1.addChild(raia);
 	secao1.addChild(olha);
 }
 
 function criaSecao2(){
-	var bitmap2 = new createjs.Bitmap(preloadPanorama.getResult("secao2")); 
-	secao2.width = bitmap2.image.width;
+	var bitmap2 = new createjs.Bitmap(preloadPanorama.getResult("secao2"));
+	bitmap2.x = -50;
+	secao2.width = bitmap2.image.width - 50;
 	secao2.height = bitmap2.image.height;
 	secao2.x = secao1.width;
 	secao2.addChild(bitmap2);
@@ -257,8 +263,8 @@ function criaRelogio(){
  
 	animation.id = "relogio";
 	animation.texto= "BLABLA BLA BLABLA TICK TACK";
-	animation.balaoW = 200;
-	animation.balaoH = 200;
+	animation.balaoW = 300;
+	animation.balaoH = 300;
 	animation.numFotos = 2;
 		
 	animation.on("click", anima);
@@ -363,6 +369,32 @@ Shadowbox.open({
         width:      320
     });
 	*/
+}
+
+function keyPressed(event) {
+	switch(event.keyCode) 
+	{
+		case 37:	
+		moveLeft = true;
+		break;
+		
+		case 39:
+		moveRight = true;
+		break;
+	}
+}
+
+function keyUp(event) {
+	switch(event.keyCode) 
+	{
+		case 37:	
+		moveLeft = false;
+		break;
+		
+		case 39:
+		moveRight = false;
+		break;
+	}
 }
 
 

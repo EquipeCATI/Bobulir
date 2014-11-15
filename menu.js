@@ -27,6 +27,7 @@ function carregaAssets(){
 		{src:"images/nuv/nuvemPequena.png", id:"nuvem1"},
 		{src:"images/nuv/nuvemMedia.png", id:"nuvem2"},
 		{src:"images/nuv/nuvemGrande.png", id:"nuvem3"},
+		{src:"images/bobulir/bobulir10.png", id:"bobulir"},
 		];
 	preloadMenu.loadManifest(manifest, true, "assets/");
 	}
@@ -43,8 +44,9 @@ function menu(){
 
     var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 800, 600));
 	containerFundo.addChild(fundo);
-	for(var i = 0; i <= 10; i++){
-			criaNuvens();
+	for(var i = 0; i <= 5; i++){
+			criaNuvensEsq();
+			criaNuvensDir();
 	}
 	
 	containerMenu.addChild(containerFundo);
@@ -55,12 +57,13 @@ function menu(){
 	bitmapCredit = spriteBotao(preloadMenu.getResult('creditos'));
 	seta = spriteBotao(preloadMenu.getResult('setas'));
 
+	
+	
 	var startBtnHit = new createjs.Shape();
 	startBtnHit.graphics.beginFill("#000000").drawRect(0, 0, 150, 58);
 	bitmapStart.hitArea = startBtnHit;
-
-	bitmapStart.x = 325;
-	bitmapStart.y = 150;
+	bitmapStart.x = 100;
+	bitmapStart.y = 500;
 	containerMenu.addChild(bitmapStart);
 
 	bitmapStart.on("click", btnClicked);
@@ -74,15 +77,21 @@ function menu(){
 	creditBtnHit.graphics.beginFill("#000000").drawRect(0, 0, 150, 58);
 	bitmapCredit.hitArea = startBtnHit;
 
-	bitmapCredit.x = 325;
-	bitmapCredit.y = 220;
+	bitmapCredit.x = 550;
+	bitmapCredit.y = 500;
 	containerMenu.addChild(bitmapCredit);
 
 	pipa = spritePipa(preloadMenu.getResult('pipa'));
-	pipa.x = 500;
+	pipa.x = 300;
 	pipa.y = 50;
 	containerMenu.addChild(pipa);
-
+	
+	var bobulir = new createjs.Bitmap(preloadMenu.getResult("bobulir"));
+	bobulir.regX = bobulir.image.width/2;
+	bobulir.regY = bobulir.image.height/2;
+	bobulir.x = 400;
+	bobulir.y = 300;
+	containerMenu.addChild(bobulir);
 	stage.addChild(containerMenu);
 
 
@@ -92,16 +101,29 @@ function menu(){
 	bitmapCredit.addEventListener("mousedown", down);
 }
 
-function criaNuvens(){
+function criaNuvensEsq(){
 		var nNuvem = parseInt(Math.random()*3 +1);
 		console.log(nNuvem);
 		var img = preloadMenu.getResult("nuvem" + nNuvem);
 		var nuvem = new createjs.Bitmap(img);
 		nuvem.x = 100 + Math.random()*500;
 		nuvem.x = -nuvem.x;
-		nuvem.y = 10 + Math.random()*200;
+		nuvem.y = 10 + Math.random()*400;
 		nuvem.scaleX = nuvem.scaleY = 0.1;
-		createjs.Tween.get(nuvem, {override : true}).to({ x : 800} , 15000 + Math.random()*20000).call(criaNuvens);
+		createjs.Tween.get(nuvem, {override : true}).to({ x : 800} , 20000 + Math.random()*25000).call(criaNuvensDir);
+
+		containerFundo.addChild(nuvem);
+}
+function criaNuvensDir(){
+		var nNuvem = parseInt(Math.random()*3 +1);
+		console.log(nNuvem);
+		var img = preloadMenu.getResult("nuvem" + nNuvem);
+		var nuvem = new createjs.Bitmap(img);
+		nuvem.x = 100 + Math.random()*500;
+		nuvem.x = 800 + nuvem.x;
+		nuvem.y = 100 + Math.random()*400;
+		nuvem.scaleX = nuvem.scaleY = 0.1;
+		createjs.Tween.get(nuvem, {override : true}).to({ x : -200} , 20000 + Math.random()*25000).call(criaNuvensEsq);
 
 		containerFundo.addChild(nuvem);
 }
@@ -137,8 +159,8 @@ function spriteBotao(caminho){
 		},
 		animations: { //Associação de nomes de animação aos frames
 			normal : 0, 
-			over : 1,
-			click : 2
+			over : 2,
+			click : 1
 		}
 	};
 
