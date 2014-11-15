@@ -125,8 +125,9 @@ function criaSecao1(){
 		
 	var raia = new createjs.Bitmap("assets/sprites/raia.png");
 	raia.x = 2300;
-	raia.y = -280;
+	raia.y = -220;
 	raia.on("click", function(event){
+		console.log("raia");
 		if(!containerBalengo)
 			getBalengo();
 			stage.addChild(containerBalengo);
@@ -151,7 +152,7 @@ function criaSecao2(){
 }
 
 function criaHUD(){
-	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.9, 0, stage.canvas.width*0.10, stage.canvas.height));
+	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.9, 0, 80, stage.canvas.height));
 	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragRight.hitArea = rectRight;
 	dragRight.addEventListener("mouseover", overR);
@@ -160,7 +161,7 @@ function criaHUD(){
 	stage.addChild(dragRight);	
 	
 	
-	var rectLeft = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width*0.10, stage.canvas.height));
+	var rectLeft = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, 80, stage.canvas.height));
 	var dragLeft = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragLeft.hitArea = rectLeft; 
 	dragLeft.addEventListener("mouseover", overL);
@@ -169,7 +170,7 @@ function criaHUD(){
 	stage.addChild(dragLeft);
 	
 	
-	var rectUp = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width, stage.canvas.height*0.10));
+	var rectUp = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width, 60));
 	var dragUp = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragUp.hitArea = rectUp; 
 	dragUp.addEventListener("click", clickU);
@@ -177,7 +178,7 @@ function criaHUD(){
 	
 	
 	
-	var rectDown = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, stage.canvas.height*0.9, stage.canvas.width, stage.canvas.height*0.10));
+	var rectDown = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, stage.canvas.height*0.9, stage.canvas.width, 60));
 	var dragDown = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragDown.hitArea = rectDown; 
 	dragDown.addEventListener("click", clickD);
