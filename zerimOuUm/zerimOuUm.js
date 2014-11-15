@@ -108,6 +108,7 @@ function clicou(evt){
 
 function terminou(){
 	stage.removeChild(containerZerim);
+	panoramaIsActive = true;
 }
 
 function criaMao(){

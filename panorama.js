@@ -2,13 +2,22 @@ var dragContainer = new createjs.Container(); //Cenário como todo
 var preloadPanorama = new createjs.LoadQueue(false);
 var secao1 = new createjs.Container(); //Praça
 var secao2 = new createjs.Container(); //Lagoa
-
+var panoramaIsActive = false;
 var balao = new createjs.Container();
+var meninaBike = criaBike();
 
+
+var right;
+var left;
+var up;
+var down;
 
  //Booleanos de controle da camera
 var moveLeft;
 var moveRight;
+var moveUp;
+var moveDown;
+
 
 function carregaAssetsPanorama(){
 	preloadPanorama.on("complete", handleCompletePanorama);
@@ -19,6 +28,7 @@ function carregaAssetsPanorama(){
 		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/relogio.png", id:"relogio"},
 		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
+		{src:"sprites/meninaBike.png", id:"meninaBike"},
 		{src:"sprites/bela.png", id:"Bila"},
 		{src:"sprites/peao.png", id:"peao"},
 		{src:"images/icons/setad.png", id:"setad"},
@@ -78,25 +88,26 @@ function panorama() {
  function terminouMenu(){
 	stage.removeChild(containerMenu);
 	criaHUD();
+	panoramaIsActive = true;
 	createjs.Tween.removeAllTweens();
+	loopBike();
  }
 
 function criaSecao1(){
-	//var bitmap = new createjs.Bitmap("cenarios/teste.jpg"); //Containers não possuem width e height definido, por isso estou pegando os da imagem
+	//Containers não possuem width e height definido, por isso estou pegando os da imagem
 	var bitmap = new createjs.Bitmap(preloadPanorama.getResult("secao1"));
 	bitmap.y = -280;
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
 	dragContainer.maxPositionX = maxPositionX; //Limites de posicionamento dele
+	dragContainer.x = 0;
 	//dragContainer.y = dragContainer.maxPositionY; //Só para começar no canto esquerdo de baixo
 	
-
-	/*
-	
-	*/
-	
+	secao1.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, -280, secao1.width, 280)));
 	secao1.addChild(bitmap);
+	
+	
 	secao1.addChild(criaBruxinha());
 	secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
@@ -114,14 +125,20 @@ function criaSecao1(){
 		
 	var raia = new createjs.Bitmap("assets/sprites/raia.png");
 	raia.x = 2300;
-	raia.y = 10;
+	raia.y = -280;
 	raia.on("click", function(event){
 		if(!containerBalengo)
 			getBalengo();
-		stage.addChild(containerBalengo);
+			stage.addChild(containerBalengo);
+			panoramaIsActive = false;
 		});
 	secao1.addChild(raia);
 	secao1.addChild(olha);
+	
+	meninaBike = criaBike();
+	secao1.addChild(meninaBike);
+
+	
 }
 
 function criaSecao2(){
@@ -134,8 +151,7 @@ function criaSecao2(){
 }
 
 function criaHUD(){
-	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.90, 0, stage.canvas.width*0.10, stage.canvas.height));
-
+	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.9, 0, stage.canvas.width*0.10, stage.canvas.height));
 	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragRight.hitArea = rectRight;
 	dragRight.addEventListener("mouseover", overR);
@@ -143,8 +159,8 @@ function criaHUD(){
 	dragRight.addEventListener("click", clickR);
 	stage.addChild(dragRight);	
 	
+	
 	var rectLeft = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width*0.10, stage.canvas.height));
-
 	var dragLeft = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragLeft.hitArea = rectLeft; 
 	dragLeft.addEventListener("mouseover", overL);
@@ -152,45 +168,94 @@ function criaHUD(){
 	dragLeft.addEventListener("click", clickL);
 	stage.addChild(dragLeft);
 	
+	
+	var rectUp = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width, stage.canvas.height*0.10));
+	var dragUp = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
+	dragUp.hitArea = rectUp; 
+	dragUp.addEventListener("click", clickU);
+	stage.addChild(dragUp);
+	
+	
+	
+	var rectDown = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, stage.canvas.height*0.9, stage.canvas.width, stage.canvas.height*0.10));
+	var dragDown = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
+	dragDown.hitArea = rectDown; 
+	dragDown.addEventListener("click", clickD);
+	stage.addChild(dragDown);
+	
+	
+	
 	right = new createjs.Bitmap(preloadPanorama.getResult("setad"));
-	right.x = stage.canvas.width - 110;
+	right.x = stage.canvas.width - right.image.width;
 	right.y = stage.canvas.height /2 - 50;
 	
-	
-	left = new createjs.Bitmap(preloadPanorama.getResult("setae"));
-	left.x = 10;
+	left = new createjs.Bitmap(preloadPanorama.getResult("setad"));
+	left.scaleX = -1;
+	left.x = left.image.width;
 	left.y = stage.canvas.height /2 - 50;
+	
+	up = new createjs.Bitmap(preloadPanorama.getResult("setad"));
+	up.regX = up.image.width/2;
+	up.regY = up.image.height/2;
+	up.rotation = -90;
+	up.x = stage.canvas.width/2;
+	up.y = 0 + up.image.height/2;
+	
+	down = new createjs.Bitmap(preloadPanorama.getResult("setad"));
+	down.regX = down.image.width/2;
+	down.regY = down.image.height/2;
+	down.rotation = 90;
+	down.x = stage.canvas.width/2;
+	down.y = 600 - down.image.height/2;
 	
 	stage.addChild(left);
 	stage.addChild(right);
+	stage.addChild(up);
+	stage.addChild(down);
 }
 
 function overR(event){
+	 if(dragContainer.y == 0)
 		moveRight = true;
 }
 
 function clickR(event){
-	var positionX = dragContainer.x - stage.canvas.width;
-	moveRight = false;
-	if(positionX >= dragContainer.maxPositionX){
-		createjs.Tween.get(dragContainer, {override : true}).to({x:positionX},2000, createjs.Ease.getElasticOut(1, 2));
-		}
-	else
-		createjs.Tween.get(dragContainer, {override : true}).to({ x : dragContainer.maxPositionX } , 2000, createjs.Ease.getElasticOut(1, 2));
+	if( dragContainer.y == 0){
+		var positionX = dragContainer.x - stage.canvas.width;
+		moveRight = false;
+		if(positionX >= dragContainer.maxPositionX && dragContainer.y == 0){
+			createjs.Tween.get(dragContainer, {override : true}).to({x:positionX},2000, createjs.Ease.getElasticOut(1, 2));
+			}
+		else
+			createjs.Tween.get(dragContainer, {override : true}).to({ x : dragContainer.maxPositionX } , 2000, createjs.Ease.getElasticOut(1, 2));
+	}
 }
 
 function overL(event){
+	if(dragContainer.y == 0)
 		moveLeft = true;
 }
 
 function clickL(event){
-	var positionX = dragContainer.x + stage.canvas.width;
-	moveLeft = false;
-	
-	if(positionX <= 0)
-		createjs.Tween.get(dragContainer, {override : true}).to({x:positionX,visible:true},2000, createjs.Ease.getElasticOut(1, 2));
-	else
-		createjs.Tween.get(dragContainer, {override : true}).to({ x : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
+	if( dragContainer.y == 0){
+		var positionX = dragContainer.x + stage.canvas.width;
+		moveLeft = false;
+		
+		if(positionX <= 0)
+			createjs.Tween.get(dragContainer, {override : true}).to({x:positionX,visible:true},2000, createjs.Ease.getElasticOut(1, 2));
+		else
+			createjs.Tween.get(dragContainer, {override : true}).to({ x : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
+	}
+}
+
+function clickU(){
+	if(dragContainer.x<-2000 && dragContainer.x > -secao1.width){
+		createjs.Tween.get(dragContainer,  {override : true}).to({ y : 280} , 2500, createjs.Ease.getElasticOut(1, 2));
+		}
+}
+
+function clickD(){
+	createjs.Tween.get(dragContainer,  {override : true}).to({ y : 0} , 2500, createjs.Ease.getElasticOut(1, 2));
 }
 
 function anima(evt){
@@ -303,6 +368,71 @@ function criaBela(){
 	return animation;
 }
 
+function criaBike(){
+	var data = {
+		framerate: 10,
+		images: [preloadPanorama.getResult("meninaBike")],
+		frames: {
+			width:237, height:235.8
+		},
+		animations: {
+			idle:[0, 34, true]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = secao1.width;
+	animation.y = 350; //secao1.height/2;
+	animation.direcao = "vindo";
+	
+	return animation;
+}
+
+function loopBike(){
+	console.log(meninaBike.direcao);
+	if(meninaBike.direcao == "vindo"){
+		meninaBike.scaleX = -1;
+		createjs.Tween.get(meninaBike).to({ x : -1000, direcao : "indo"} , 10000).call(loopBike);
+	}
+	
+	if(meninaBike.direcao == "indo"){
+		meninaBike.scaleX = 1;
+		createjs.Tween.get(meninaBike).to({ x : -dragContainer.maxPositionX + 1800, direcao : "vindo"} , 10000).call(loopBike);
+	}
+}
+
+function criaBela(){
+	var data = {
+		framerate: 10,
+		images: [preloadPanorama.getResult("Bila")],
+		frames: {
+			width:150, height:150
+		},
+		animations: {
+			idle: 0,
+			run: [0, 19, "idle", 0.5]
+		}
+	};
+	
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 50;
+	animation.y = 300;	
+	animation.som = "magia";
+	animation.id = "Bila";
+	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
+	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height;
+	animation.balaoW = 400;
+	animation.balaoH = 250;
+	animation.numFotos = 3;
+	
+	animation.on("click", anima);
+	
+	return animation;
+}
+
 function criaBalao(animationAlvo, width, height){
 	balao.removeAllChildren();
 
@@ -372,48 +502,49 @@ Shadowbox.open({
 }
 
 function keyPressed(event) {
-	switch(event.keyCode) 
-	{
-		case 37:	
-		moveLeft = true;
-		break;
-		
-		case 39:
-		moveRight = true;
-		break;
+	
+		switch(event.keyCode) 
+		{
+			case 37:
+				if(panoramaIsActive)
+				{
+					moveLeft = true;
+				}
+					moveMeninoLeft = true;
+
+			break;
+			
+			case 39:
+			if(panoramaIsActive)
+			{
+				moveRight = true;
+			}
+					moveMeninoRight = true;
+			break;
+		}
 	}
-}
+	
+	
 
 function keyUp(event) {
 	switch(event.keyCode) 
 	{
 		case 37:	
 		moveLeft = false;
+		moveMeninoLeft = false;
 		break;
 		
 		case 39:
 		moveRight = false;
+		moveMeninoRight = false;
 		break;
 	}
 }
 
 
 // Update the stage
-function tickPanorama(event) {
-	if(dragContainer.x <= dragContainer.maxPositionX){
-		moveRight = false;
-		right.alpha = 0;
-		}
-	else	
-		right.alpha = 100;
-	
-	if(dragContainer.x>=0){
-		moveLeft=false;
-		left.alpha=0;
-		}
-	else
-		left.alpha = 100;
-	
+function tickPanorama(event) {	
+	gerenciaAlphaHUD();
 	if (moveRight) {
        dragContainer.x -= 10;
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
@@ -425,7 +556,32 @@ function tickPanorama(event) {
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";
 	   }
-	   
-	  
-	   
+}
+
+function gerenciaAlphaHUD(){
+	if(dragContainer.x <= dragContainer.maxPositionX ||  dragContainer.y != 0){
+		moveRight = false;
+		right.alpha = 0;
+		}
+	else	
+		right.alpha = 100;
+	
+	if(dragContainer.x>=0 || dragContainer.y != 0){
+		moveLeft=false;
+		left.alpha=0;
+		}
+	else
+		left.alpha = 100;
+		
+	if(dragContainer.x<-2000 && dragContainer.x > -secao1.width && dragContainer.y == 0){
+		up.alpha = 100;
+	}
+	else
+		up.alpha = 0;
+		
+	if(dragContainer.y == 280){
+		down.alpha = 100;
+	}
+	else
+		down.alpha = 0;
 }
