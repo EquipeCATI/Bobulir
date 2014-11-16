@@ -67,7 +67,7 @@ function criaMenino()
 			mira:[0,26,false],
 			joga:[26,46, "volta", 2],
 			volta: {
-             frames: [46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24],
+             frames: [46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26],
              next: false,
 			}
 		}
@@ -88,8 +88,8 @@ function getBalengo()
 	alvo.scaleX = alvo.scaleY = 0.75
 	menino.y = 500;
 	menino.x = 100;
-	maoDoMenino.x =  menino.x+15; 
-	 maoDoMenino.y = menino.y +25;
+	maoDoMenino.x =  menino.x+5; 
+    maoDoMenino.y = menino.y +20;
 	balengotengo.x =  maoDoMenino.x; 
 	balengotengo.y = maoDoMenino.y;
 	balengotengo.scaleX = balengotengo.scaleY = 0.5
@@ -129,16 +129,9 @@ function mMove(){
 	distX = pontoI.x - pontoF.x;
 	distY = pontoI.y - pontoF.y;
 	
-	if(distX <=0){
-		menino.scaleX = -1;
-		poeBalengoNaMao()
-	}
-	else
-		menino.scaleX = 1;
-	
 	forca = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 	
-	if(forca<=75)
+	if(forca<=75 && distX>=0)
 	{
 		var lineX = maoDoMenino.x;
 		var lineY = maoDoMenino.y;
@@ -153,6 +146,8 @@ function mMove(){
 	else
 	{
 		forca = 75;
+		if(distX<=0)
+		distX = 0;
 	}
 }
 
@@ -203,14 +198,13 @@ function tickBalengo(event) {
 	if(balengotengo.x < 0 || balengotengo.x > stage.canvas.width
 	|| balengotengo.y>stage.canvas.height || balengotengo.y<0)
 	{
-		if(menino.currentFrame == 24){
-		poeBalengoNaMao()
-		//menino.gotoAndPlay("mira");
+		if(menino.currentFrame == 26){
+		poeBalengoNaMao();
 		lancou = false;
 		}
 		
 	}  
-	 maoDoMenino.x =  menino.x+15; 
+	 maoDoMenino.x =  menino.x+5; 
 	 maoDoMenino.y = menino.y +25;
 	
 	//Checagem de colisão
