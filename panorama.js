@@ -115,7 +115,7 @@ function criaSecao1(){
 	var olha = new createjs.Bitmap("assets/sprites/olha.png");
 	olha.id = "";
 	olha.texto= "Bora desenganchar a raia!";
-	olha.x = 2250;
+	olha.x = 2650;
 	olha.y = 300;
 	olha.width = olha.image.width;
 	olha.height = olha.image.height;
@@ -291,7 +291,7 @@ function criaBruxinha(){
 	animation.scaleX = animation.scaleY = 0.3;
 	animation.som = "risada menina";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width*0.3;
-	animation.height = animation.spriteSheet.getFrameBounds(0).height;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height*0.3;
  
 	animation.id = "bruxinha";
 	animation.texto= "bruxinhas";
@@ -322,14 +322,14 @@ function criaRelogio(){
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = 800;
-	animation.y = 0; //secao1.height/2;
+	animation.y = 20; //secao1.height/2;
 	animation.som = "poim";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
  
 	animation.id = "relogio";
 	animation.texto= "BLABLA BLA BLABLA TICK TACK";
-	animation.balaoW = 300;
+	animation.balaoW = 400;
 	animation.balaoH = 300;
 	animation.numFotos = 2;
 		
@@ -361,7 +361,7 @@ function criaBela(){
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
 	animation.balaoW = 400;
-	animation.balaoH = 250;
+	animation.balaoH = 300;
 	animation.numFotos = 3;
 	
 	animation.on("click", anima);
@@ -434,10 +434,10 @@ function criaBela(){
 	return animation;
 }
 
-function criaBalao(animationAlvo, width, height){
+function criaBalao(animationAlvo){
 	balao.removeAllChildren();
 
-	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#fff4dd").drawRoundRect( 0, 0, width, height, 5 ));
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#fff4dd").drawRoundRect( 0, 0, 400, 300, 5 ));
 	var titulo = new createjs.Text(animationAlvo.id, "36px CreakyFrank", "#000000");
 	titulo.x = 10;
 	titulo.y = 10;
@@ -445,31 +445,39 @@ function criaBalao(animationAlvo, width, height){
 	var texto = new createjs.Text(animationAlvo.texto, "24px Bahiana", "#000000");
 	texto.x = 20;
 	texto.y = 50;
-	texto.lineWidth = width - 40;
+	texto.lineWidth = 360;
 	texto.lineHeight = 30;
 	balao.addChild(shapeBalao);
 	balao.addChild(titulo);
 	balao.addChild(texto);
 	
 	balao.balaoAtivo = animationAlvo.id;
-	balao.regX = width;
-	balao.regY = height;
-	balao.x = animationAlvo.x ;
-	balao.y = animationAlvo.y;	
+	balao.regY = 300;
+	balao.regX = 0;
+	balao.x = animationAlvo.x + animationAlvo.width;
+	balao.y = animationAlvo.y + animationAlvo.height;	
 	
-	if(balao.y <= 10)
+	if(balao.y <= 300)
 	{
 		balao.regY = 0;
-		balao.y = animationAlvo.y + animationAlvo.height;
+		balao.y = animationAlvo.y;
 	}
 	
-	if(balao.x - width < -dragContainer.x)
+	if(balao.x + 400 > -dragContainer.maxPositionX + 800)
 	{
-		balao.regX = 0;
-		balao.x = animationAlvo.x + animationAlvo.width;
+		balao.regX = 400;
+		balao.x = animationAlvo.x;
+		createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 480} , 1000);
+	}
+	
+	else{
+		createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 80} , 1000);
 	}
 		
 	animationAlvo.parent.addChild(balao);
+	
+	
+	
 	balao.scaleX = 0;
 	balao.scaleY = 0;
 	createjs.Tween.get(balao).to({scaleX:1, scaleY:1, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
