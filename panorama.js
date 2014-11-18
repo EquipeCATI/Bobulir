@@ -23,8 +23,8 @@ function carregaAssetsPanorama(){
 	preloadPanorama.on("complete", handleCompletePanorama);
 
 	var manifestCenario = [
-		{src:"images/cenarios/cenarioArvores.png", id:"secao1"},
-		{src:"images/cenarios/teste2.jpg", id:"secao2"},
+		{src:"images/cenarios/praca.png", id:"secao1"},
+		{src:"images/cenarios/lagoa.png", id:"secao2"},
 		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/relogio.png", id:"relogio"},
 		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
@@ -69,20 +69,22 @@ function handleCompletePanorama(event) {
 
 function panorama() {
 	console.log("teste");
-	dragContainer.y = 600;
+	dragContainer.y = 973;
 
 	createjs.Ticker.on("tick", tickPanorama);
-	stage.addChild(dragContainer);
 	
+	stage.addChild(dragContainer);
+	var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, -373, 6000, 973));
+	dragContainer.addChild(fundo);
 	criaSecao1();
 	criaSecao2();
-	dragContainer.addChild(secao2);
 	dragContainer.addChild(secao1);
+	dragContainer.addChild(secao2);
 	
 	this.document.onkeydown = keyPressed;
 	this.document.onkeyup = keyUp;
 	createjs.Tween.get(containerMenu, {override : true}).to({ y : -600} , 2500, createjs.Ease.getPowOut(2));
-	createjs.Tween.get(dragContainer,  {override : true}).to({ y : 0} , 2500, createjs.Ease.getPowOut(2)).call(terminouMenu);
+	createjs.Tween.get(dragContainer,  {override : true}).to({ y : 0} , 4054, createjs.Ease.getPowOut(2)).call(terminouMenu);
 }
 
  function terminouMenu(){
@@ -96,7 +98,7 @@ function panorama() {
 function criaSecao1(){
 	//Containers não possuem width e height definido, por isso estou pegando os da imagem
 	var bitmap = new createjs.Bitmap(preloadPanorama.getResult("secao1"));
-	bitmap.y = -280;
+	bitmap.y = -373;
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
 	var maxPositionX = - (secao1.width - stage.canvas.width);
@@ -137,15 +139,17 @@ function criaSecao1(){
 	secao1.addChild(olha);
 	
 	meninaBike = criaBike();
-	secao1.addChild(meninaBike);
+	dragContainer.addChild(meninaBike);
 
 	
 }
 
 function criaSecao2(){
 	var bitmap2 = new createjs.Bitmap(preloadPanorama.getResult("secao2"));
-	bitmap2.x = -50;
-	secao2.width = bitmap2.image.width - 50;
+	//bitmap2.sca
+	bitmap2.x = -1000;
+	bitmap2.y = 60;
+	secao2.width = bitmap2.image.width - 1000;
 	secao2.height = bitmap2.image.height;
 	secao2.x = secao1.width;
 	secao2.addChild(bitmap2);
@@ -251,7 +255,7 @@ function clickL(event){
 
 function clickU(){
 	if(dragContainer.x<-2000 && dragContainer.x > -secao1.width){
-		createjs.Tween.get(dragContainer,  {override : true}).to({ y : 280} , 2500, createjs.Ease.getElasticOut(1, 2));
+		createjs.Tween.get(dragContainer,  {override : true}).to({ y : 373} , 2500, createjs.Ease.getElasticOut(1, 2));
 		}
 }
 
@@ -438,11 +442,13 @@ function criaBalao(animationAlvo){
 	balao.removeAllChildren();
 
 	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#fff4dd").drawRoundRect( 0, 0, 400, 300, 5 ));
-	var titulo = new createjs.Text(animationAlvo.id, "36px CreakyFrank", "#000000");
-	titulo.x = 10;
+	var titulo = new createjs.Text(animationAlvo.id, "36px Bahiana", "#000000");
+	titulo.regX = titulo.width/2;
+	
+	titulo.x = 200;
 	titulo.y = 10;
 	
-	var texto = new createjs.Text(animationAlvo.texto, "24px Bahiana", "#000000");
+	var texto = new createjs.Text(animationAlvo.texto, "24px FiraSans", "#000000");
 	texto.x = 20;
 	texto.y = 50;
 	texto.lineWidth = 360;
@@ -582,13 +588,13 @@ function gerenciaAlphaHUD(){
 	else
 		left.alpha = 100;
 		
-	if(dragContainer.x<-2000 && dragContainer.x > -secao1.width && dragContainer.y == 0){
+	if(dragContainer.x<-1800 && dragContainer.x > -secao1.width && dragContainer.y == 0){
 		up.alpha = 100;
 	}
 	else
 		up.alpha = 0;
 		
-	if(dragContainer.y == 280){
+	if(dragContainer.y == 373){
 		down.alpha = 100;
 	}
 	else
