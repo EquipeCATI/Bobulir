@@ -6,7 +6,7 @@ var panoramaIsActive = false;
 var balao = new createjs.Container();
 var meninaBike = criaBike();
 
-
+var windowVar ;
 var right;
 var left;
 var up;
@@ -29,21 +29,27 @@ function carregaAssetsPanorama(){
 		{src:"sprites/relogio.png", id:"relogio"},
 		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
 		{src:"sprites/meninaBike.png", id:"meninaBike"},
-		{src:"sprites/bela.png", id:"Bila"},
+		{src:"sprites/bela.png", id:"bila"},
 		{src:"sprites/peao.png", id:"peao"},
+		{src:"sprites/corda.png", id:"corda"},
 		{src:"images/icons/setad.png", id:"setad"},
 		{src:"images/icons/setae.png", id:"setae"},
+		{src:"images/icons/seta.png", id:"seta"},
+		{src:"images/icons/mais.png", id:"mais"},
 		];
 	preloadPanorama.loadManifest(manifestCenario, true, "assets/");
 	
 	var manifestBaloes = [
-		{src:"images/bila/1.jpg", id: "Bila1"},
-		{src:"images/bila/2.jpg", id: "Bila2"},
-		{src:"images/bila/3.jpg", id: "Bila3"},
-		{src:"images/relogio/1.jpg", id: "relogio1"},
-		{src:"images/relogio/2.png", id: "relogio2"},
+		{src:"bila/1.jpg", id: "bila1"},
+		{src:"bila/2.jpg", id: "bila2"},
+		{src:"bila/3.jpg", id: "bila3"},
+		{src:"relogio/1.jpg", id: "relogio1"},
+		{src:"relogio/2.png", id: "relogio2"},
+		{src:"bruxinha/1.jpg", id: "bruxinha1"},
+		{src:"bruxinha/2.jpg", id: "bruxinha2"},
+		{src:"bruxinha/3.jpg", id: "bruxinha3"},
 		];
-	preloadPanorama.loadManifest(manifestBaloes, true, "assets/");
+	preloadPanorama.loadManifest(manifestBaloes, true, "assets/images/baloes/");
 	
 	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
  
@@ -80,6 +86,8 @@ function panorama() {
 	criaSecao2();
 	dragContainer.addChild(secao1);
 	dragContainer.addChild(secao2);
+	meninaBike = criaBike();
+	dragContainer.addChild(meninaBike);
 	
 	this.document.onkeydown = keyPressed;
 	this.document.onkeyup = keyUp;
@@ -109,7 +117,7 @@ function criaSecao1(){
 	secao1.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, -280, secao1.width, 280)));
 	secao1.addChild(bitmap);
 	
-	
+	secao1.addChild(criaCorda());
 	secao1.addChild(criaBruxinha());
 	secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
@@ -136,12 +144,7 @@ function criaSecao1(){
 			panoramaIsActive = false;
 		});
 	secao1.addChild(raia);
-	secao1.addChild(olha);
-	
-	meninaBike = criaBike();
-	dragContainer.addChild(meninaBike);
-
-	
+	secao1.addChild(olha);	
 }
 
 function criaSecao2(){
@@ -156,6 +159,7 @@ function criaSecao2(){
 }
 
 function criaHUD(){
+/*
 	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.9, 0, 80, stage.canvas.height));
 	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragRight.hitArea = rectRight;
@@ -187,36 +191,76 @@ function criaHUD(){
 	dragDown.hitArea = rectDown; 
 	dragDown.addEventListener("click", clickD);
 	stage.addChild(dragDown);
+	*/
 	
 	
 	
-	right = new createjs.Bitmap(preloadPanorama.getResult("setad"));
-	right.x = stage.canvas.width - right.image.width;
-	right.y = stage.canvas.height /2 - 50;
+	right = criaSeta();//new createjs.Bitmap(preloadPanorama.getResult("setad"));
+	right.scaleX = -1;
+	right.x = stage.canvas.width - 10;
+	right.y = stage.canvas.height /2 - 35;
+	right.addEventListener("mouseover", overR);
+	right.addEventListener("mouseout", function (evt){ moveRight = false});
+	right.addEventListener("click", clickR);
 	
-	left = new createjs.Bitmap(preloadPanorama.getResult("setad"));
-	left.scaleX = -1;
-	left.x = left.image.width;
-	left.y = stage.canvas.height /2 - 50;
+	left = criaSeta();//new createjs.Bitmap(preloadPanorama.getResult("setad"));
+	left.x = 10;
+	left.y = stage.canvas.height /2 - 35;
+	left.addEventListener("mouseover", overL);
+	left.addEventListener("mouseout", function (evt){ moveLeft = false});
+	left.addEventListener("click", clickL);
 	
-	up = new createjs.Bitmap(preloadPanorama.getResult("setad"));
-	up.regX = up.image.width/2;
-	up.regY = up.image.height/2;
-	up.rotation = -90;
+	up = criaSeta();//new createjs.Bitmap(preloadPanorama.getResult("setad"));
+	up.regX = up.width/2;
+	up.regY = up.height/2;
+	up.rotation = 90;
 	up.x = stage.canvas.width/2;
-	up.y = 0 + up.image.height/2;
+	up.y = up.height/2 + 10;
+	//up.addEventListener("mouseover", function (evt){if(dragContainer.y <=373)moveUp = true});
+	//up.addEventListener("mouseout", function (evt){ moveUp = false});
+	up.addEventListener("click", clickU);
 	
-	down = new createjs.Bitmap(preloadPanorama.getResult("setad"));
-	down.regX = down.image.width/2;
-	down.regY = down.image.height/2;
-	down.rotation = 90;
+	down = criaSeta();//new createjs.Bitmap(preloadPanorama.getResult("setad"));
+	down.regX = down.width/2;
+	down.regY = down.height/2;
+	down.rotation = -90;
 	down.x = stage.canvas.width/2;
-	down.y = 600 - down.image.height/2;
+	down.y = 590 - down.height/2;
+	//down.addEventListener("mouseover", function (evt){if(dragContainer.y>0)moveDown = true});
+	//down.addEventListener("mouseout", function (evt){ moveDown = false});
+	down.addEventListener("click", clickD);
 	
 	stage.addChild(left);
 	stage.addChild(right);
 	stage.addChild(up);
 	stage.addChild(down);
+}
+
+//Aponta para a esquerda
+function criaSeta(){
+	var data = {
+		framerate: 30,
+		images: [preloadPanorama.getResult("seta")],
+		frames: {
+			width:70, height:70
+		},
+		animations: {
+			idle:[0],
+			over:[1],
+			down:[2],
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height;
+	
+	animation.on("mouseover", function(evt){evt.target.gotoAndPlay("over");});
+	animation.on("mouseout", function(evt){evt.target.gotoAndPlay("idle");});
+	animation.on("mousedown", function(evt){evt.target.gotoAndPlay("down");});
+	animation.on("pressup", function(evt){evt.target.gotoAndPlay("idle");});
+	return animation;
 }
 
 function overR(event){
@@ -254,7 +298,7 @@ function clickL(event){
 }
 
 function clickU(){
-	if(dragContainer.x<-2000 && dragContainer.x > -secao1.width){
+	if(dragContainer.x<-1800 && dragContainer.x > -secao1.width){
 		createjs.Tween.get(dragContainer,  {override : true}).to({ y : 373} , 2500, createjs.Ease.getElasticOut(1, 2));
 		}
 }
@@ -270,13 +314,12 @@ function anima(evt){
 	if(balao.balaoAtivo != evt.target.id){
 		criaBalao(evt.target, evt.target.balaoW, evt.target.balaoH);
 		criaImagens(evt.target.id, evt.target.numFotos);
-		addFotosRegras(evt.target.balaoW, evt.target.balaoH);
+		addFotosRegras(evt.target.id);
 		
 	}
 }
 
 function criaBruxinha(){
-	var  clicado = false;
 	var data = {
 		framerate: 30,
 		images: [preloadPanorama.getResult("bruxinha")],
@@ -298,10 +341,43 @@ function criaBruxinha(){
 	animation.height = animation.spriteSheet.getFrameBounds(0).height*0.3;
  
 	animation.id = "bruxinha";
-	animation.texto= "bruxinhas";
+	animation.texto= "A bruxinha é uma bonequinha feita de pano. Tão bonita em seus bordados e retalhos! Você conhece alguém que faz? Já brincou com uma?";
 	animation.balaoW = 200;
 	animation.balaoH = 200;
-	animation.numFotos = 2;
+	animation.numFotos = 3;
+		
+	animation.on("click", anima);
+	
+	return animation;
+}
+
+function criaCorda(){
+	var  clicado = false;
+	var data = {
+		framerate: 60,
+		images: [preloadPanorama.getResult("corda")],
+		frames: {
+			width:550, height:400
+		},
+		animations: {
+			idle:[0, 29, true]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 50;
+	animation.y = 150; //secao1.height/2;
+	animation.scaleX = animation.scaleY = 0.7;
+	animation.som = "";
+	animation.width = animation.spriteSheet.getFrameBounds(0).width*0.7;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height*0.7;
+ 
+	var hitRect = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(animation.x, animation.y, animation.width, animation.height));
+	animation.hitArea = hitRect;
+	animation.id = "corda";
+	animation.texto= "Essa brincadeira é muito divertida e te faz suar muito! Você pode pular sozinho ou com um amigo, devagarinho ou bem rapidão! Só tome cuidado para não se atrapalhar e enganchar as pernas na corda, viu?";
+	animation.numFotos = 3;
 		
 	animation.on("click", anima);
 	
@@ -333,41 +409,8 @@ function criaRelogio(){
  
 	animation.id = "relogio";
 	animation.texto= "BLABLA BLA BLABLA TICK TACK";
-	animation.balaoW = 400;
-	animation.balaoH = 300;
 	animation.numFotos = 2;
 		
-	animation.on("click", anima);
-	
-	return animation;
-}
-
-function criaBela(){
-	var data = {
-		framerate: 10,
-		images: [preloadPanorama.getResult("Bila")],
-		frames: {
-			width:150, height:150
-		},
-		animations: {
-			idle: 0,
-			run: [0, 19, "idle", 0.5]
-		}
-	};
-	
-	var spriteSheet = new createjs.SpriteSheet(data);
-	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.x = 50;
-	animation.y = 300;	
-	animation.som = "magia";
-	animation.id = "Bila";
-	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
-	animation.width = animation.spriteSheet.getFrameBounds(0).width;
-	animation.height = animation.spriteSheet.getFrameBounds(0).height;
-	animation.balaoW = 400;
-	animation.balaoH = 300;
-	animation.numFotos = 3;
-	
 	animation.on("click", anima);
 	
 	return animation;
@@ -410,7 +453,7 @@ function loopBike(){
 function criaBela(){
 	var data = {
 		framerate: 10,
-		images: [preloadPanorama.getResult("Bila")],
+		images: [preloadPanorama.getResult("bila")],
 		frames: {
 			width:150, height:150
 		},
@@ -422,10 +465,10 @@ function criaBela(){
 	
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.x = 50;
+	animation.x = 800;
 	animation.y = 300;	
 	animation.som = "magia";
-	animation.id = "Bila";
+	animation.id = "bila";
 	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
@@ -441,18 +484,17 @@ function criaBela(){
 function criaBalao(animationAlvo){
 	balao.removeAllChildren();
 
-	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#fff4dd").drawRoundRect( 0, 0, 400, 300, 5 ));
-	var titulo = new createjs.Text(animationAlvo.id, "36px Bahiana", "#000000");
-	titulo.regX = titulo.width/2;
-	
-	titulo.x = 200;
-	titulo.y = 10;
-	
-	var texto = new createjs.Text(animationAlvo.texto, "24px FiraSans", "#000000");
-	texto.x = 20;
-	texto.y = 50;
-	texto.lineWidth = 360;
-	texto.lineHeight = 30;
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 300, 5 ));
+	var titulo = new createjs.Text(animationAlvo.id, "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 200 - b.width/2;
+	titulo.y = 15;
+	console.log( b.height);
+	var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
+	texto.x = 15;
+	texto.y = 75;
+	texto.lineWidth = 370;
+	texto.lineHeight = 20;
 	balao.addChild(shapeBalao);
 	balao.addChild(titulo);
 	balao.addChild(texto);
@@ -480,40 +522,43 @@ function criaBalao(animationAlvo){
 		createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 80} , 1000);
 	}
 		
-	animationAlvo.parent.addChild(balao);
-	
-	
-	
+	dragContainer.addChild(balao);
 	balao.scaleX = 0;
 	balao.scaleY = 0;
 	createjs.Tween.get(balao).to({scaleX:1, scaleY:1, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 }
 
-function addFotosRegras(width, height){
-	var regras = new createjs.Bitmap("assets/images/icons/regras.png");
-	regras.x = width - 80;
-	regras.y = height - 100;
-	regras.on("click",createPopup);
-	balao.addChild(regras);
+function addFotosRegras(id){
+	var mais = new createjs.Bitmap(preloadPanorama.getResult("mais"));
+	//mais.scaleX = mais.scaleY = 0.25;
+	mais.x = 385 - mais.image.width;
+	mais.y = 285 - mais.image.height;
+	mais.id = id;
+	mais.on("click",createPopup);
+	balao.addChild(mais);
 	balao.addChild(imageContainer);
-	imageContainer.x = 80;
-	imageContainer.y = height - 80;
+	var b = imageContainer.getBounds();
+	imageContainer.x = 15 + b.width/2;
+	imageContainer.y = 300 - b.height/2 - 15;
 }
 
-function createPopup(){
 
-var windowhandle=window.open("", "newwin", "height=260, width=340");
-windowhandle.document.write('<title>My Video</title>');
-windowhandle.document.write('<embed src="raia.m4v" width=330 height=250 />');
-/*
-Shadowbox.open({
-        content:    'raia.m4v',
-		player: 'm4v',
-        title:      "Raia",
-        height:     240,
-        width:      320
-    });
-	*/
+function createPopup(evt){
+	if(!windowVar ){
+		windowVar = window.open("", evt.target.id, "height=255, width=335", true);
+		windowVar.document.clear();
+		windowVar.document.write('<title>' + evt.target.id + '</title>');
+		windowVar.document.write('<video  controls>  <source src="'+evt.target.id+'.m4v" type="video/mp4"> </video>');
+	}
+	else if( windowVar.name != evt.target.id){
+		windowVar.close();
+		windowVar = window.open("", evt.target.id, "height=255, width=335", true);
+		windowVar.document.write('<title>' + evt.target.id + '</title>');
+		windowVar.document.write('<video  controls>  <source src="'+evt.target.id+'.m4v" type="video/mp4"> </video>');
+		}
+	else{
+		windowVar.focus();
+	}
 }
 
 function keyPressed(event) {
@@ -571,6 +616,18 @@ function tickPanorama(event) {
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";
 	   }
+	   /*
+	 else if (moveUp) {
+       dragContainer.y += 10;
+	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+	   balao.balaoAtivo = "";
+	   }
+	   
+	 else if (moveDown) {
+       dragContainer.y -= 10;
+	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+	   balao.balaoAtivo = "";
+	   }*/
 }
 
 function gerenciaAlphaHUD(){

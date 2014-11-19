@@ -18,7 +18,8 @@ function criaImagens(id, num) {
 		image.scaleY = 0.75;
 		image.regX = w/2;
 		image.regY = h/2;
-		image.rotation = Math.random() * 16 - 8;
+		var angulo = Math.random() * 10 - 5;
+		image.rotation = angulo;
 		image.x = borderPadding/2 * 0.75;
 		image.y = borderPadding/2 * 0.75;
 		image.on("click", handleClick);
@@ -35,6 +36,7 @@ function criaImagens(id, num) {
 		movieClip.addChild(border, image);
 		imageContainer.addChild(movieClip);
 	}
+	
 }
 
 function handleClick(event) {
