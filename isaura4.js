@@ -1,15 +1,10 @@
-var lixoVidro;
-var lixoMetal;
-var lixoPapel;
-var lixoPlastico;
-var placeHolder;
-var pHContainer;
-var tipoObj;
-var lastPosX;
-var lastPosY;
-var lixo;
+var lixeiraVidro;
+var lixeiraMetal;
+var lixeiraPapel;
+var lixeiraPlastico;
+var containerJogoLixo = new createjs.Container();
 
-function carregaAssets(){
+function carregaAssetsLixo(){
 	var canvas = document.getElementById("canvas");
 	stage = new createjs.Stage(canvas);
 
@@ -18,94 +13,78 @@ function carregaAssets(){
 
 	stage.mouseMoveOutside = true;
 
-
 	var lagoa = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 200, 800, 400));
-	stage.addChild(lagoa);
+	containerJogoLixo.addChild(lagoa);
 
 	// Fazendo as lixeiras
-	lixoVidro = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(450, 20, 60, 110));
-	stage.addChild(lixoVidro);
 
-	lixoPlastico = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawRect(525, 20, 60, 110));
-	stage.addChild(lixoPlastico);
+	lixeiraPlastico = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawRect(525, 20, 60, 110));
+	containerJogoLixo.addChild(lixeiraPlastico);
 
-	lixoMetal = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawRect(600, 20, 60, 110));
-	stage.addChild(lixoMetal);
+	lixeiraMetal = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawRect(600, 20, 60, 110));
+	containerJogoLixo.addChild(lixeiraMetal);
 
-	lixoPapel = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawRect(675, 20, 60, 110));
-	stage.addChild(lixoPapel);
+	lixeiraPapel = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawRect(675, 20, 60, 110));
+	containerJogoLixo.addChild(lixeiraPapel);
 
-	lixoVidro = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(450, 20, 50, 90));
-	stage.addChild(lixoVidro);
+	lixeiraVidro = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(450, 20, 50, 90));
+	containerJogoLixo.addChild(lixeiraVidro);
 
+	stage.addChild(containerJogoLixo);
 	geraLixo();
-
-	
-
-	
-
-
-
-
-
 }
 
-function verificaLixeira(evt){
-
-	//reconhecendo onde o obeto foi colocado.
-		if((evt.stageX >= 450) && (evt.stageX <= 510) && (evt.stageY >= 20) && (evt.stageY <= 130)){
-			console.log("Lixeira do Vidro");
-			//reconhecendo se o tipo de objeto corresponde a lixeira certa.
-			if(tipoObj == "vidro"){
-				alert("Lixeira certa");
-				stage.removeChild(lixo);
-
-			}else{
-					alert("Lixeira Errada");
-			}
+function verificaLixeira(lixo){
+	if(lixo.tipo == "vidro"){
+		console.log("vidro");
+		//Checagem de colisão
+		var ponto = lixo.localToLocal(0,0,lixeiraVidro); //Posição do projétil relativo ao alvo
+		
+		//Checagem se este ponto está por cima de algum pixel do alvo
+		if (lixeiraVidro.hitTest(ponto.x, ponto.y)) 
+		{
+			console.log("soltou vidro na lixeira certa");
+			containerJogoLixo.removeChild(lixo);
 		}
-
-		if((evt.stageX >= 525) && (evt.stageX <= 585) && (evt.stageY >= 20) && (evt.stageY <= 130)){
-			console.log("Lixeira do Plástico");
-			//reconhecendo se o tipo de objeto corresponde a lixeira certa.
-			if(tipoObj == "plastico"){
-				alert("Lixeira certa");
-				stage.removeChild(pHContainer);
-
-			}else{
-					alert("Lixeira Errada");
-			}
+	}
+	
+	else if(lixo.tipo == "metal"){
+		//Checagem de colisão
+		var ponto = lixo.localToLocal(0,0,lixeiraMetal); //Posição do projétil relativo ao alvo
+		
+		//Checagem se este ponto está por cima de algum pixel do alvo
+		if (lixeiraMetal.hitTest(ponto.x, ponto.y)) 
+		{
+			containerJogoLixo.removeChild(lixo);
 		}
-
-		if((evt.stageX >= 600) && (evt.stageX <= 660) && (evt.stageY >= 20) && (evt.stageY <= 130)){
-			console.log("Lixeira do Metal");
-			//reconhecendo se o tipo de objeto corresponde a lixeira certa.
-			if(tipoObj == "metal"){
-				alert("Lixeira certa");
-				stage.removeChild(pHContainer);
-
-			}else{
-					alert("Lixeira Errada");
-			}
+	}
+	
+	else if(lixo.tipo == "papel"){
+		//Checagem de colisão
+		var ponto = lixo.localToLocal(0,0,lixeiraPapel); //Posição do projétil relativo ao alvo
+		
+		//Checagem se este ponto está por cima de algum pixel do alvo
+		if (lixeiraPapel.hitTest(ponto.x, ponto.y)) 
+		{
+			containerJogoLixo.removeChild(lixo);
 		}
-
-		if((evt.stageX >= 675) && (evt.stageX <= 835) && (evt.stageY >= 20) && (evt.stageY <= 130)){
-			console.log("Lixeira do Papel");
-			//reconhecendo se o tipo de objeto corresponde a lixeira certa.
-			if(tipoObj == "papel"){
-				alert("Lixeira certa");
-				stage.removeChild(pHContainer);
-
-			}else{
-					alert("Lixeira Errada");
-			}
+	}
+	
+	else if(lixo.tipo == "plastico"){
+		//Checagem de colisão
+		var ponto = lixo.localToLocal(0,0,lixeiraPlastico); //Posição do projétil relativo ao alvo
+		
+		//Checagem se este ponto está por cima de algum pixel do alvo
+		if (lixeiraPlastico.hitTest(ponto.x, ponto.y)) 
+		{
+			containerJogoLixo.removeChild(lixo);
 		}
-
-
+	}
+	
 }
 
 function geraLixo(){
-	//var lixo;
+	var lixo;
 	//criando o lixo
 	for(var i = 0; i<12; i++){
 		console.log(" "+i);
@@ -133,11 +112,11 @@ function geraLixo(){
 
 		lixo.x = 20 + 40*i;
 		lixo.y = 120 + 20*i;
-		lixo.Xoriginal = lixo.x;
+		lixo.Xoriginal = lixo.x; //
 		lixo.Yoriginal = lixo.y;
-		stage.addChild(lixo);
+		containerJogoLixo.addChild(lixo);
 
-		//listener para salvar posição inicial do lixo.
+		//Os atributos Xoriginal e Yoriginal ja fazem isso
 		lixo.on("click", function(evt){
 			lastPosX = evt.target.Xoriginal;
 			lastPosY = evt.target.Yoriginal;
@@ -145,42 +124,17 @@ function geraLixo(){
 
 		//listener para fazer o "drag"
 		lixo.on("pressmove",function(evt) {
-				tipoObj = evt.target.tipo;
-
-				evt.currentTarget.x = evt.stageX;
-				evt.currentTarget.y = evt.stageY;
-				 
+				evt.target.x = evt.stageX;
+				evt.target.y = evt.stageY;
 		});
 
 		//listener quando o botão é solto
 		lixo.on("pressup", function(evt) { 
-		/*
-		switch(evt){
-			case (evt.stageX >= 450) && (evt.stageX <= 510) && (evt.stageY >= 20) && (evt.stageY <= 130):
-				console.log("Entre X e Y");
-				//reconhecendo se o tipo de objeto corresponde a lixeira certa.
-				if(tipoObj == "metal"){
-					alert("Lixeira certa");
-					stage.removeChild(pHContainer);
-				}else{
-					alert("Lixeira Errada");
-				}
-				break;
-			
-		}*/
-		verificaLixeira(evt);
-
-		if(lixo){
-			evt.currentTarget.x = lastPosX;
-			evt.currentTarget.y = lastPosY;
+		verificaLixeira(evt.target);
+		if(evt.target){
+			createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
 		}
-
 		console.log("Soltou"); 
 		});
-
 	}
-	
-
-
-
 }
