@@ -99,8 +99,8 @@ function getBalengo()
 	balengotengo.regX = 8;  //Pontos de rotação
 	balengotengo.regY = 10; 
 	
-	alvo.x = 300;
-	alvo.y = 300;
+	alvo.x = 400;
+	alvo.y = 195;
 
 	containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
 	var arvore = new createjs.Bitmap(preloadBalengo.getResult("arvore"));
