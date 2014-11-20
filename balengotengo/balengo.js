@@ -1,4 +1,5 @@
 var containerBalengo = new createjs.Container();
+var containerTutorial = new createjs.Container();
 var line = new createjs.Shape();
 var preloadBalengo = new createjs.LoadQueue(false);
 var winBalengo = false;
@@ -36,6 +37,7 @@ function carregaAssetsBalengo(){
 		{src:"raia.png", id:"alvo"},
 		{src:"menino2.png", id:"menino-balengo"},
 		{src:"arvore550.png", id:"arvore"},
+		{src:"maos.png", id:"mao"},
 		];
 		
 	preloadBalengo.loadManifest(manifest, true, "balengotengo/");
@@ -81,6 +83,7 @@ function criaMenino()
 function getBalengo()
 {
 	containerBalengo = new createjs.Container();
+	
 	menino = criaMenino();
 	balengotengo = new createjs.Bitmap(preloadBalengo.getResult("balengotengo"));
 	
@@ -99,7 +102,7 @@ function getBalengo()
 	alvo.x = 300;
 	alvo.y = 300;
 
-	containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
+	containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
 	var arvore = new createjs.Bitmap(preloadBalengo.getResult("arvore"));
 	arvore.x = 400;
 	//arvore.scaleX = arvore.scaleY = 0.175;
@@ -114,7 +117,111 @@ function getBalengo()
 	containerBalengo.on("pressmove", mMove);
 	containerBalengo.on("pressup", joga);
 	containerBalengo.on("tick", tickBalengo);
+	//criaTutorial();
 	//createjs.Ticker.addEventListener("tick", tickBalengo);
+}
+var mao = criaMaoTuto();
+
+function criaTutorial(){
+	mao = criaMaoTuto();
+	mao.status = "ida";
+	mao.x = 400;
+	mao.y = 300;
+	containerTutorial = new createjs.Container();
+	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, stage.canvas.width, stage.canvas.height));
+	fundoTuto.alpha = 0.5;
+	containerTutorial.addChild(fundoTuto);
+	
+	var balaoTuto = new createjs.Container();
+	
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 200, 5 ));
+	balaoTuto.x = 200;
+	balaoTuto.y = 380;
+	balaoTuto.addChild(shapeBalao);
+	
+	var titulo = new createjs.Text("Balengotengo", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 200 - b.width/2;
+	titulo.y = 15;
+	balaoTuto.addChild(titulo);
+	
+	var texto = new createjs.Text("Clique e arraste para mirar. Solte para rebolar o balengotengo! Bora tirar essa raia daí!", "20px FiraSans", "#000000");
+	texto.x = 15;
+	texto.y = 75;
+	texto.lineWidth = 370;
+	texto.lineHeight = 25;
+	balaoTuto.addChild(texto);
+	
+	balaoTuto.addChild(criaBotaoTuto());
+	containerTutorial.addChild(balaoTuto);
+	containerTutorial.addChild(mao);
+	containerBalengo.addChild(containerTutorial);
+	containerTutorial.scaleX = containerTutorial.scaleY = 0;
+	containerTutorial.regX = 400;
+	containerTutorial.regY = 300;
+	containerTutorial.x = 400;
+	containerTutorial.y = 300;
+	createjs.Tween.get(containerTutorial, {override : true}).to({ scaleX : 1, scaleY : 1, status : "volta"} , 500).call(loopMao);
+}
+
+function criaBotaoTuto(){
+	var botao = new createjs.Container();
+	
+	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 80, 50, 5 ));
+	botao.addChild(shapeBotao);
+	
+	var titulo = new createjs.Text("Bora!", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 40 - b.width/2;
+	botao.addChild(titulo);
+	
+	botao.x = 160;
+	botao.y = 140;
+	
+	botao.on("click", function(evt){
+		createjs.Tween.get(containerTutorial, {override : true}).to({ scaleX : 0, scaleY : 0, status : "volta"} , 500);
+	});
+	
+	return botao;
+	//titulo.y = 15;
+	
+}
+
+function loopMao(){
+	if(mao.status == "ida"){
+		mao.gotoAndPlay("click");
+		createjs.Tween.get(mao, {override : true}).to({ x : 300, y : 300, status : "volta"} , 1500).call(loopMao);
+	}
+	
+	if(mao.status == "volta"){
+		mao.gotoAndPlay("idle");
+		createjs.Tween.get(mao, {override : true}).wait(500).to({ x : 400, y : 200, status: "ida"} , 1500).call(loopMao);
+	}
+}
+
+function criaMaoTuto(){
+	var data = {
+		framerate: 24,
+		images: [preloadBalengo.getResult("mao")],
+		frames: {
+			width:70, height:70
+		},
+		animations: {
+			idle:[0],
+			down:[1],
+			impact:[2],
+			click: [0, 2, "down"],
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.spriteSheet.getAnimation("click").speed = 50;
+	animation.regX = 20;
+	animation.regY = 55;
+	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height;
+	return animation;
 }
 
 function mDown(){

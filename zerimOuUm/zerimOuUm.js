@@ -29,14 +29,14 @@ function handleCompleteZerim(event) {
 }
 
 function getZerim(){	
-	botao0 = criaMao();
+	botao0 = criaMaoZerim();
 	console.log(botao0);
-	botao1 = criaMao();
+	botao1 = criaMaoZerim();
 	
-	jogador   = criaMao();
-	jogador1 = criaMao();
-	jogador2 = criaMao();
-	jogador3 = criaMao();
+	jogador   = criaMaoZerim();
+	jogador1 = criaMaoZerim();
+	jogador2 = criaMaoZerim();
+	jogador3 = criaMaoZerim();
 	
 	
 	containerZerim = new createjs.Container();
@@ -111,7 +111,7 @@ function terminou(){
 	panoramaIsActive = true;
 }
 
-function criaMao(){
+function criaMaoZerim(){
 	//Configuração do spriteSheet do botao
 	var data = {
 		framerate: 10, //Velocidade de troca de frame - irrelevante
