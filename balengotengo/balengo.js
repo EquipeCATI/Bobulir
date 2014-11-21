@@ -3,6 +3,7 @@ var containerTutorial = new createjs.Container();
 var line = new createjs.Shape();
 var preloadBalengo = new createjs.LoadQueue(false);
 var winBalengo = false;
+var back;
 
 //Variáveis de controle do lançamento
 var angle;
@@ -35,9 +36,10 @@ function carregaAssetsBalengo(){
 	var manifest = [
 		{src:"balengotengo.png", id:"balengotengo"},
 		{src:"raia.png", id:"alvo"},
-		{src:"menino2.png", id:"menino-balengo"},
+		{src:"menino3.png", id:"menino-balengo"},
 		{src:"arvore550.png", id:"arvore"},
 		{src:"maos.png", id:"mao"},
+		{src:"background.png", id:"back"}
 		];
 		
 	preloadBalengo.loadManifest(manifest, true, "balengotengo/");
@@ -61,7 +63,7 @@ function criaMenino()
 		images: [preloadBalengo.getResult("menino-balengo")],
 		frames: 
 		{
-			width:55, height:70
+			width:180, height:360
 		},
 		animations:
 		{
@@ -88,35 +90,46 @@ function getBalengo()
 	balengotengo = new createjs.Bitmap(preloadBalengo.getResult("balengotengo"));
 	
 	alvo = new createjs.Bitmap(preloadBalengo.getResult("alvo"));
-	alvo.scaleX = alvo.scaleY = 0.75
-	menino.y = 500;
-	menino.x = 100;
-	maoDoMenino.x =  menino.x+5; 
-    maoDoMenino.y = menino.y +20;
+	alvo.scaleX = alvo.scaleY = 0.7;
+	menino.scaleX = menino.scaleY = 0.5;
+	menino.regY = 180
+	menino.y = 420;
+	menino.x = 120;
+	maoDoMenino.x =  menino.x+20; 
+    maoDoMenino.y = menino.y +30;
 	balengotengo.x =  maoDoMenino.x; 
 	balengotengo.y = maoDoMenino.y;
 	balengotengo.scaleX = balengotengo.scaleY = 0.5
 	balengotengo.regX = 8;  //Pontos de rotação
 	balengotengo.regY = 10; 
 	
-	alvo.x = 400;
-	alvo.y = 195;
+	alvo.x = 340;
+	alvo.y = 215;
 
-	containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
-	var arvore = new createjs.Bitmap(preloadBalengo.getResult("arvore"));
-	arvore.x = 400;
+	//containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
+	back = new createjs.Bitmap(preloadBalengo.getResult("back"));
+	back.scaleX = back.scaleY = 0.5;
+	back.regX = 900;
+	back.x = 450;
 	//arvore.scaleX = arvore.scaleY = 0.175;
-	containerBalengo.addChild(arvore);
+	
+	containerBalengo.addChild(back);
 	containerBalengo.addChild(line);
 	
 	containerBalengo.addChild(alvo);
 	containerBalengo.addChild(menino);
 	containerBalengo.addChild(balengotengo);
 	
-	containerBalengo.on("mousedown", mDown);
-	containerBalengo.on("pressmove", mMove);
-	containerBalengo.on("pressup", joga);
-	containerBalengo.on("tick", tickBalengo);
+	containerBalengo.scaleX = containerBalengo.scaleY = 2;
+	containerBalengo.regX = 450;
+	containerBalengo.x = 450;
+	back.on("mousedown", mDown);
+	back.on("pressmove", mMove);
+	back.on("pressup", joga);
+	back.on("tick", tickBalengo);
+	
+	
+	
 	//criaTutorial();
 	//createjs.Ticker.addEventListener("tick", tickBalengo);
 }
@@ -128,7 +141,7 @@ function criaTutorial(){
 	mao.x = 400;
 	mao.y = 300;
 	containerTutorial = new createjs.Container();
-	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, stage.canvas.width, stage.canvas.height));
+	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
 	fundoTuto.alpha = 0.5;
 	containerTutorial.addChild(fundoTuto);
 	
@@ -190,7 +203,7 @@ function criaBotaoTuto(){
 function loopMao(){
 	if(mao.status == "ida"){
 		mao.gotoAndPlay("click");
-		createjs.Tween.get(mao, {override : true}).to({ x : 300, y : 300, status : "volta"} , 1500).call(loopMao);
+		createjs.Tween.get(mao, {override : true}).wait(500).to({ x : 300, y : 300, status : "volta"} , 1500).call(loopMao);
 	}
 	
 	if(mao.status == "volta"){
@@ -288,6 +301,7 @@ function tickBalengo(event) {
 		balengotengo.rotation+=20; //Apenas para o projétil girar
 		t+=0.5;
 	}
+	/*
 	else{
 		if (moveMeninoRight && menino.x < 600 - menino.spriteSheet.getFrameBounds(0).width) {
        menino.x += 10;
@@ -299,7 +313,7 @@ function tickBalengo(event) {
 		menino.x -= 10;
 	    balengotengo.x -=  10; 
 	   }
-	}
+	}*/
 	
 	//Caso o projétil saia da tela, se encerra o lançamento atual
 	if(balengotengo.x < 0 || balengotengo.x > stage.canvas.width
@@ -311,8 +325,8 @@ function tickBalengo(event) {
 		}
 		
 	}  
-	 maoDoMenino.x =  menino.x+5; 
-	 maoDoMenino.y = menino.y +25;
+	 maoDoMenino.x =  menino.x+20; 
+    maoDoMenino.y = menino.y +30;
 	
 	//Checagem de colisão
 	var ponto = balengotengo.localToLocal(0,0,alvo); //Posição do projétil relativo ao alvo

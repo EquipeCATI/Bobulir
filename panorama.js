@@ -104,7 +104,7 @@ function panorama() {
 	createjs.Tween.removeAllTweens();
 	loopBike();
  }
-
+var fadeOutScreen;
 function criaSecao1(){
 	//Containers não possuem width e height definido, por isso estou pegando os da imagem
 	var bitmap = new createjs.Bitmap(preloadPanorama.getResult("secao1"));
@@ -127,7 +127,7 @@ function criaSecao1(){
 	var olha = new createjs.Bitmap("assets/sprites/olha.png");
 	olha.id = "";
 	olha.texto= "Bora desenganchar a raia!";
-	olha.x = 2650;
+	olha.x = 2250;
 	olha.y = 300;
 	olha.width = olha.image.width;
 	olha.height = olha.image.height;
@@ -141,13 +141,22 @@ function criaSecao1(){
 	raia.on("click", function(event){
 		console.log("raia");
 		if(!containerBalengo)
-			getBalengo();
-			stage.addChild(containerBalengo);
-			criaTutorial();
+		getBalengo();
+			fadeOutScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
+			fadeOutScreen.alpha = 0;
+			stage.addChild(fadeOutScreen);
+			createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).call(adicionaBalengo).to({alpha : 0}, 500);
+			createjs.Tween.get(containerBalengo, {override : true}).wait(1000).to({ scaleX : 1, scaleY : 1} , 2500).call(criaTutorial);
+			//criaTutorial();
 			panoramaIsActive = false;
 		});
 	secao1.addChild(raia);
 	secao1.addChild(olha);	
+}
+
+function adicionaBalengo(){
+	stage.addChild(containerBalengo);
+	stage.addChild(fadeOutScreen);
 }
 
 function criaSecao2(){
