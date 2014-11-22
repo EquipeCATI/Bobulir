@@ -6,6 +6,7 @@ var bitmapCredit;
 var seta;
 var preloadMenu = new createjs.LoadQueue(false);
 var pipa;
+var emFlor;
 //var pipa = spritePipa("assets/sprites/spritePipa.png");
 
 
@@ -30,6 +31,13 @@ function carregaAssets(){
 		{src:"images/bobulir/bobulir10.png", id:"bobulir"},
 		];
 	preloadMenu.loadManifest(manifest, true, "assets/");
+	var audioPath = "assets/audio/";
+	var manifestAudio = [
+		{id:"emflor", src:"emflor.m4a"},
+		{id:"vibraSlap", src : "vibraSlap.wav"}
+	];
+	createjs.Sound.alternateExtensions = ["mp3"];
+	createjs.Sound.registerManifest(manifestAudio, audioPath);
 	}
 	
 function stop() {
@@ -41,7 +49,6 @@ function handleCompleteMenu(event) {
 }
 
 function menu(){
-
     var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 800, 600));
 	containerFundo.addChild(fundo);
 	for(var i = 0; i <= 5; i++){
@@ -93,7 +100,8 @@ function menu(){
 	bobulir.y = 300;
 	containerMenu.addChild(bobulir);
 	stage.addChild(containerMenu);
-
+	emFlor = createjs.Sound.play("emflor");
+	emFlor.volume = 0.2;
 
 	bitmapCredit.on("click", btnClicked);
 	bitmapCredit.addEventListener("mouseover", over);
@@ -129,6 +137,10 @@ function criaNuvensDir(){
 }
 
 function btnClicked(event){
+	createjs.Tween.get(emFlor).to({volume : 0}, 1000);
+	var vibraSlap = createjs.Sound.play("vibraSlap");
+	vibraSlap.volume = 0.25;
+	createjs.Tween.get(vibraSlap).to({volume : 0}, 1000);
 	event.target.gotoAndPlay("click");
 	event.on("mouseup", up);
 	if(event.target == bitmapStart){
@@ -177,7 +189,7 @@ function spritePipa(caminho){
 		framerate: 10, //Velocidade de troca de frame - irrelevante
 		images: [caminho], //spriteSheet
 		frames: {
-			width:250, height:181, count: 32 // tamanho dos frames
+			width:250, height:181 // tamanho dos frames
 		},
 		animations: { //Associação de nomes de animação aos frames
 			loop : [0, 32]
@@ -186,8 +198,9 @@ function spritePipa(caminho){
 	};
 
 	var spriteSheet = new createjs.SpriteSheet(data);
-	var animacao = new createjs.Sprite(spriteSheet, "normal");
-	
+	var animacao = new createjs.Sprite(spriteSheet, "loop");
+	animacao.scaleX = 0.8;
+	animacao.scaleY = 0.8;
 	return animacao;
 }
 

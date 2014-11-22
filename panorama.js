@@ -6,6 +6,8 @@ var panoramaIsActive = false;
 var balao = new createjs.Container();
 var meninaBike = criaBike();
 var maoClique;
+var buleiro;
+var baiao;
 
 var windowVar ;
 var right;
@@ -26,13 +28,15 @@ function carregaAssetsPanorama(){
 	var manifestCenario = [
 		{src:"images/cenarios/praca.png", id:"secao1"},
 		{src:"images/cenarios/lagoa.png", id:"secao2"},
+		{src:"sprites/mark.png", id:"mark"},
 		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/relogio.png", id:"relogio"},
 		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
-		{src:"sprites/meninaBike.png", id:"meninaBike"},
+		{src:"sprites/meninaBike2.png", id:"meninaBike"},
 		{src:"sprites/bila.png", id:"bila"},
 		{src:"sprites/peao.png", id:"peao"},
 		{src:"sprites/corda.png", id:"corda"},
+		{src:"sprites/olha.png", id:"olha"},
 		{src:"sprites/dedada.png", id:"maoClique"},
 		{src:"images/icons/setad.png", id:"setad"},
 		{src:"images/icons/setae.png", id:"setae"},
@@ -42,6 +46,7 @@ function carregaAssetsPanorama(){
 	preloadPanorama.loadManifest(manifestCenario, true, "assets/");
 	
 	var manifestBaloes = [
+		{src:"balao.png", id: "balao"},
 		{src:"bila/1.jpg", id: "bila1"},
 		{src:"bila/2.jpg", id: "bila2"},
 		{src:"bila/3.jpg", id: "bila3"},
@@ -60,6 +65,7 @@ function carregaAssetsPanorama(){
 		{id:"flip", src:"flip.mp3"},
 		{id:"poim", src:"poim.mp3"},
 		{id:"magia", src:"magia.mp3"},
+		{id:"baiao", src:"baiao.wav"},
 		{id:"risada menina", src:"risada_menina.mp3"},
 	];
 	createjs.Sound.alternateExtensions = ["mp3"];
@@ -75,11 +81,46 @@ function handleCompletePanorama(event) {
 	panorama();
 }
 
+function clickableMark(evt){
+if(balao.balaoAtivo != evt.target.id){
+	buleiro.x = evt.target.x + evt.target.width;
+	buleiro.y = evt.target.y - 20;
+	evt.target.parent.addChild(buleiro);
+	}
+}
+
+function clickableOut(evt){
+	evt.target.parent.removeChild(buleiro);
+}
+
+function criaBuleiro(){
+	var data = {
+		framerate: 24,
+		images: [preloadPanorama.getResult("mark")],
+		frames: {
+			width:368, height:377
+		},
+		animations: {
+			idle:[0, 23]
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.scaleX = animation.scaleY = 0.1;
+	animation.regX = 184;
+	animation.regY = 188;
+	animation.width = animation.spriteSheet.getFrameBounds(0).width;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height;
+	return animation;
+}
+
 function panorama() {
 	console.log("teste");
 	dragContainer.y = 973;
 	createjs.Ticker.on("tick", tickPanorama);
 	createjs.Ticker.setFPS(20);
+	buleiro = criaBuleiro();
 	
 	stage.addChild(dragContainer);
 	var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, -373, 6000, 973));
@@ -93,6 +134,9 @@ function panorama() {
 	
 	this.document.onkeydown = keyPressed;
 	this.document.onkeyup = keyUp;
+	baiao = createjs.Sound.play("baiao", {loop : 10});
+	//baiao.loop
+	baiao.volume = 0.2;
 	createjs.Tween.get(containerMenu, {override : true}).to({ y : -600} , 2500, createjs.Ease.getPowOut(2));
 	createjs.Tween.get(dragContainer,  {override : true}).to({ y : 0} , 4054, createjs.Ease.getPowOut(2)).call(terminouMenu);
 }
@@ -123,17 +167,6 @@ function criaSecao1(){
 	secao1.addChild(criaBruxinha());
 	secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
-	
-	var olha = new createjs.Bitmap("assets/sprites/olha.png");
-	olha.id = "";
-	olha.texto= "Bora desenganchar a raia!";
-	olha.x = 2250;
-	olha.y = 300;
-	olha.width = olha.image.width;
-	olha.height = olha.image.height;
-	olha.on("click", function(event){
-		criaBalao(event.target, 200, 100);
-		});
 		
 	var raia = new createjs.Bitmap("assets/sprites/raia.png");
 	raia.x = 2250;
@@ -151,7 +184,39 @@ function criaSecao1(){
 			panoramaIsActive = false;
 		});
 	secao1.addChild(raia);
-	secao1.addChild(olha);	
+	secao1.addChild(criaOlha());	
+}
+
+function criaOlha(){
+	var data = {
+		framerate: 60,
+		images: [preloadPanorama.getResult("olha")],
+		frames: {
+			width:250, height:400
+		},
+		animations: {
+			idle:[0],
+			run:[1, 34, "idle"]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 2240;
+	animation.y = 320; //secao1.height/2;
+	animation.scaleX = animation.scaleY = 0.6;
+	animation.som = "risada menina";
+	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX + 20;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY;
+ 
+	animation.id = "Olha!";
+	animation.texto= "Tem uma raia presa ali em cima!";
+		
+	animation.on("click", anima);
+	animation.on("mouseover", clickableMark);
+	animation.on("mouseout", clickableOut);
+	
+	return animation;
 }
 
 function adicionaBalengo(){
@@ -269,7 +334,7 @@ function criaMao(){
 		framerate: 24,
 		images: [preloadPanorama.getResult("maoClique")],
 		frames: {
-			width:70, height:60
+			width:422, height:276
 		},
 		animations: {
 			idle:[0, 21]
@@ -278,8 +343,9 @@ function criaMao(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.regX = 20;
-	animation.regY = 55;
+	animation.regX = 400;
+	animation.regY = 260;
+	animation.scaleX = animation.scaleY = 0.2;
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
 	return animation;
@@ -375,29 +441,29 @@ function criaBruxinha(){
 		framerate: 60,
 		images: [preloadPanorama.getResult("bruxinha")],
 		frames: {
-			width:550, height:531
+			width:236, height:454
 		},
 		animations: {
-			idle:[0, 34, true]
+			idle:[0, 67, true]
 		}
 	};
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = 1325;
-	animation.y = 350; //secao1.height/2;
-	animation.scaleX = animation.scaleY = 0.3;
+	animation.y = 360; //secao1.height/2;
+	animation.scaleX = animation.scaleY = 0.35;
 	animation.som = "risada menina";
-	animation.width = animation.spriteSheet.getFrameBounds(0).width*0.3;
-	animation.height = animation.spriteSheet.getFrameBounds(0).height*0.3;
+	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX + 20;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY;
  
 	animation.id = "bruxinha";
 	animation.texto= "A bruxinha é uma bonequinha feita de pano. Tão bonita em seus bordados e retalhos! Você conhece alguém que faz? Já brincou com uma?";
-	animation.balaoW = 200;
-	animation.balaoH = 200;
 	animation.numFotos = 3;
 		
 	animation.on("click", anima);
+	animation.on("mouseover", clickableMark);
+	animation.on("mouseout", clickableOut);
 	
 	return animation;
 }
@@ -408,7 +474,7 @@ function criaCorda(){
 		framerate: 30,
 		images: [preloadPanorama.getResult("corda")],
 		frames: {
-			width:550, height:400
+			width:438, height:400
 		},
 		animations: {
 			idle:[0, 29, true]
@@ -418,19 +484,20 @@ function criaCorda(){
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = 100;
-	animation.y = 150; //secao1.height/2;
+	animation.y = 270; //secao1.height/2;
 	animation.scaleX = animation.scaleY = 0.7;
+	animation.regY = 120;
 	animation.som = "";
-	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX - 70;
-	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY - 30;
- 
-	var hitRect = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(animation.x, animation.y, animation.spriteSheet.getFrameBounds(0).width*animation.scaleX, animation.height));
-	animation.hitArea = hitRect;
-	animation.id = "corda";
+	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX;
+	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY - 120;
+	
+	animation.id = "Corda";
 	animation.texto= "Essa brincadeira é muito divertida e te faz suar muito! Você pode pular sozinho ou com um amigo, devagarinho ou bem rapidão! Só tome cuidado para não se atrapalhar e enganchar as pernas na corda, viu?";
 	animation.numFotos = 3;
 		
 	animation.on("click", anima);
+	animation.on("mouseover", clickableMark);
+	animation.on("mouseout", clickableOut);
 	
 	return animation;
 }
@@ -463,6 +530,8 @@ function criaRelogio(){
 	animation.numFotos = 2;
 		
 	animation.on("click", anima);
+	animation.on("mouseover", clickableMark);
+	animation.on("mouseout", clickableOut);
 	
 	return animation;
 }
@@ -472,17 +541,18 @@ function criaBike(){
 		framerate: 10,
 		images: [preloadPanorama.getResult("meninaBike")],
 		frames: {
-			width:237, height:235.8
+			width:237, height:237
 		},
 		animations: {
 			idle:[0, 34, true]
 		}
 	};
-
+	
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = secao1.width;
-	animation.y = 350; //secao1.height/2;
+	animation.y = 360; //secao1.height/2;
+	//animation.scaleX = animation.scaleY = 0.5;
 	animation.direcao = "vindo";
 	
 	return animation;
@@ -518,7 +588,8 @@ function criaBela(){
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.scaleX = animation.scaleY = 0.4;
 	animation.x = 900;
-	animation.y = 180;	
+	animation.y = 250;	
+	animation.regY = 120;
 	animation.som = "magia";
 	animation.id = "bila";
 	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
@@ -529,6 +600,8 @@ function criaBela(){
 	animation.numFotos = 3;
 	
 	animation.on("click", anima);
+	animation.on("mouseover", clickableMark);
+	animation.on("mouseout", clickableOut);
 	
 	return animation;
 }
@@ -536,19 +609,23 @@ function criaBela(){
 function criaBalao(animationAlvo){
 	balao.removeAllChildren();
 
-	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 300, 5 ));
+	//var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 300, 5 ));
+	var balaoShape = new createjs.Bitmap(preloadPanorama.getResult("balao"));
+	balao.addChild(balaoShape);
+	balaoShape.shadow = new createjs.Shadow("#000000", 10, 10, 40);
+	balaoShape.shadow.alpha = 0;
 	var titulo = new createjs.Text(animationAlvo.id, "50px Bahiana", "#ffffff");
 	var b = titulo.getBounds();
 	titulo.x = 200 - b.width/2;
-	titulo.y = 15;
+	titulo.y = 35;
 	console.log( b.height);
 	
 	var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
 	texto.x = 15;
-	texto.y = 75;
+	texto.y = 90;
 	texto.lineWidth = 370;
 	texto.lineHeight = 25;
-	balao.addChild(shapeBalao);
+	//balao.addChild(shapeBalao);
 	balao.addChild(titulo);
 	balao.addChild(texto);
 	
@@ -582,7 +659,7 @@ function criaBalao(animationAlvo){
 	dragContainer.addChild(balao);
 	balao.scaleX = 0;
 	balao.scaleY = 0;
-	createjs.Tween.get(balao).to({scaleX:1, scaleY:1, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+	createjs.Tween.get(balao).wait(animationAlvo.spriteSheet.count).to({scaleX:1, scaleY:1, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 }
 
 function addFotosRegras(id){
