@@ -202,13 +202,11 @@ function criaBotaoTuto(){
 
 function loopMao(){
 	if(mao.status == "ida"){
-		mao.gotoAndPlay("click");
-		createjs.Tween.get(mao, {override : true}).wait(500).to({ x : 300, y : 300, status : "volta"} , 1500).call(loopMao);
+		createjs.Tween.get(mao, {override : true}).wait(400).to({ rotation : -30, status : "volta"} , 1500).call(loopMao);
 	}
 	
 	if(mao.status == "volta"){
-		mao.gotoAndPlay("idle");
-		createjs.Tween.get(mao, {override : true}).wait(500).to({ x : 400, y : 200, status: "ida"} , 1500).call(loopMao);
+		createjs.Tween.get(mao, {override : true}).wait(600).to({ rotation : 0, status: "ida"} , 1500).call(loopMao);
 	}
 }
 
@@ -217,21 +215,25 @@ function criaMaoTuto(){
 		framerate: 24,
 		images: [preloadBalengo.getResult("mao")],
 		frames: {
-			width:70, height:70
+			width:744, height:413
 		},
 		animations: {
+		/*
 			idle:[0],
 			down:[1],
 			impact:[2],
 			click: [0, 2, "down"],
+			*/
+			idle : [0, 39, true]
         },
 	};
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.spriteSheet.getAnimation("click").speed = 50;
-	animation.regX = 20;
-	animation.regY = 55;
+	//animation.spriteSheet.getAnimation("click").speed = 50;
+	animation.scaleX = animation.scaleY = 0.25;
+	animation.regX = 600;
+	animation.regY = 413;
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height;
 	return animation;

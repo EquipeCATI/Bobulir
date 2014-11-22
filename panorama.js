@@ -134,8 +134,7 @@ function panorama() {
 	
 	this.document.onkeydown = keyPressed;
 	this.document.onkeyup = keyUp;
-	baiao = createjs.Sound.play("baiao", {loop : 10});
-	//baiao.loop
+	baiao = createjs.Sound.play("baiao", {loop : 100});
 	baiao.volume = 0.2;
 	createjs.Tween.get(containerMenu, {override : true}).to({ y : -600} , 2500, createjs.Ease.getPowOut(2));
 	createjs.Tween.get(dragContainer,  {override : true}).to({ y : 0} , 4054, createjs.Ease.getPowOut(2)).call(terminouMenu);
@@ -213,6 +212,11 @@ function criaOlha(){
 	animation.texto= "Tem uma raia presa ali em cima!";
 		
 	animation.on("click", anima);
+	animation.on("mousedown", function(evt){
+		maoClique.x = stage.canvas.width/2;
+		maoClique.y = 50;
+		maoClique.alpha = 100;
+	});
 	animation.on("mouseover", clickableMark);
 	animation.on("mouseout", clickableOut);
 	
@@ -236,7 +240,7 @@ function criaSecao2(){
 }
 
 function criaHUD(){
-/*
+	/*
 	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.9, 0, 80, stage.canvas.height));
 	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragRight.hitArea = rectRight;
@@ -254,7 +258,7 @@ function criaHUD(){
 	dragLeft.addEventListener("click", clickL);
 	stage.addChild(dragLeft);
 	
-	
+	/*
 	var rectUp = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width, 60));
 	var dragUp = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragUp.hitArea = rectUp; 
@@ -267,8 +271,8 @@ function criaHUD(){
 	var dragDown = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
 	dragDown.hitArea = rectDown; 
 	dragDown.addEventListener("click", clickD);
-	stage.addChild(dragDown);
-	*/
+	stage.addChild(dragDown);*/
+	
 	
 	
 	
@@ -343,7 +347,7 @@ function criaMao(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.regX = 400;
+	animation.regX = 360;
 	animation.regY = 260;
 	animation.scaleX = animation.scaleY = 0.2;
 	animation.width = animation.spriteSheet.getFrameBounds(0).width;
@@ -488,9 +492,12 @@ function criaCorda(){
 	animation.scaleX = animation.scaleY = 0.7;
 	animation.regY = 120;
 	animation.som = "";
-	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX;
-	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY - 120;
+	var bounds = animation.spriteSheet.getFrameBounds(0);
+	animation.width = bounds.width*animation.scaleX;
+	animation.height = bounds.height*animation.scaleY - 120;
 	
+	var rectHit = new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, bounds.width, bounds.height));
+	animation.hitArea = rectHit;
 	animation.id = "Corda";
 	animation.texto= "Essa brincadeira é muito divertida e te faz suar muito! Você pode pular sozinho ou com um amigo, devagarinho ou bem rapidão! Só tome cuidado para não se atrapalhar e enganchar as pernas na corda, viu?";
 	animation.numFotos = 3;
@@ -572,6 +579,7 @@ function loopBike(){
 }
 
 function criaBela(){
+	var x = new createjs.Bitmap
 	var data = {
 		framerate: 10,
 		images: [preloadPanorama.getResult("bila")],
@@ -593,11 +601,15 @@ function criaBela(){
 	animation.som = "magia";
 	animation.id = "bila";
 	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
-	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX + 20;
-	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY;
+	var bounds = animation.spriteSheet.getFrameBounds(0);
+	animation.width = bounds.width*animation.scaleX + 20;
+	animation.height = bounds.height*animation.scaleY;
 	animation.balaoW = 400;
 	animation.balaoH = 250;
 	animation.numFotos = 3;
+	
+	var rectHit = new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, bounds.width, bounds.height));
+	animation.hitArea = rectHit;
 	
 	animation.on("click", anima);
 	animation.on("mouseover", clickableMark);
@@ -782,8 +794,11 @@ function gerenciaAlphaHUD(){
 	if(dragContainer.x<-1800 && dragContainer.x > -secao1.width +800 && dragContainer.y == 0){
 		up.alpha = 100;
 	}
-	else
+	else{
 		up.alpha = 0;
+		if(dragContainer.Y == 373)
+		maoClique.alpha = 0;
+		}
 		
 	if(dragContainer.y == 373){
 		down.alpha = 100;
