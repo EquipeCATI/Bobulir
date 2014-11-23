@@ -148,9 +148,9 @@ function criaNuvensEsq(){
 		var nuvem = new createjs.Bitmap(img);
 		nuvem.x = 100 + Math.random()*500;
 		nuvem.x = -nuvem.x;
-		nuvem.y = 10 + Math.random()*400;
-		nuvem.scaleX = nuvem.scaleY = 0.1;
-		createjs.Tween.get(nuvem, {override : true}).to({ x : 800} , 20000 + Math.random()*25000).call(criaNuvensDir);
+		nuvem.y = 10 + Math.random()*200;
+		nuvem.scaleX = nuvem.scaleY = 0.5;
+		createjs.Tween.get(nuvem, {override : true}).to({ x : 800} , 30000 + Math.random()*25000).call(criaNuvensDir);
 
 		containerFundo.addChild(nuvem);
 }
@@ -161,21 +161,22 @@ function criaNuvensDir(){
 		var nuvem = new createjs.Bitmap(img);
 		nuvem.x = 100 + Math.random()*500;
 		nuvem.x = 800 + nuvem.x;
-		nuvem.y = 100 + Math.random()*400;
-		nuvem.scaleX = nuvem.scaleY = 0.1;
-		createjs.Tween.get(nuvem, {override : true}).to({ x : -200} , 20000 + Math.random()*25000).call(criaNuvensEsq);
+		nuvem.y = 100 + Math.random()*200;
+		nuvem.scaleY = 0.5;
+		nuvem.scaleX = -0.5;
+		createjs.Tween.get(nuvem, {override : true}).to({ x : -200} , 30000 + Math.random()*25000).call(criaNuvensEsq);
 
 		containerFundo.addChild(nuvem);
 }
 
 function btnClicked(event){
-	createjs.Tween.get(emFlor).to({volume : 0}, 900);
-	var vibraSlap = createjs.Sound.play("vibraSlap");
-	vibraSlap.volume = 0.25;
-	createjs.Tween.get(vibraSlap).to({volume : 0}, 1000);
-	event.target.gotoAndPlay("normalize");
-	event.on("mouseup", up);
 	if(event.target == bitmapStart){
+		createjs.Tween.get(emFlor).to({volume : 0}, 900);
+		var vibraSlap = createjs.Sound.play("vibraSlap");
+		vibraSlap.volume = 0.3;
+		createjs.Tween.get(vibraSlap).to({volume : 0}, 1000);
+		event.target.gotoAndPlay("normalize");
+		event.on("mouseup", up);
 		teste();
 	}
 	if(event.target == bitmapCredit){
@@ -259,7 +260,8 @@ function tick(){
 
  function creditos(){
  	stage.removeAllChildren();
-
+	var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 800, 600));
+	
  	var setaHit = new createjs.Shape();
  	setaHit.graphics.beginFill("#000000").drawRect(0, 0, 150, 58);
  	seta.hitArea = setaHit;
