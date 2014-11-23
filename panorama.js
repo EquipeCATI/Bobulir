@@ -164,7 +164,7 @@ function criaSecao1(){
 	
 	secao1.addChild(criaCorda());
 	secao1.addChild(criaBruxinha());
-	secao1.addChild(criaRelogio());
+	//secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
 		
 	var raia = new createjs.Bitmap("assets/sprites/raia.png");
@@ -201,7 +201,7 @@ function criaOlha(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.x = 2240;
+	animation.x = 2040;
 	animation.y = 320; //secao1.height/2;
 	animation.scaleX = animation.scaleY = 0.6;
 	animation.som = "risada menina";
@@ -231,7 +231,7 @@ function adicionaBalengo(){
 function criaSecao2(){
 	var bitmap2 = new createjs.Bitmap(preloadPanorama.getResult("secao2"));
 	//bitmap2.sca
-	bitmap2.x = -1000;
+	bitmap2.x = -1010;
 	bitmap2.y = 60;
 	secao2.width = bitmap2.image.width - 1000;
 	secao2.height = bitmap2.image.height;
@@ -420,6 +420,9 @@ function clickU(){
 	if(dragContainer.x<-1800 && dragContainer.x > -secao1.width){
 		createjs.Tween.get(dragContainer,  {override : true}).to({ y : 373} , 2500, createjs.Ease.getElasticOut(1, 2));
 		maoClique.alpha = 0;
+		createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+	    balao.balaoAtivo = "";
+	    bigObjectFlag = false;
 		}
 }
 
@@ -454,15 +457,15 @@ function criaBruxinha(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.x = 1325;
-	animation.y = 360; //secao1.height/2;
+	animation.x = 1350;
+	animation.y = 350; //secao1.height/2;
 	animation.scaleX = animation.scaleY = 0.35;
 	animation.som = "risada menina";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX + 20;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY;
  
 	animation.id = "bruxinha";
-	animation.texto= "A bruxinha é uma bonequinha feita de pano. Tão bonita em seus bordados e retalhos! Você conhece alguém que faz? Já brincou com uma?";
+	animation.texto= "A bruxinha é uma bonequinha feita de pano. Tão bonita em seus bordados e retalhos! Tu conhece alguém que faz? Já brincou com uma?";
 	animation.numFotos = 3;
 		
 	animation.on("click", anima);
@@ -499,7 +502,7 @@ function criaCorda(){
 	var rectHit = new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, bounds.width, bounds.height));
 	animation.hitArea = rectHit;
 	animation.id = "Corda";
-	animation.texto= "Essa brincadeira é muito divertida e te faz suar muito! Você pode pular sozinho ou com um amigo, devagarinho ou bem rapidão! Só tome cuidado para não se atrapalhar e enganchar as pernas na corda, viu?";
+	animation.texto= "Essa brincadeira é muito divertida e te faz suar muito! Tu pode pular sozinho ou com um amigo, devagarinho ou bem rapidão! Só tome cuidado para não se atrapalhar e enganchar as pernas na corda, viu?";
 	animation.numFotos = 3;
 		
 	animation.on("click", anima);
@@ -508,7 +511,6 @@ function criaCorda(){
 	
 	return animation;
 }
-
 
 function criaRelogio(){
 	var  clicado = false;
@@ -595,7 +597,7 @@ function criaBela(){
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.scaleX = animation.scaleY = 0.4;
-	animation.x = 900;
+	animation.x = 800;
 	animation.y = 250;	
 	animation.regY = 120;
 	animation.som = "magia";
@@ -688,7 +690,6 @@ function addFotosRegras(id){
 	imageContainer.y = 300 - b.height/2 - 15;
 }
 
-
 function createPopup(evt){
 	if(!windowVar ){
 		windowVar = window.open("", evt.target.id, "height=255, width=335", true);
@@ -745,8 +746,6 @@ function keyUp(event) {
 	}
 }
 
-
-// Update the stage
 function tickPanorama(event) {	
 	gerenciaAlphaHUD();
 	if (moveRight) {
@@ -762,18 +761,6 @@ function tickPanorama(event) {
 	   balao.balaoAtivo = "";
 	   bigObjectFlag = false;
 	   }
-	   /*
-	 else if (moveUp) {
-       dragContainer.y += 10;
-	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
-	   balao.balaoAtivo = "";
-	   }
-	   
-	 else if (moveDown) {
-       dragContainer.y -= 10;
-	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
-	   balao.balaoAtivo = "";
-	   }*/
 }
 
 function gerenciaAlphaHUD(){
@@ -796,8 +783,6 @@ function gerenciaAlphaHUD(){
 	}
 	else{
 		up.alpha = 0;
-		if(dragContainer.Y == 373)
-		maoClique.alpha = 0;
 		}
 		
 	if(dragContainer.y == 373){
@@ -805,4 +790,7 @@ function gerenciaAlphaHUD(){
 	}
 	else
 		down.alpha = 0;
+		
+	if(down.alpha == 0 && up.alpha == 0)
+		maoClique.alpha = 0;
 }

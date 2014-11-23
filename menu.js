@@ -1,6 +1,7 @@
 var stage;
 var containerMenu = new createjs.Container();
 var containerFundo = new createjs.Container();
+var containerCreditos = new createjs.Container();
 var bitmapStart;
 var bitmapCredit;
 var seta;
@@ -91,7 +92,7 @@ function criaCreditos(){
 }
 
 function menu(){
-    var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 800, 600));
+    var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 1600, 600));
 	containerFundo.addChild(fundo);
 	for(var i = 0; i <= 5; i++){
 			criaNuvensEsq();
@@ -150,8 +151,7 @@ function criaNuvensEsq(){
 		nuvem.x = -nuvem.x;
 		nuvem.y = 10 + Math.random()*200;
 		nuvem.scaleX = nuvem.scaleY = 0.5;
-		createjs.Tween.get(nuvem, {override : true}).to({ x : 800} , 30000 + Math.random()*25000).call(criaNuvensDir);
-
+		createjs.Tween.get(nuvem, {override : true}).to({ x : 1600} , 60000 + Math.random()*25000).call(criaNuvensDir);
 		containerFundo.addChild(nuvem);
 }
 function criaNuvensDir(){
@@ -160,11 +160,11 @@ function criaNuvensDir(){
 		var img = preloadMenu.getResult("nuvem" + nNuvem);
 		var nuvem = new createjs.Bitmap(img);
 		nuvem.x = 100 + Math.random()*500;
-		nuvem.x = 800 + nuvem.x;
+		nuvem.x = 1600 + nuvem.x;
 		nuvem.y = 100 + Math.random()*200;
 		nuvem.scaleY = 0.5;
 		nuvem.scaleX = -0.5;
-		createjs.Tween.get(nuvem, {override : true}).to({ x : -200} , 30000 + Math.random()*25000).call(criaNuvensEsq);
+		createjs.Tween.get(nuvem, {override : true}).to({ x : -200} , 60000 + Math.random()*25000).call(criaNuvensEsq);
 
 		containerFundo.addChild(nuvem);
 }
@@ -183,8 +183,7 @@ function btnClicked(event){
 		creditos();
 	}
 	if(event.target == seta){
-		stage.removeAllChildren();
-		menu();
+	createjs.Tween.get(containerMenu, {override : true}).to({ x : 0} , 2000);
 	}
 
 }
@@ -259,18 +258,14 @@ function tick(){
 }
 
  function creditos(){
- 	stage.removeAllChildren();
-	var fundo = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 800, 600));
-	
- 	var setaHit = new createjs.Shape();
- 	setaHit.graphics.beginFill("#000000").drawRect(0, 0, 150, 58);
- 	seta.hitArea = setaHit;
-
  	seta.x = 20;
  	seta.y = 20;
+ 	containerCreditos.addChild(seta);
+	containerCreditos.x = 800;
+	containerMenu.addChild(containerCreditos);
+	createjs.Tween.get(containerMenu, {override : true}).to({ x : -800} , 2000);
 
- 	stage.addChild(seta);
-
+	
  	seta.on("click", btnClicked);
 	seta.addEventListener("mouseover", over);
 	seta.addEventListener("mouseout", out);

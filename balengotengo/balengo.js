@@ -94,7 +94,7 @@ function getBalengo()
 	menino.scaleX = menino.scaleY = 0.5;
 	menino.regY = 180
 	menino.y = 420;
-	menino.x = 120;
+	menino.x = 240;
 	maoDoMenino.x =  menino.x+20; 
     maoDoMenino.y = menino.y +30;
 	balengotengo.x =  maoDoMenino.x; 
@@ -103,10 +103,10 @@ function getBalengo()
 	balengotengo.regX = 8;  //Pontos de rotação
 	balengotengo.regY = 10; 
 	
-	alvo.x = 340;
-	alvo.y = 215;
+	alvo.x = 440;
+	alvo.y = 200;
 
-	//containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
+	containerBalengo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 0, 1600, 1200)));
 	back = new createjs.Bitmap(preloadBalengo.getResult("back"));
 	back.scaleX = back.scaleY = 0.5;
 	back.regX = 900;
@@ -206,7 +206,7 @@ function loopMao(){
 	}
 	
 	if(mao.status == "volta"){
-		createjs.Tween.get(mao, {override : true}).wait(600).to({ rotation : 0, status: "ida"} , 1500).call(loopMao);
+		createjs.Tween.get(mao, {override : true}).wait(600).to({ rotation : 0, status: "ida"} , 2000).call(loopMao);
 	}
 }
 
