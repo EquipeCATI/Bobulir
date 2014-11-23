@@ -24,7 +24,6 @@ var moveDown;
 
 function carregaAssetsPanorama(){
 	preloadPanorama.on("complete", handleCompletePanorama);
-
 	var manifestCenario = [
 		{src:"images/cenarios/praca.png", id:"secao1"},
 		{src:"images/cenarios/lagoa.png", id:"secao2"},
@@ -93,6 +92,7 @@ function clickableOut(evt){
 	evt.target.parent.removeChild(buleiro);
 }
 
+//Marcador de objetos clicáveis
 function criaBuleiro(){
 	var data = {
 		framerate: 24,
@@ -146,6 +146,7 @@ function panorama() {
 	panoramaIsActive = true;
 	createjs.Tween.removeAllTweens();
 	loopBike();
+	removeSons();
  }
 var fadeOutScreen;
 function criaSecao1(){
@@ -177,6 +178,7 @@ function criaSecao1(){
 			fadeOutScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
 			fadeOutScreen.alpha = 0;
 			stage.addChild(fadeOutScreen);
+			secao1.removeChild(event.target);
 			createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).call(adicionaBalengo).to({alpha : 0}, 500);
 			createjs.Tween.get(containerBalengo, {override : true}).wait(1000).to({ scaleX : 1, scaleY : 1} , 2500).call(criaTutorial);
 			//criaTutorial();

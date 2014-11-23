@@ -39,7 +39,10 @@ function carregaAssetsBalengo(){
 		{src:"menino3.png", id:"menino-balengo"},
 		{src:"arvore550.png", id:"arvore"},
 		{src:"maos.png", id:"mao"},
-		{src:"background.png", id:"back"}
+		{src:"background.png", id:"back"},
+		{src:"quadrinho1.png", id:"quadrinho1"},
+		{src:"quadrinho2.png", id:"quadrinho2"},
+		{src:"quadrinho3.png", id:"quadrinho3"},
 		];
 		
 	preloadBalengo.loadManifest(manifest, true, "balengotengo/");
@@ -141,8 +144,10 @@ function criaTutorial(){
 	mao.x = 400;
 	mao.y = 300;
 	containerTutorial = new createjs.Container();
+	var fundoTutoHitArea = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
 	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
 	fundoTuto.alpha = 0.5;
+	fundoTuto.hitArea = fundoTutoHitArea;
 	containerTutorial.addChild(fundoTuto);
 	
 	var balaoTuto = new createjs.Container();
@@ -291,8 +296,10 @@ function joga()
 	}
 }
 
-
-
+var containerAnimacao;
+var quadrinho1 = criaQuadrinho1();
+var quadrinho2 = criaQuadrinho2();
+var quadrinho3 = criaQuadrinho3();
 function tickBalengo(event) {
 	if(lancou) //Processo de lançamento
 	{ 
@@ -340,18 +347,115 @@ function tickBalengo(event) {
 		{
 			dragContainer.maxPositionX -=  secao2.width;
 			winBalengo = true;
+			criaAnimacao();
+			quadrinho1.gotoAndPlay("anima");
+			containerAnimacao.on("tick", exibeAnimacao);
 		}
 		lancou = false;
 		line.graphics.clear();
 		containerBalengo.removeAllChildren();
 		containerBalengo.removeAllEventListeners();
 		containerBalengo = undefined;
-		stage.addChild(getZerim());
+		
 		stage.removeChild(containerBalengo);
+		stage.removeChild(quadrinho1);
+		stage.removeChild(quadrinho2);
+		stage.removeChild(quadrinho3);
 	}
 }
+
 
 function poeBalengoNaMao(){
 	balengotengo.x =  maoDoMenino.x; 
 	balengotengo.y = maoDoMenino.y;
+}
+
+function exibeAnimacao(evt){
+	if(quadrinho3.currentFrame != 60){
+		if(quadrinho1.currentFrame == 55){
+			quadrinho1.gotoAndPlay("termina");
+			quadrinho2.gotoAndPlay("anima");
+			}
+		if(quadrinho2.currentFrame == 51){
+			quadrinho2.gotoAndPlay("termina");
+			quadrinho3.gotoAndPlay("anima")
+			}
+	}
+
+	else{
+		stage.addChild(getZerim());
+		containerAnimacao.removeAllChildren();
+		containerAnimacao.removeAllEventListeners();
+		}
+}
+
+function criaAnimacao(){
+	containerAnimacao = new createjs.Container();
+	quadrinho1 = criaQuadrinho1();
+	quadrinho2 = criaQuadrinho2();
+	quadrinho3 = criaQuadrinho3();
+	containerAnimacao.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, stage.canvas.width, stage.canvas.height)));
+	containerAnimacao.addChild(quadrinho3);
+	containerAnimacao.addChild(quadrinho2);
+	containerAnimacao.addChild(quadrinho1);
+	stage.addChild(containerAnimacao);
+}	
+
+function criaQuadrinho1(){
+	var data = {
+		framerate: 24,
+		images: [preloadBalengo.getResult("quadrinho1")],
+		frames: {
+			width:800, height:192
+		},
+		animations: {
+			idle: [0],
+			anima : [0, 55, false],
+			termina : [54]
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	//animation.spriteSheet.getAnimation("click").speed = 50;
+	return animation;
+}
+
+function criaQuadrinho2(){
+	var data = {
+		framerate: 24,
+		images: [preloadBalengo.getResult("quadrinho2")],
+		frames: {
+			width:800, height:400
+		},
+		animations: {
+			idle : [0],
+			anima : [0, 51, false],
+			termina : [50],
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	//animation.spriteSheet.getAnimation("click").speed = 50;
+	return animation;
+}
+
+function criaQuadrinho3(){
+	var data = {
+		framerate: 24,
+		images: [preloadBalengo.getResult("quadrinho3")],
+		frames: {
+			width:800, height:600
+		},
+		animations: {
+			idle : [0],
+			anima : [0, 60, false]
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	//animation.spriteSheet.getAnimation("click").speed = 50;
+	return animation;
 }

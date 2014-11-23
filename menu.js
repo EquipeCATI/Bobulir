@@ -8,6 +8,7 @@ var seta;
 var preloadMenu = new createjs.LoadQueue(false);
 var pipa;
 var emFlor;
+var bobulir;
 //var pipa = spritePipa("assets/sprites/spritePipa.png");
 
 
@@ -29,7 +30,9 @@ function carregaAssets(){
 		{src:"images/nuv/nuvemPequena.png", id:"nuvem1"},
 		{src:"images/nuv/nuvemMedia.png", id:"nuvem2"},
 		{src:"images/nuv/nuvemGrande.png", id:"nuvem3"},
-		{src:"images/bobulir/bobulir10.png", id:"bobulir"},
+		{src:"images/bobulir/bobulir.png", id:"bobulir"},
+		{src:"images/bobulir/bobulirDanca.png", id:"danca"},
+		{src:"images/bobulir/bobulirPoim.png", id:"poim"},
 		];
 	preloadMenu.loadManifest(manifest, true, "assets/");
 	var audioPath = "assets/audio/";
@@ -116,8 +119,8 @@ function menu(){
 	bitmapStart.on("mouseout", out);
 	//botao dos creditos
 
-	bitmapCredit.x = 740;
-	bitmapCredit.y = 540;
+	bitmapCredit.x = 800 - 48.75 - 10;
+	bitmapCredit.y = 600 - 45.75 - 10;
 	containerMenu.addChild(bitmapCredit);
 
 	pipa = spritePipa(preloadMenu.getResult('pipa'));
@@ -125,13 +128,21 @@ function menu(){
 	pipa.y = 50;
 	containerMenu.addChild(pipa);
 	
-	var bobulir = new createjs.Bitmap(preloadMenu.getResult("bobulir"));
-	bobulir.regX = bobulir.image.width/2;
-	bobulir.regY = bobulir.image.height/2;
+	bobulir = criaBobulir();
+	bobulir.regX = bobulir.width/2;
+	bobulir.regY = bobulir.height/2;
 	//bobulir.scaleX = bobulir.scaleY = 0.25;
 	bobulir.x = 400;
 	bobulir.y = 250;
 	containerMenu.addChild(bobulir);
+
+	var nome = new createjs.Bitmap(preloadMenu.getResult("bobulir"));
+	nome.regX = nome.image.width/2;
+	nome.regY = nome.image.height/2;
+	//bobulir.scaleX = bobulir.scaleY = 0.25;
+	nome.x = 399;
+	nome.y = 267;
+	containerMenu.addChild(nome);
 	stage.addChild(containerMenu);
 	emFlor = createjs.Sound.play("emflor");
 	emFlor.volume = 0.2;
@@ -142,12 +153,32 @@ function menu(){
 	bitmapCredit.addEventListener("mousedown", down);
 }
 
+function criaBobulir(){
+	var data = {
+		framerate: 10, //Velocidade de troca de frame - irrelevante
+		images: [preloadMenu.getResult("danca"), preloadMenu.getResult("poim")], //spriteSheet
+		frames: {
+			width:590, height:226// tamanho dos frames
+		},
+		animations: { //Associação de nomes de animação aos frames
+			danca : [0, 59],
+			poim : [60, 82, false],
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var bob = new createjs.Sprite(spriteSheet, "danca");
+	bob.width = 590;
+	bob.height = 226;
+	return bob;
+}
+
 function criaNuvensEsq(){
 		var nNuvem = parseInt(Math.random()*3 +1);
 		console.log(nNuvem);
 		var img = preloadMenu.getResult("nuvem" + nNuvem);
 		var nuvem = new createjs.Bitmap(img);
-		nuvem.x = 100 + Math.random()*500;
+		nuvem.x = 100 + Math.random()*800;
 		nuvem.x = -nuvem.x;
 		nuvem.y = 10 + Math.random()*200;
 		nuvem.scaleX = nuvem.scaleY = 0.5;
@@ -159,7 +190,7 @@ function criaNuvensDir(){
 		console.log(nNuvem);
 		var img = preloadMenu.getResult("nuvem" + nNuvem);
 		var nuvem = new createjs.Bitmap(img);
-		nuvem.x = 100 + Math.random()*500;
+		nuvem.x = 100 + Math.random()*800;
 		nuvem.x = 1600 + nuvem.x;
 		nuvem.y = 100 + Math.random()*200;
 		nuvem.scaleY = 0.5;
@@ -175,6 +206,7 @@ function btnClicked(event){
 		var vibraSlap = createjs.Sound.play("vibraSlap");
 		vibraSlap.volume = 0.3;
 		createjs.Tween.get(vibraSlap).to({volume : 0}, 1000);
+		bobulir.gotoAndPlay("poim")
 		event.target.gotoAndPlay("normalize");
 		event.on("mouseup", up);
 		teste();
