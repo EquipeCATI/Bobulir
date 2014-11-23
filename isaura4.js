@@ -27,7 +27,7 @@ function carregaAssetsLixo(){
 	lixeiraPapel = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawRect(675, 20, 60, 110));
 	containerJogoLixo.addChild(lixeiraPapel);
 
-	lixeiraVidro = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(450, 20, 50, 90));
+	lixeiraVidro = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(450, 20, 60, 110));
 	containerJogoLixo.addChild(lixeiraVidro);
 
 	stage.addChild(containerJogoLixo);
@@ -85,56 +85,101 @@ function verificaLixeira(lixo){
 
 function geraLixo(){
 	var lixo;
+	var countV = 0;
+	var countPl = 0;
+	var countM = 0;
+	var countPp = 0;
+	var flag = false;
 	//criando o lixo
 	for(var i = 0; i<12; i++){
 		console.log(" "+i);
-		var rand = parseInt(Math.random()*4)
+		var rand = parseInt(Math.random()*4);
 		switch(rand){
 			case 0:
-				lixo = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawCircle(0, 0, 30));
-				lixo.tipo = "vidro";
+				countV++;
+				if(countV <= 3){
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawCircle(0, 0, 30));
+					lixo.tipo = "vidro";
+					console.log("cria verde. cont: "+ countV);
+				}else{
+					i--;
+					flag = true;
+				}				
 			break;
+
 			case 1:
-				lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawCircle(0, 0, 30));
-				lixo.tipo = "plastico";
+				countPl++
+				if(countPl <= 3){
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawCircle(0, 0, 30));
+					lixo.tipo = "plastico";
+					console.log("cria vermelho. cont: "+ countPl);
+				}else{
+					i--;
+					flag = true;
+				}
+				
 			break;
+
 			case 2:
-				lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawCircle(0, 0, 30));
-				lixo.tipo = "metal";
+				countM++;
+				if(countM <= 3){
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawCircle(0, 0, 30));
+					lixo.tipo = "metal";
+					console.log("cria amarelo. cont: "+ countM);
+				}else{
+					i--;
+					flag = true;
+				}
+				
 			break;
+
 			case 3:
-				lixo = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawCircle(0, 0, 30));
-				lixo.tipo = "papel";
+				countPp++;
+				if(countPp <= 3){
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawCircle(0, 0, 30));
+					lixo.tipo = "papel";
+					console.log("cria azul. cont: "+ countPp);
+				}else{
+					i--;
+					flag = true;
+				}
+				
 			break;
+
 			default:
 				alert("erro!");
 		}
 
-		lixo.x = 20 + 40*i;
-		lixo.y = 120 + 20*i;
-		lixo.Xoriginal = lixo.x; //
-		lixo.Yoriginal = lixo.y;
-		containerJogoLixo.addChild(lixo);
+		if(flag == false){
+			lixo.x = 200 +parseInt(Math.random()*570);
+			lixo.y = 230 + parseInt(Math.random()*360);
+			lixo.Xoriginal = lixo.x; //
+			lixo.Yoriginal = lixo.y;
+			containerJogoLixo.addChild(lixo);
 
-		//Os atributos Xoriginal e Yoriginal ja fazem isso
-		lixo.on("click", function(evt){
+			//Os atributos Xoriginal e Yoriginal ja fazem isso
+			lixo.on("click", function(evt){
 			lastPosX = evt.target.Xoriginal;
 			lastPosY = evt.target.Yoriginal;
-		});
+			});
 
-		//listener para fazer o "drag"
-		lixo.on("pressmove",function(evt) {
+			//listener para fazer o "drag"
+			lixo.on("pressmove",function(evt) {
 				evt.target.x = evt.stageX;
 				evt.target.y = evt.stageY;
-		});
+			});
 
-		//listener quando o botão é solto
-		lixo.on("pressup", function(evt) { 
-		verificaLixeira(evt.target);
-		if(evt.target){
+			//listener quando o botão é solto
+			lixo.on("pressup", function(evt) { 
+			verificaLixeira(evt.target);
+			if(evt.target){
 			createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
+			}
+			console.log("Soltou"); 
+			});
+		}else{
+			flag = false;
 		}
-		console.log("Soltou"); 
-		});
+		
 	}
 }
