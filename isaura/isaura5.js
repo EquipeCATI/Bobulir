@@ -202,6 +202,7 @@ function geraLixo(){
 			lixo.y = 230 + parseInt(Math.random()*360);
 			lixo.Xoriginal = lixo.x; //
 			lixo.Yoriginal = lixo.y;
+			lixo.clicado = false;
 			//lixo.rotation = -10 + parseInt(Math.random()*19);
 			containerJogoLixo.addChild(lixo);
 
@@ -209,17 +210,14 @@ function geraLixo(){
 			createjs.Tween.get(lixo).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 
 			//Os atributos Xoriginal e Yoriginal ja fazem isso
-			lixo.on("pressdown", function(evt){
-				lastPosX = evt.target.Xoriginal;
-				lastPosY = evt.target.Yoriginal;
+			lixo.on("mousedown", function(evt){
+				evt.target.clicado = true;
 			});
 
 			//listener para fazer o "drag"
 			lixo.on("pressmove",function(evt) {
-
 				evt.target.x = evt.stageX;
 				evt.target.y = evt.stageY;
-
 			});
 
 			//listener quando o botão é solto
@@ -229,9 +227,7 @@ function geraLixo(){
 			
 				if(evt.target){
 
-					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
-					createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
-			
+					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2)).to({ rotation : 10, clicado : false} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 				}
 				console.log("Soltou"); 
 			});
@@ -244,11 +240,11 @@ function geraLixo(){
 
 function loopLixo(evt){
 
-	if( evt.target.rotation == 10){
+	if( evt.target.rotation == 10 && !evt.target.clicado){
 		createjs.Tween.get(evt.target).to({ rotation : -10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 	}
 	
-	if(evt.target.rotation == -10){
+	if(evt.target.rotation == -10 && !evt.target.clicado){
 		createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 	}
 

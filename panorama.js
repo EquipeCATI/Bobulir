@@ -692,9 +692,9 @@ function criaBalao(animationAlvo){
 	console.log( b.height);
 	
 	var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
-	texto.x = 15;
+	texto.x = 30;
 	texto.y = 90;
-	texto.lineWidth = 370;
+	texto.lineWidth = 355;
 	texto.lineHeight = 25;
 	//balao.addChild(shapeBalao);
 	balao.addChild(titulo);
@@ -736,14 +736,14 @@ function criaBalao(animationAlvo){
 function addFotosRegras(id){
 	var mais = new createjs.Bitmap(preloadPanorama.getResult("mais"));
 	//mais.scaleX = mais.scaleY = 0.25;
-	mais.x = 385 - mais.image.width;
+	mais.x = 375 - mais.image.width;
 	mais.y = 285 - mais.image.height;
 	mais.id = id;
 	mais.on("click",createPopup);
 	balao.addChild(mais);
 	balao.addChild(imageContainer);
 	var b = imageContainer.getBounds();
-	imageContainer.x = 15 + b.width/2;
+	imageContainer.x = 30 + b.width/2;
 	imageContainer.y = 300 - b.height/2 - 15;
 }
 
