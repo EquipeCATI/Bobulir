@@ -12,7 +12,6 @@ function carregaAssetsLixo(){
 	stage = new createjs.Stage(canvas);
 
 	stage.enableMouseOver(20);  
-	createjs.Ticker.on("tick", tick);
 
 	preloadIsaura.on("complete", preloadCompletoLixo);
 
@@ -90,7 +89,14 @@ function verificaLixeira(lixo){
 			console.log("soltou vidro na lixeira certa");
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
+<<<<<<< HEAD
 		}else isaura.gotoAndPlay("nao");
+=======
+		}
+		else{
+			isaura.gotoAndPlay("nao");
+		}
+>>>>>>> origin/master
 	}
 	
 	else if(lixo.tipo == "metal"){
@@ -102,7 +108,14 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
+<<<<<<< HEAD
 		}else isaura.gotoAndPlay("nao");
+=======
+		}
+		else{
+			isaura.gotoAndPlay("nao");
+		}
+>>>>>>> origin/master
 	}
 	
 	else if(lixo.tipo == "papel"){
@@ -114,7 +127,14 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
+<<<<<<< HEAD
 		}else isaura.gotoAndPlay("nao");
+=======
+		}
+		else{
+			isaura.gotoAndPlay("nao");
+		}
+>>>>>>> origin/master
 	}
 	
 	else if(lixo.tipo == "plastico"){
@@ -126,7 +146,14 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
+<<<<<<< HEAD
 		}else isaura.gotoAndPlay("nao");
+=======
+		}
+		else{
+			isaura.gotoAndPlay("nao");
+		}
+>>>>>>> origin/master
 	}
 	
 }
