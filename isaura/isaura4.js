@@ -98,7 +98,7 @@ function geraLixo(){
 			case 0:
 				countV++;
 				if(countV <= 3){
-					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawCircle(0, 0, 30));
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(0, 0, 25, 35));
 					lixo.tipo = "vidro";
 					console.log("cria verde. cont: "+ countV);
 				}else{
@@ -110,7 +110,7 @@ function geraLixo(){
 			case 1:
 				countPl++
 				if(countPl <= 3){
-					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawCircle(0, 0, 30));
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawRect(0, 0, 25, 35));
 					lixo.tipo = "plastico";
 					console.log("cria vermelho. cont: "+ countPl);
 				}else{
@@ -123,7 +123,7 @@ function geraLixo(){
 			case 2:
 				countM++;
 				if(countM <= 3){
-					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawCircle(0, 0, 30));
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawRect(0, 0, 25, 35));
 					lixo.tipo = "metal";
 					console.log("cria amarelo. cont: "+ countM);
 				}else{
@@ -136,7 +136,7 @@ function geraLixo(){
 			case 3:
 				countPp++;
 				if(countPp <= 3){
-					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawCircle(0, 0, 30));
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawRect(0, 0, 25, 35));
 					lixo.tipo = "papel";
 					console.log("cria azul. cont: "+ countPp);
 				}else{
@@ -155,7 +155,11 @@ function geraLixo(){
 			lixo.y = 230 + parseInt(Math.random()*360);
 			lixo.Xoriginal = lixo.x; //
 			lixo.Yoriginal = lixo.y;
+			//lixo.rotation = -10 + parseInt(Math.random()*19);
 			containerJogoLixo.addChild(lixo);
+
+			//ondulação do vento na água
+			createjs.Tween.get(lixo).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 
 			//Os atributos Xoriginal e Yoriginal ja fazem isso
 			lixo.on("click", function(evt){
@@ -172,8 +176,9 @@ function geraLixo(){
 			//listener quando o botão é solto
 			lixo.on("pressup", function(evt) { 
 			verificaLixeira(evt.target);
+
 			if(evt.target){
-			createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
+				createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
 			}
 			console.log("Soltou"); 
 			});
@@ -182,4 +187,34 @@ function geraLixo(){
 		}
 		
 	}
+}
+
+function loopLixo(evt){
+	if( evt.target.rotation == 10){
+		createjs.Tween.get(evt.target).to({ rotation : -10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
+	}
+	
+	if(evt.target.rotation == -10){
+		createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
+	}
+}
+
+function criaIsaura(){
+	
+	var data = {
+		framerate: 10,
+		images: ["pisca.png"],
+		frames: {
+			width:524, height:400
+		},
+		animations: {
+			pisca: 0,
+			sim: [0, 75, "idle"],
+			nao: []
+		}
+	};
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+
+	return animation;
 }
