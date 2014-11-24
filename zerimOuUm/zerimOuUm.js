@@ -9,6 +9,8 @@ var jogador3;
 var botao0;
 var botao1;
 
+var animacaoZerim;
+
 
 function carregaAssetsZerim(){
 	preloadZerim.on("complete", handleCompleteZerim);
@@ -16,6 +18,12 @@ function carregaAssetsZerim(){
 	var manifest = [
 		{src:"spriteZerim.png", id:"sprite"},
 		{src:"iei.png", id:"iei"},
+		{src:"back.png", id:"back"},
+		{src:"jogador.png", id:"baixo"},
+		{src:"jogadorCima.png", id:"cima"},
+		{src:"jogadorEsq.png", id:"esquerda"},
+		{src:"jogadorDir.png", id:"direita"},
+		{src:"0ou1.png", id:"0ou1"},
 		];
 	preloadZerim.loadManifest(manifest, true, "zerimOuUm/");
 	}
@@ -28,20 +36,68 @@ function handleCompleteZerim(event) {
 	//zerim();
 }
 
+function criaJogador(id){
+	//Configuração do spriteSheet do botao
+	var image = new createjs.Bitmap(preloadZerim.getResult(id));
+	var data = {
+		framerate: 10, //Velocidade de troca de frame - irrelevante
+		images: [preloadZerim.getResult(id)], //spriteSheet
+		frames: {
+			width:image.image.width/2, height:image.image.height// tamanho dos frames
+		},
+		animations: { //Associação de nomes de animação aos frames
+			zero : [0], 
+			um : [1],
+		}
+	};
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var mao = new createjs.Sprite(spriteSheet, "zero");
+	mao.regX = image.image.width/4;
+	mao.regY = image.image.height/2;
+	return mao;
+}
+
+function cria0ou1(){
+	var data = {
+		framerate: 10, //Velocidade de troca de frame - irrelevante
+		images: [preloadZerim.getResult("0ou1")], //spriteSheet
+		frames: {
+			width:800, height:600// tamanho dos frames
+		},
+		animations: { //Associação de nomes de animação aos frames
+			idle : [0], 
+			anima : [0, 34, false],
+		}
+	};
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	return animation;
+}
+
 function getZerim(stage){	
+	animacaoZerim = cria0ou1();
 	botao0 = criaMaoZerim();
 	botao1 = criaMaoZerim();
-	
-	jogador   = criaMaoZerim();
-	jogador1 = criaMaoZerim();
-	jogador2 = criaMaoZerim();
-	jogador3 = criaMaoZerim();
-	
+	jogador  = criaJogador("baixo");
+	jogador.x = 400;
+	jogador.y = 600 - jogador.regY/2;
+	jogador1 = criaJogador("esquerda");
+	jogador1.x = jogador.regX/2;
+	jogador1.y = 300;
+
+	jogador2 = criaJogador("cima");
+	jogador2.x = 400;
+	jogador2.y = jogador2.regX/2; 
+
+	jogador3 = criaJogador("direita");
+	jogador3.x = 800 - jogador3.regX/2;
+	jogador3.y = 300; 
 	
 	containerZerim = new createjs.Container();
 	
 	//Fundo
-	containerZerim.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, 800, 600)));
+	var fundo = new createjs.Bitmap(preloadZerim.getResult("back"));
+	containerZerim.addChild(fundo);
 
 	
 	botao0.gotoAndPlay("zero");
@@ -51,18 +107,6 @@ function getZerim(stage){
 	botao1.gotoAndPlay("um");
 	botao1.x = 500;
 	botao1.y = 500;
-	
-	jogador.x = 350;
-	jogador.y = 400;
-	
-	jogador1.x = 100;
-	jogador1.y = 200;
-	
-	jogador2.x = 600;
-	jogador2.y = 200;
-	
-	jogador3.x = 350;
-	jogador3.y = 50;
 	
 	botao0.on("click", clicou);
 	botao1.on("click", clicou);
@@ -80,6 +124,11 @@ function getZerim(stage){
 }
 
 function clicou(evt){
+	jogador.alpha = 0;
+	jogador1.alpha = 0;
+	jogador2.alpha = 0;
+	jogador3.alpha = 0;
+	containerZerim.addChild(animacaoZerim);
 	if (evt.target == botao0){
 		jogador.gotoAndPlay("zero");
 		jogador1.gotoAndPlay("um");
@@ -92,16 +141,28 @@ function clicou(evt){
 		jogador2.gotoAndPlay("zero");
 		jogador3.gotoAndPlay("zero");
 	}
-	
-	var iei = new createjs.Bitmap(preloadZerim.getResult("iei"));
-	iei.scaleX = iei.scaleY = 0;
-	iei.regX = iei.image.width/2;
-	iei.regY = iei.image.height/2;
-	
-	iei.x = 400;
-	iei.y = 300;
-	containerZerim.addChild(iei);
-	createjs.Tween.get(iei,  {override : true}).to({ scaleX : 0.75, scaleY : 0.75} , 500).to({ scaleX : 0.5, scaleY : 0.5} , 1000).call(terminou);
+	animacaoZerim.gotoAndPlay("anima");
+	containerZerim.on("tick", exibeZerim);
+}
+
+function exibeZerim(){
+	if(animacaoZerim.currentFrame == 34){
+		animacaoZerim.alpha = 0;
+		animacaoZerim.gotoAndPlay("idle");
+		jogador.alpha = 1;
+		jogador1.alpha = 1;
+		jogador2.alpha = 1;
+		jogador3.alpha = 1;
+		var iei = new createjs.Bitmap(preloadZerim.getResult("iei"));
+		iei.scaleX = iei.scaleY = 0;
+		iei.regX = iei.image.width/2;
+		iei.regY = iei.image.height/2;
+		
+		iei.x = 400;
+		iei.y = 300;
+		containerZerim.addChild(iei);
+		createjs.Tween.get(iei,  {override : true}).to({ scaleX : 0.75, scaleY : 0.75} , 1000).to({ scaleX : 0.5, scaleY : 0.5} , 1000).call(terminou);
+	}
 }
 
 var containerTutorialZerim;
@@ -125,7 +186,7 @@ function criaTutorialZerim(){
 	texto.lineHeight = 25;
 	balaoTuto.addChild(texto);
 	
-	balaoTuto.addChild(criaBotaoTutoBalengo());
+	balaoTuto.addChild(criaBotaoTutoZerim());
 	containerTutorialZerim.addChild(balaoTuto);
 	containerZerim.addChild(containerTutorialZerim);
 	containerTutorialZerim.regX = 400;
@@ -134,7 +195,7 @@ function criaTutorialZerim(){
 	containerTutorialZerim.y = 300;
 }
 
-function criaBotaoTutoBalengo(){
+function criaBotaoTutoZerim(){
 	var botao = new createjs.Container();
 	
 	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 180, 50, 5 ));

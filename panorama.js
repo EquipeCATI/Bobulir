@@ -9,6 +9,7 @@ var maoClique;
 var buleiro;
 var baiao;
 var raia;
+var meninaOlha;
 var windowVar ;
 var right;
 var left;
@@ -190,7 +191,8 @@ function criaSecao1(){
 	raia.on("mouseover", clickableMark);
 	raia.on("mouseout", clickableOut);
 	secao1.addChild(raia);
-	secao1.addChild(criaOlha());	
+	meninaOlha = criaOlha()
+	secao1.addChild(meninaOlha);	
 }
 
 function criaOlha(){

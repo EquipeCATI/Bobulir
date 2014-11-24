@@ -98,7 +98,7 @@ function getBalengo()
 	menino.scaleX = menino.scaleY = 0.5;
 	menino.regY = 180
 	menino.y = 420;
-	menino.x = 240;
+	menino.x = 210;
 	maoDoMenino.x =  menino.x+20; 
     maoDoMenino.y = menino.y +30;
 	balengotengo.x =  maoDoMenino.x; 
@@ -259,9 +259,9 @@ function mMove(){
 	distX = pontoI.x - pontoF.x;
 	distY = pontoI.y - pontoF.y;
 	
-	forca = Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+	forca = 1.5 * Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
 	
-	if(forca<=75 && distX>=0)
+	if(forca<=112.5 && distX>=0)
 	{
 		var lineX = maoDoMenino.x;
 		var lineY = maoDoMenino.y;
@@ -275,7 +275,7 @@ function mMove(){
 	
 	else
 	{
-		forca = 75;
+		forca = 112.5;
 		if(distX<=0)
 		distX = 0;
 	}
@@ -332,7 +332,7 @@ function tickBalengo(event) {
 	
 	//Caso o projétil saia da tela, se encerra o lançamento atual
 	if(balengotengo.x < 0 || balengotengo.x > stage.canvas.width
-	|| balengotengo.y>stage.canvas.height || balengotengo.y<0)
+	|| balengotengo.y>stage.canvas.height)
 	{
 		if(menino.currentFrame == 26){
 		poeBalengoNaMao();
@@ -352,6 +352,7 @@ function tickBalengo(event) {
 		if(!winBalengo)
 		{
 			secao1.removeChild(raia);
+			secao1.removeChild(meninaOlha);
 			dragContainer.maxPositionX -=  secao2.width;
 			winBalengo = true;
 			criaAnimacao();
