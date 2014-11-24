@@ -227,7 +227,7 @@ function geraLixo(){
 			
 				if(evt.target){
 
-					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2)).to({ rotation : 10, clicado : false} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
+					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2)).to({ rotation : 10, clicado : false} , 1).call(loopLixo);
 				}
 				console.log("Soltou"); 
 			});
