@@ -247,18 +247,18 @@ function criaIsaura(){
 	
 	var data = {
 		framerate: 2,
-		images: ["isaura/pisca.png", "isaura/nao.png", "isaura/sim.png"],
+		images: [preloadIsaura.getResult("pisca"), preloadIsaura.getResult("nao"), preloadIsaura.getResult("sim")],
 		frames: {
 			width:200, height:274
 		},
 		animations: {
-			pisca: [0, 29],
-			nao: [30, 66, "pisca"],
-			sim: [72, 101, "pisca"]
+			idle: [0, 29],
+			nao: [30, 66, "idle"],
+			sim: [72, 101, "idle"]
 		}
 	};
 	var spriteSheet = new createjs.SpriteSheet(data);
-	var animation = new createjs.Sprite(spriteSheet, "pisca");
+	var animation = new createjs.Sprite(spriteSheet, "idle");
 
 	animation.x = 10;
 	animation.y = 350;

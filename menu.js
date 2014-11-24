@@ -253,10 +253,10 @@ function spritePipa(caminho){
 		framerate: 24, //Velocidade de troca de frame - irrelevante
 		images: [caminho], //spriteSheet
 		frames: {
-			width:250, height:181 // tamanho dos frames
+			width:650, height:420 // tamanho dos frames
 		},
 		animations: { //Associação de nomes de animação aos frames
-			loop : [0, 32]
+			loop : [0, 79]
 			//flyOut :[ ]
 		}
 	};
@@ -264,8 +264,8 @@ function spritePipa(caminho){
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animacao = new createjs.Sprite(spriteSheet, "loop");
 	animacao.speed = 2;
-	animacao.scaleX = 0.8;
-	animacao.scaleY = 0.8;
+	animacao.scaleX = 0.4;
+	animacao.scaleY = 0.4;
 	return animacao;
 }
 
