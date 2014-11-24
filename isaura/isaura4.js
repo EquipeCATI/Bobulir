@@ -89,7 +89,8 @@ function verificaLixeira(lixo){
 		{
 			console.log("soltou vidro na lixeira certa");
 			containerJogoLixo.removeChild(lixo);
-		}
+			isaura.gotoAndPlay("sim");
+		}else isaura.gotoAndPlay("nao");
 	}
 	
 	else if(lixo.tipo == "metal"){
@@ -100,7 +101,8 @@ function verificaLixeira(lixo){
 		if (lixeiraMetal.hitTest(ponto.x, ponto.y)) 
 		{
 			containerJogoLixo.removeChild(lixo);
-		}
+			isaura.gotoAndPlay("sim");
+		}else isaura.gotoAndPlay("nao");
 	}
 	
 	else if(lixo.tipo == "papel"){
@@ -111,7 +113,8 @@ function verificaLixeira(lixo){
 		if (lixeiraPapel.hitTest(ponto.x, ponto.y)) 
 		{
 			containerJogoLixo.removeChild(lixo);
-		}
+			isaura.gotoAndPlay("sim");
+		}else isaura.gotoAndPlay("nao");
 	}
 	
 	else if(lixo.tipo == "plastico"){
@@ -122,7 +125,8 @@ function verificaLixeira(lixo){
 		if (lixeiraPlastico.hitTest(ponto.x, ponto.y)) 
 		{
 			containerJogoLixo.removeChild(lixo);
-		}
+			isaura.gotoAndPlay("sim");
+		}else isaura.gotoAndPlay("nao");
 	}
 	
 }
