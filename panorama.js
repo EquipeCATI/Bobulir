@@ -32,6 +32,7 @@ function carregaAssetsPanorama(){
 		{src:"sprites/raia.png", id:"raia"},
 		{src:"sprites/relogio.png", id:"relogio"},
 		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
+		{src:"sprites/bruxaSprite2.png", id:"bruxinhaRun"},
 		{src:"sprites/meninaBike2.png", id:"meninaBike"},
 		{src:"sprites/bila.png", id:"bila"},
 		{src:"sprites/peao.png", id:"peao"},
@@ -501,19 +502,20 @@ function anima(evt){
 function criaBruxinha(){
 	var data = {
 		framerate: 60,
-		images: [preloadPanorama.getResult("bruxinha")],
+		images: [preloadPanorama.getResult("bruxinha"), preloadPanorama.getResult("bruxinhaRun")],
 		frames: {
-			width:236, height:454
+			width:236, height:550
 		},
 		animations: {
-			idle:[0, 67, true]
+			idle: [0, 67, true],
+			run: [72, 131, "idle"],
 		}
 	};
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.x = 1350;
-	animation.y = 350; //secao1.height/2;
+	animation.y = 320; //secao1.height/2;
 	animation.scaleX = animation.scaleY = 0.35;
 	animation.som = "risada menina";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX + 20;
@@ -808,6 +810,7 @@ function tickPanorama(event) {
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";
 	   bigObjectFlag = false;
+	   maoClique.alpha = 0;
 	   }
 	   
 	else if (moveLeft) {
@@ -815,6 +818,7 @@ function tickPanorama(event) {
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";
 	   bigObjectFlag = false;
+	   maoClique.alpha = 0;
 	   }
 
 	else if (moveUp) {
@@ -822,6 +826,7 @@ function tickPanorama(event) {
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";
 	   bigObjectFlag = false;
+	   maoClique.alpha = 0;
 	   }
 }
 
@@ -852,7 +857,10 @@ function gerenciaAlphaHUD(){
 	}
 	else
 		down.alpha = 0;
-		
-	if(down.alpha == 0 && up.alpha == 0)
+	/*	
+	if(!dragContainer.y == 0 && maoClique.y<=400)
 		maoClique.alpha = 0;
+
+	if(dragContainer.y < 0 && maoClique.y>=400)
+		maoClique.alpha = 0;*/
 }
