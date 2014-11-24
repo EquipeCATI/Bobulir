@@ -3,32 +3,76 @@ var lixeiraMetal;
 var lixeiraPapel;
 var lixeiraPlastico;
 var containerJogoLixo = new createjs.Container();
+var isaura = new criaIsaura();
+var preloadIsaura = new createjs.LoadQueue(false);
 
 function carregaAssetsLixo(){
+
 	var canvas = document.getElementById("canvas");
 	stage = new createjs.Stage(canvas);
 
 	stage.enableMouseOver(20);  
 	createjs.Ticker.on("tick", tick);
 
+	preloadIsaura.on("complete", preloadCompletoLixo);
+
+	var manifest = [
+		{src:"lixeiraMetal.png", id:"lixeiraMetal"},
+		{src:"lixoPlasticos.png", id:"lixeiraPlasticos"},
+		{src:"lixeiraVidro.png", id:"lixeiraVidro"},
+		{src:"lixoPapel.png", id:"lixeiraPapel"},
+		{src:"pisca.png", id:"pisca"},
+		{src:"sim.png", id:"sim"},
+		{src:"nao.png", id:"nao"},
+		{src:"lixos/amassado.png", id:"amassado"},
+		{src:"lixos/balde.png", id:"baldeMetal"},
+		{src:"lixos/baldo.png", id:"baldePlastico"},
+		{src:"lixos/sardinha.png", id:"sardinha"},
+		{src:"lixos/carta.png", id:"carta"},
+		{src:"lixos/copo.png", id:"copo"},
+		{src:"lixos/garrafa.png", id:"garrafaV"},
+		{src:"lixos/garrafap.png", id:"garrafaP"},
+		{src:"lixos/lata.png", id:"lata"},
+		{src:"lixos/oculos.png", id:"oculos"},
+		{src:"lixos/papel.png", id:"papel"},
+		{src:"lixos/pente.png", id:"pente"},
+		];
+
+	preloadIsaura.loadManifest(manifest, true, "isaura/");
+
+	}
+
+function preloadCompletoLixo(){
+
 	stage.mouseMoveOutside = true;
 
 	var lagoa = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 200, 800, 400));
 	containerJogoLixo.addChild(lagoa);
 
-	// Fazendo as lixeiras
+	containerJogoLixo.addChild(isaura);
 
-	lixeiraPlastico = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawRect(525, 20, 60, 110));
+	// Fazendo as lixeiras
+	lixeiraVidro = new createjs.Bitmap(preloadIsaura.getResult("lixeiraVidro"));
+	lixeiraVidro.x = 320;
+	lixeiraVidro.y = 20;
+	containerJogoLixo.addChild(lixeiraVidro);
+
+	lixeiraPlastico = new createjs.Bitmap(preloadIsaura.getResult("lixeiraPlasticos"));
+	lixeiraPlastico.x = 440;
+	lixeiraPlastico.y = 20;
 	containerJogoLixo.addChild(lixeiraPlastico);
 
-	lixeiraMetal = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawRect(600, 20, 60, 110));
+	lixeiraMetal = new createjs.Bitmap(preloadIsaura.getResult("lixeiraMetal"));
+	lixeiraMetal.x = 570;
+	lixeiraMetal.y = 20;
 	containerJogoLixo.addChild(lixeiraMetal);
 
-	lixeiraPapel = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawRect(675, 20, 60, 110));
+	lixeiraPapel = new createjs.Bitmap(preloadIsaura.getResult("lixeiraPapel"));
+	lixeiraPapel.x = 695;
+	lixeiraPapel.y = 20;
 	containerJogoLixo.addChild(lixeiraPapel);
 
-	lixeiraVidro = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(450, 20, 60, 110));
-	containerJogoLixo.addChild(lixeiraVidro);
+
 
 	stage.addChild(containerJogoLixo);
 	geraLixo();
@@ -202,19 +246,23 @@ function loopLixo(evt){
 function criaIsaura(){
 	
 	var data = {
-		framerate: 10,
-		images: ["pisca.png"],
+		framerate: 2,
+		images: ["isaura/pisca.png", "isaura/nao.png", "isaura/sim.png"],
 		frames: {
-			width:524, height:400
+			width:200, height:274
 		},
 		animations: {
-			pisca: 0,
-			sim: [0, 75, "idle"],
-			nao: []
+			pisca: [0, 29],
+			nao: [30, 66, "pisca"],
+			sim: [72, 101, "pisca"]
 		}
 	};
 	var spriteSheet = new createjs.SpriteSheet(data);
-	var animation = new createjs.Sprite(spriteSheet, "idle");
+	var animation = new createjs.Sprite(spriteSheet, "pisca");
+
+	animation.x = 10;
+	animation.y = 350;
+
 
 	return animation;
 }
