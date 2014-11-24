@@ -70,9 +70,6 @@ function preloadCompletoLixo(evt){
 	lixeiraPapel.x = 695;
 	lixeiraPapel.y = 20;
 	containerJogoLixo.addChild(lixeiraPapel);
-
-
-
 	stage.addChild(containerJogoLixo);
 	geraLixo();
 }
@@ -81,10 +78,10 @@ function verificaLixeira(lixo){
 	if(lixo.tipo == "vidro"){
 		console.log("vidro");
 		//Checagem de colisão
-		var ponto = lixo.localToLocal(0,0,lixeiraVidro); //Posição do projétil relativo ao alvo
+		var ponto = ndgmr.checkRectCollision(lixo,lixeiraVidro); //Posição do projétil relativo ao alvo
 		
 		//Checagem se este ponto está por cima de algum pixel do alvo
-		if (lixeiraVidro.hitTest(ponto.x, ponto.y)) 
+		if (ponto) 
 		{
 			console.log("soltou vidro na lixeira certa");
 			containerJogoLixo.removeChild(lixo);
@@ -94,10 +91,10 @@ function verificaLixeira(lixo){
 	
 	else if(lixo.tipo == "metal"){
 		//Checagem de colisão
-		var ponto = lixo.localToLocal(0,0,lixeiraMetal); //Posição do projétil relativo ao alvo
+		var ponto = ndgmr.checkRectCollision(lixo,lixeiraMetal); //Posição do projétil relativo ao alvo
 		
 		//Checagem se este ponto está por cima de algum pixel do alvo
-		if (lixeiraMetal.hitTest(ponto.x, ponto.y)) 
+		if (ponto) 
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
@@ -106,10 +103,10 @@ function verificaLixeira(lixo){
 	
 	else if(lixo.tipo == "papel"){
 		//Checagem de colisão
-		var ponto = lixo.localToLocal(0,0,lixeiraPapel); //Posição do projétil relativo ao alvo
+		var ponto = ndgmr.checkRectCollision(lixo,lixeiraPapel); //Posição do projétil relativo ao alvo
 		
 		//Checagem se este ponto está por cima de algum pixel do alvo
-		if (lixeiraPapel.hitTest(ponto.x, ponto.y)) 
+		if (ponto) 
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
@@ -118,10 +115,10 @@ function verificaLixeira(lixo){
 	
 	else if(lixo.tipo == "plastico"){
 		//Checagem de colisão
-		var ponto = lixo.localToLocal(0,0,lixeiraPlastico); //Posição do projétil relativo ao alvo
+		var ponto = ndgmr.checkRectCollision(lixo,lixeiraPlastico); //Posição do projétil relativo ao alvo
 		
 		//Checagem se este ponto está por cima de algum pixel do alvo
-		if (lixeiraPlastico.hitTest(ponto.x, ponto.y)) 
+		if (ponto) 
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
@@ -136,9 +133,10 @@ function geraLixo(){
 	var countPl = 0;
 	var countM = 0;
 	var countPp = 0;
-	var flag = false;
+	
 	//criando o lixo
 	for(var i = 0; i<12; i++){
+		var flag = false;
 		console.log(" "+i);
 		var rand = parseInt(Math.random()*4);
 		switch(rand){
@@ -212,6 +210,7 @@ function geraLixo(){
 			//Os atributos Xoriginal e Yoriginal ja fazem isso
 			lixo.on("mousedown", function(evt){
 				evt.target.clicado = true;
+				evt.target.rotation = 0;
 				evt.target.gotoAndPlay("dragged");
 			});
 
@@ -223,34 +222,28 @@ function geraLixo(){
 
 			//listener quando o botão é solto
 			lixo.on("pressup", function(evt) { 
-				
 				verificaLixeira(evt.target);
-			
 				if(evt.target){
-					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2)).to({ rotation : 10, clicado : false} , 1).call(loopLixo);
-					evt.target.gotoAndPlay("normal");
+					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500).call(voltaParaOLago).to({ rotation : 10, clicado : false} , 1).call(loopLixo);
+					
 				}
-				console.log("Soltou"); 
+				console.log("Soltou " + evt.target.tipo); 
 			});
-		}else{
-			flag = false;
 		}
-		
 	}
 }
 
-function loopLixo(evt){
+function voltaParaOLago(evt){
+	evt.target.gotoAndPlay("normal");
+}
 
+function loopLixo(evt){
 	if( evt.target.rotation == 10 && !evt.target.clicado){
 		createjs.Tween.get(evt.target).to({ rotation : -10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 	}
-	
 	if(evt.target.rotation == -10 && !evt.target.clicado){
 		createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 	}
-
-	
-
 }
 
 function criaIsaura(){

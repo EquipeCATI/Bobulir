@@ -377,6 +377,9 @@ function criaBotaoSom(){
 		switchMusica();
 	});
 
+	animation.x = 10;
+	animation.y = 10;
+
 	return animation;
 }
 
