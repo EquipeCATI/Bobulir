@@ -12,7 +12,6 @@ function carregaAssetsLixo(){
 	stage = new createjs.Stage(canvas);
 
 	stage.enableMouseOver(20);  
-	createjs.Ticker.on("tick", tick);
 
 	preloadIsaura.on("complete", preloadCompletoLixo);
 
@@ -89,6 +88,10 @@ function verificaLixeira(lixo){
 		{
 			console.log("soltou vidro na lixeira certa");
 			containerJogoLixo.removeChild(lixo);
+			isaura.gotoAndPlay("sim");
+		}
+		else{
+			isaura.gotoAndPlay("nao");
 		}
 	}
 	
@@ -100,6 +103,10 @@ function verificaLixeira(lixo){
 		if (lixeiraMetal.hitTest(ponto.x, ponto.y)) 
 		{
 			containerJogoLixo.removeChild(lixo);
+			isaura.gotoAndPlay("sim");
+		}
+		else{
+			isaura.gotoAndPlay("nao");
 		}
 	}
 	
@@ -111,6 +118,10 @@ function verificaLixeira(lixo){
 		if (lixeiraPapel.hitTest(ponto.x, ponto.y)) 
 		{
 			containerJogoLixo.removeChild(lixo);
+			isaura.gotoAndPlay("sim");
+		}
+		else{
+			isaura.gotoAndPlay("nao");
 		}
 	}
 	
@@ -122,6 +133,10 @@ function verificaLixeira(lixo){
 		if (lixeiraPlastico.hitTest(ponto.x, ponto.y)) 
 		{
 			containerJogoLixo.removeChild(lixo);
+			isaura.gotoAndPlay("sim");
+		}
+		else{
+			isaura.gotoAndPlay("nao");
 		}
 	}
 	
