@@ -4,6 +4,7 @@ var line = new createjs.Shape();
 var preloadBalengo = new createjs.LoadQueue(false);
 var winBalengo = false;
 var back;
+var endTutorialBalengo = false;
 
 //Variáveis de controle do lançamento
 var angle;
@@ -173,7 +174,7 @@ function criaTutorial(){
 	balaoTuto.addChild(criaBotaoTuto());
 	containerTutorial.addChild(balaoTuto);
 	containerTutorial.addChild(mao);
-	containerBalengo.addChild(containerTutorial);
+	stage.addChild(containerTutorial);
 	containerTutorial.scaleX = containerTutorial.scaleY = 0;
 	containerTutorial.regX = 400;
 	containerTutorial.regY = 300;
@@ -198,6 +199,7 @@ function criaBotaoTuto(){
 	
 	botao.on("click", function(evt){
 		createjs.Tween.get(containerTutorial, {override : true}).to({ scaleX : 0, scaleY : 0, status : "volta"} , 500);
+		endTutorialBalengo = true;
 	});
 	
 	return botao;
@@ -250,6 +252,7 @@ function mDown(){
 }
 
 function mMove(){
+	if(endTutorialBalengo){
 	pontoF.x = stage.mouseX;
 	pontoF.y = stage.mouseY;
 	
@@ -276,10 +279,12 @@ function mMove(){
 		if(distX<=0)
 		distX = 0;
 	}
+	}
 }
 
 function joga()
 {
+	if(endTutorialBalengo){
 	line.graphics.clear();
 	angle = Math.atan2(pontoI.y - pontoF.y, pontoI.x - pontoF.x ); 
 	angle = angle * (180/Math.PI);
@@ -293,6 +298,7 @@ function joga()
 		menino.gotoAndPlay("joga");
 		lancou = true;
 		forca = 0;
+	}
 	}
 }
 
@@ -345,6 +351,7 @@ function tickBalengo(event) {
 	{
 		if(!winBalengo)
 		{
+			secao1.removeChild(raia);
 			dragContainer.maxPositionX -=  secao2.width;
 			winBalengo = true;
 			criaAnimacao();
@@ -369,12 +376,13 @@ function poeBalengoNaMao(){
 	balengotengo.x =  maoDoMenino.x; 
 	balengotengo.y = maoDoMenino.y;
 }
-
+var blackScreen;
 function exibeAnimacao(evt){
 	if(quadrinho3.currentFrame != 60){
 		if(quadrinho1.currentFrame == 55){
 			quadrinho1.gotoAndPlay("termina");
 			quadrinho2.gotoAndPlay("anima");
+			createjs.Tween.get(quadrinho2).to({animation: "anima", })
 			}
 		if(quadrinho2.currentFrame == 51){
 			quadrinho2.gotoAndPlay("termina");
@@ -383,10 +391,20 @@ function exibeAnimacao(evt){
 	}
 
 	else{
-		stage.addChild(getZerim());
-		containerAnimacao.removeAllChildren();
+		blackScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
+		blackScreen.alpha = 0;
+		getZerim(stage);
+		containerZerim.alpha = 0;
+		stage.addChild(blackScreen);
+		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
+		createjs.Tween.get(containerZerim, {override : true}).wait(500).to({ alpha : 1} , 100).call(finalizaAnimacao);
 		containerAnimacao.removeAllEventListeners();
+
 		}
+}
+function finalizaAnimacao(){
+	containerAnimacao.removeAllChildren();
+	
 }
 
 function criaAnimacao(){
@@ -417,6 +435,7 @@ function criaQuadrinho1(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.y = 5;
 	//animation.spriteSheet.getAnimation("click").speed = 50;
 	return animation;
 }
@@ -437,6 +456,7 @@ function criaQuadrinho2(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.y = 10;
 	//animation.spriteSheet.getAnimation("click").speed = 50;
 	return animation;
 }
@@ -456,6 +476,7 @@ function criaQuadrinho3(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.y = 10;
 	//animation.spriteSheet.getAnimation("click").speed = 50;
 	return animation;
 }

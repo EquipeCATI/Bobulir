@@ -8,10 +8,11 @@ var meninaBike = criaBike();
 var maoClique;
 var buleiro;
 var baiao;
-
+var raia;
 var windowVar ;
 var right;
 var left;
+var botaoSom;
 
 var bigObjectFlag = false;
 
@@ -41,6 +42,7 @@ function carregaAssetsPanorama(){
 		{src:"images/icons/setae.png", id:"setae"},
 		{src:"images/icons/seta.png", id:"seta"},
 		{src:"images/icons/mais.png", id:"mais"},
+		{src:"images/icons/som.png", id:"som"},
 		];
 	preloadPanorama.loadManifest(manifestCenario, true, "assets/");
 	
@@ -86,6 +88,7 @@ if(balao.balaoAtivo != evt.target.id){
 	buleiro.y = evt.target.y - 20;
 	evt.target.parent.addChild(buleiro);
 	}
+	evt.target.on("click", clickableOut);
 }
 
 function clickableOut(evt){
@@ -146,7 +149,6 @@ function panorama() {
 	panoramaIsActive = true;
 	createjs.Tween.removeAllTweens();
 	loopBike();
-	removeSons();
  }
 var fadeOutScreen;
 function criaSecao1(){
@@ -168,7 +170,7 @@ function criaSecao1(){
 	//secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
 		
-	var raia = new createjs.Bitmap("assets/sprites/raia.png");
+	raia = new createjs.Bitmap("assets/sprites/raia.png");
 	raia.x = 2250;
 	raia.y = -60;
 	raia.on("click", function(event){
@@ -178,12 +180,14 @@ function criaSecao1(){
 			fadeOutScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
 			fadeOutScreen.alpha = 0;
 			stage.addChild(fadeOutScreen);
-			secao1.removeChild(event.target);
 			createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).call(adicionaBalengo).to({alpha : 0}, 500);
 			createjs.Tween.get(containerBalengo, {override : true}).wait(1000).to({ scaleX : 1, scaleY : 1} , 2500).call(criaTutorial);
-			//criaTutorial();
 			panoramaIsActive = false;
 		});
+	raia.width = raia.image.width;
+	raia.height = raia.image.height;
+	raia.on("mouseover", clickableMark);
+	raia.on("mouseout", clickableOut);
 	secao1.addChild(raia);
 	secao1.addChild(criaOlha());	
 }
@@ -224,6 +228,8 @@ function criaOlha(){
 	
 	return animation;
 }
+
+
 
 function adicionaBalengo(){
 	stage.addChild(containerBalengo);
@@ -292,6 +298,7 @@ function criaHUD(){
 	left.addEventListener("mouseover", overL);
 	left.addEventListener("mouseout", function (evt){ moveLeft = false});
 	left.addEventListener("click", clickL);
+	left.alpha = 0;
 	
 	up = criaSeta();//new createjs.Bitmap(preloadPanorama.getResult("setad"));
 	up.regX = up.width/2;
@@ -308,6 +315,7 @@ function criaHUD(){
 	});
 	up.addEventListener("mouseout", function (evt){maoClique.alpha = 0;});
 	up.addEventListener("click", clickU);
+	up.alpha = 0;
 	
 	down = criaSeta();//new createjs.Bitmap(preloadPanorama.getResult("setad"));
 	down.regX = down.width/2;
@@ -324,6 +332,7 @@ function criaHUD(){
 	});
 	down.addEventListener("mouseout", function (evt){ maoClique.alpha = 0;});
 	down.addEventListener("click", clickD);
+	down.alpha = 0;
 	
 	stage.addChild(left);
 	stage.addChild(right);
@@ -333,6 +342,50 @@ function criaHUD(){
 	maoClique = criaMao();
 	maoClique.alpha = 0;
 	stage.addChild(maoClique);
+	botaoSom = criaBotaoSom();
+	stage.addChild(botaoSom);
+}
+
+function criaBotaoSom(){
+	var data = {
+		framerate: 60,
+		images: [preloadPanorama.getResult("som")],
+		frames: {
+			width:360.5, height:325
+		},
+		animations: {
+			on:[0],
+			off:[1],
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "on");
+	animation.alpha = 0.5;
+	animation.scaleX = animation.scaleY = 0.1;
+	animation.on("mouseover", function(evt){
+		evt.target.alpha = 1;
+	});
+	animation.on("mouseout", function(evt){
+		evt.target.alpha = 0.5;
+	});
+
+	animation.on("click", function(evt){
+		switchMusica();
+	});
+
+	return animation;
+}
+
+function switchMusica(){
+	if(baiao.volume == 0.2){
+		baiao.volume = 0;
+		botaoSom.gotoAndPlay("off");
+		}
+	else{
+		baiao.volume = 0.2;
+		botaoSom.gotoAndPlay("on");
+		}
 }
 
 function criaMao(){
@@ -758,6 +811,13 @@ function tickPanorama(event) {
 	   }
 	   
 	else if (moveLeft) {
+       dragContainer.x += 10;
+	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
+	   balao.balaoAtivo = "";
+	   bigObjectFlag = false;
+	   }
+
+	else if (moveUp) {
        dragContainer.x += 10;
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";

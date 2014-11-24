@@ -28,9 +28,8 @@ function handleCompleteZerim(event) {
 	//zerim();
 }
 
-function getZerim(){	
+function getZerim(stage){	
 	botao0 = criaMaoZerim();
-	console.log(botao0);
 	botao1 = criaMaoZerim();
 	
 	jogador   = criaMaoZerim();
@@ -76,7 +75,8 @@ function getZerim(){
 	containerZerim.addChild(botao0);
 	containerZerim.addChild(botao1);
 	
-	return containerZerim;
+	stage.addChild(containerZerim);
+	criaTutorialZerim();
 }
 
 function clicou(evt){
@@ -102,12 +102,63 @@ function clicou(evt){
 	iei.y = 300;
 	containerZerim.addChild(iei);
 	createjs.Tween.get(iei,  {override : true}).to({ scaleX : 0.75, scaleY : 0.75} , 500).to({ scaleX : 0.5, scaleY : 0.5} , 1000).call(terminou);
+}
+
+var containerTutorialZerim;
+function criaTutorialZerim(){
+	containerTutorialZerim = new createjs.Container();
+	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
+	fundoTuto.alpha = 0.5;
+	containerTutorialZerim.addChild(fundoTuto);
 	
+	var balaoTuto = new createjs.Container();
 	
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 300, 5 ));
+	balaoTuto.x = 200;
+	balaoTuto.y = 200;
+	balaoTuto.addChild(shapeBalao);
+	
+	var texto = new createjs.Text("Eita, a raia caiu na Lagoa do Urubu! A galera tá morrendo de medo de ir lá por causa da Isaura! Bora tirar zerim ou um e ver quem vai?", "20px FiraSans", "#000000");
+	texto.x = 15;
+	texto.y = 75;
+	texto.lineWidth = 370;
+	texto.lineHeight = 25;
+	balaoTuto.addChild(texto);
+	
+	balaoTuto.addChild(criaBotaoTutoBalengo());
+	containerTutorialZerim.addChild(balaoTuto);
+	containerZerim.addChild(containerTutorialZerim);
+	containerTutorialZerim.regX = 400;
+	containerTutorialZerim.regY = 300;
+	containerTutorialZerim.x = 400;
+	containerTutorialZerim.y = 300;
+}
+
+function criaBotaoTutoBalengo(){
+	var botao = new createjs.Container();
+	
+	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 180, 50, 5 ));
+	botao.addChild(shapeBotao);
+	
+	var titulo = new createjs.Text("É o jeito...", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 90 - b.width/2;
+	titulo.y = 5;
+	botao.addChild(titulo);
+	
+	botao.x = 110;
+	botao.y = 200;
+	
+	botao.on("click", function(evt){
+		createjs.Tween.get(containerTutorialZerim, {override : true}).to({ scaleX : 0, scaleY : 0, status : "volta"} , 500);
+		endTutorialBalengo = true;
+	});
+	
+	return botao;
 }
 
 function terminou(){
-	stage.removeChild(containerZerim);
+	containerZerim.parent.removeChild(containerZerim);
 	panoramaIsActive = true;
 }
 
