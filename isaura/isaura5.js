@@ -170,7 +170,7 @@ function geraLixo(){
 			case 2:
 				countM++;
 				if(countM <= 3){
-					lixo = spriteLixo();
+					lixo = spriteLixoMetal(countM);
 					lixo.tipo = "metal";
 					console.log("cria amarelo. cont: "+ countM);
 				}else{
@@ -212,6 +212,7 @@ function geraLixo(){
 			//Os atributos Xoriginal e Yoriginal ja fazem isso
 			lixo.on("mousedown", function(evt){
 				evt.target.clicado = true;
+				evt.target.gotoAndPlay("dragged");
 			});
 
 			//listener para fazer o "drag"
@@ -226,8 +227,8 @@ function geraLixo(){
 				verificaLixeira(evt.target);
 			
 				if(evt.target){
-
 					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2)).to({ rotation : 10, clicado : false} , 1).call(loopLixo);
+					evt.target.gotoAndPlay("normal");
 				}
 				console.log("Soltou"); 
 			});
@@ -276,9 +277,11 @@ function criaIsaura(){
 	return animation;
 }
 
-function spriteLixo(){
+function spriteLixoMetal(cont){
 	
-	var data = {
+	console.log(" "+ cont);
+	if(cont == 1){
+		var data = {
 		framerate: 10,
 		images: [preloadIsaura.getResult("lata")],
 		frames: {
@@ -288,7 +291,37 @@ function spriteLixo(){
 			normal: 0,
 			dragged: 1
 		}
-	};
+		};
+
+	}
+	else if(cont == 2){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("baldeMetal")],
+		frames: {
+			width:150, height:130
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+
+	}
+	else if(cont == 3){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("sardinha")],
+		frames: {
+			width:105, height:50
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+	}
+	
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "normal");
 
@@ -300,4 +333,6 @@ function spriteLixo(){
 
 	return animation;
 }
+
+
 
