@@ -145,7 +145,7 @@ function geraLixo(){
 			case 0:
 				countV++;
 				if(countV <= 3){
-					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#00ff00").drawRect(0, 0, 25, 35));
+					lixo = spriteLixoVidro(countV);
 					lixo.tipo = "vidro";
 					console.log("cria verde. cont: "+ countV);
 				}else{
@@ -157,7 +157,7 @@ function geraLixo(){
 			case 1:
 				countPl++
 				if(countPl <= 3){
-					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ff0000").drawRect(0, 0, 25, 35));
+					lixo = spriteLixoPlastico(countPl);
 					lixo.tipo = "plastico";
 					console.log("cria vermelho. cont: "+ countPl);
 				}else{
@@ -183,7 +183,7 @@ function geraLixo(){
 			case 3:
 				countPp++;
 				if(countPp <= 3){
-					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#0000ff").drawRect(0, 0, 25, 35));
+					lixo = spriteLixoPapel(countPp);
 					lixo.tipo = "papel";
 					console.log("cria azul. cont: "+ countPp);
 				}else{
@@ -334,5 +334,175 @@ function spriteLixoMetal(cont){
 	return animation;
 }
 
+function spriteLixoPapel(cont){
+	
+	console.log(" "+ cont);
+	if(cont == 1){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("carta")],
+		frames: {
+			width:110, height:85
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+
+	}
+	else if(cont == 2){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("amassado")],
+		frames: {
+			width:50, height:43
+		},
+		animations: {
+			normal: 0,
+			dragged: 0
+		}
+		};
+
+	}
+	else if(cont == 3){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("papel")],
+		frames: {
+			width:120, height:140
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+	}
+	
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "normal");
+
+	animation.regX = (animation.spriteSheet.getFrameBounds(0).width*animation.scaleX)/2
+	animation.regY = (animation.spriteSheet.getFrameBounds(0).height*animation.scaleX)/2
+
+	animation.scaleX = animation.scaleY = 0.7;
+
+
+	return animation;
+}
+
+function spriteLixoVidro(cont){
+	
+	console.log(" "+ cont);
+	if(cont == 1){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("oculos")],
+		frames: {
+			width:115, height:55
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+
+	}
+	else if(cont == 2){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("copo")],
+		frames: {
+			width:64, height:79
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+
+	}
+	else if(cont == 3){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("garrafaV")],
+		frames: {
+			width:60, height:190
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+	}
+	
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "normal");
+
+	animation.regX = (animation.spriteSheet.getFrameBounds(0).width*animation.scaleX)/2
+	animation.regY = (animation.spriteSheet.getFrameBounds(0).height*animation.scaleX)/2
+
+	animation.scaleX = animation.scaleY = 0.7;
+
+
+	return animation;
+}
+
+function spriteLixoPlastico(cont){
+	
+	console.log(" "+ cont);
+	if(cont == 1){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("pente")],
+		frames: {
+			width:60, height:90
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+
+	}
+	else if(cont == 2){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("baldePlastico")],
+		frames: {
+			width:140, height:143
+		},
+		animations: {
+			normal: 0,
+			dragged: 0
+		}
+		};
+
+	}
+	else if(cont == 3){
+		var data = {
+		framerate: 10,
+		images: [preloadIsaura.getResult("garrafaP")],
+		frames: {
+			width:60, height:140
+		},
+		animations: {
+			normal: 0,
+			dragged: 1
+		}
+		};
+	}
+	
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "normal");
+
+	animation.regX = (animation.spriteSheet.getFrameBounds(0).width*animation.scaleX)/2
+	animation.regY = (animation.spriteSheet.getFrameBounds(0).height*animation.scaleX)/2
+
+	animation.scaleX = animation.scaleY = 0.7;
+
+
+	return animation;
+}
 
 
