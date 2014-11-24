@@ -11,7 +11,7 @@ function carregaAssetsLixo(){
 	var canvas = document.getElementById("canvas");
 	stage = new createjs.Stage(canvas);
 
-	stage.enableMouseOver(20); 
+	stage.enableMouseOver(20);  
 
 	preloadIsaura.on("complete", preloadCompletoLixo);
 
@@ -41,7 +41,7 @@ function carregaAssetsLixo(){
 
 	}
 
-function preloadCompletoLixo(evt){
+function preloadCompletoLixo(){
 
 	stage.mouseMoveOutside = true;
 
@@ -89,8 +89,9 @@ function verificaLixeira(lixo){
 			console.log("soltou vidro na lixeira certa");
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
-		}else isaura.gotoAndPlay("nao");
-	}
+
+		}	else isaura.gotoAndPlay("nao");
+		
 	
 	else if(lixo.tipo == "metal"){
 		//Checagem de colisão
@@ -102,6 +103,7 @@ function verificaLixeira(lixo){
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
 		}else isaura.gotoAndPlay("nao");
+	
 	}
 	
 	else if(lixo.tipo == "papel"){
@@ -113,7 +115,8 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
-		}else isaura.gotoAndPlay("nao");
+		}
+		else isaura.gotoAndPlay("nao");
 	}
 	
 	else if(lixo.tipo == "plastico"){
@@ -125,7 +128,8 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
-		}else isaura.gotoAndPlay("nao");
+		}
+		else isaura.gotoAndPlay("nao");
 	}
 	
 }
@@ -170,7 +174,7 @@ function geraLixo(){
 			case 2:
 				countM++;
 				if(countM <= 3){
-					lixo = spriteLixo();
+					lixo = new createjs.Shape(new createjs.Graphics().beginFill("#ffff00").drawRect(0, 0, 25, 35));
 					lixo.tipo = "metal";
 					console.log("cria amarelo. cont: "+ countM);
 				}else{
@@ -209,31 +213,25 @@ function geraLixo(){
 			createjs.Tween.get(lixo).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 
 			//Os atributos Xoriginal e Yoriginal ja fazem isso
-			lixo.on("pressdown", function(evt){
-				lastPosX = evt.target.Xoriginal;
-				lastPosY = evt.target.Yoriginal;
+			lixo.on("click", function(evt){
+			lastPosX = evt.target.Xoriginal;
+			lastPosY = evt.target.Yoriginal;
 			});
 
 			//listener para fazer o "drag"
 			lixo.on("pressmove",function(evt) {
-
 				evt.target.x = evt.stageX;
 				evt.target.y = evt.stageY;
-
 			});
 
 			//listener quando o botão é solto
 			lixo.on("pressup", function(evt) { 
-				
-				verificaLixeira(evt.target);
-			
-				if(evt.target){
+			verificaLixeira(evt.target);
 
-					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
-					createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
-			
-				}
-				console.log("Soltou"); 
+			if(evt.target){
+				createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
+			}
+			console.log("Soltou"); 
 			});
 		}else{
 			flag = false;
@@ -243,7 +241,6 @@ function geraLixo(){
 }
 
 function loopLixo(evt){
-
 	if( evt.target.rotation == 10){
 		createjs.Tween.get(evt.target).to({ rotation : -10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 	}
@@ -251,15 +248,12 @@ function loopLixo(evt){
 	if(evt.target.rotation == -10){
 		createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
 	}
-
-	
-
 }
 
 function criaIsaura(){
 	
 	var data = {
-		framerate: 10,
+		framerate: 2,
 		images: ["isaura/pisca.png", "isaura/nao.png", "isaura/sim.png"],
 		frames: {
 			width:200, height:274
@@ -279,29 +273,3 @@ function criaIsaura(){
 
 	return animation;
 }
-
-function spriteLixo(){
-	
-	var data = {
-		framerate: 10,
-		images: [preloadIsaura.getResult("lata")],
-		frames: {
-			width:70, height:100
-		},
-		animations: {
-			normal: 0,
-			dragged: 1
-		}
-	};
-	var spriteSheet = new createjs.SpriteSheet(data);
-	var animation = new createjs.Sprite(spriteSheet, "normal");
-
-	animation.regX = (animation.spriteSheet.getFrameBounds(0).width*animation.scaleX)/2
-	animation.regY = (animation.spriteSheet.getFrameBounds(0).height*animation.scaleX)/2
-
-	animation.scaleX = animation.scaleY = 0.7;
-
-
-	return animation;
-}
-
