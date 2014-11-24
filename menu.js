@@ -290,7 +290,9 @@ function tick(){
 }
 
  function creditos(){
- 	seta.x = 20;
+ 	stage.removeAllChildren();
+ 	carregaAssetsLixo();
+ 	/*seta.x = 20;
  	seta.y = 20;
  	containerCreditos.addChild(seta);
 	containerCreditos.x = 800;
@@ -301,6 +303,6 @@ function tick(){
  	seta.on("click", btnClicked);
 	seta.addEventListener("mouseover", over);
 	seta.addEventListener("mouseout", out);
-	seta.addEventListener("mousedown", down);
+	seta.addEventListener("mousedown", down);*/
  }
  
