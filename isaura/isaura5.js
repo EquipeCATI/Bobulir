@@ -216,7 +216,8 @@ function geraLixo(){
 
 			//listener para fazer o "drag"
 			lixo.on("pressmove",function(evt) {
-
+				
+				
 				evt.target.x = evt.stageX;
 				evt.target.y = evt.stageY;
 
@@ -229,6 +230,8 @@ function geraLixo(){
 			
 				if(evt.target){
 					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500, createjs.Ease.getPowOut(2));
+					createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
+				
 				}
 				console.log("Soltou"); 
 			});
