@@ -252,7 +252,7 @@ function criaSecao1(){
 	bitmap.y = -373;
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
-	var maxPositionX = - (secao1.width + 1000 - stage.canvas.width);
+	var maxPositionX = - (secao1.width - stage.canvas.width);
 	dragContainer.maxPositionX = maxPositionX; //Limites de posicionamento dele
 	dragContainer.x = 0;
 	//dragContainer.y = dragContainer.maxPositionY; //Só para começar no canto esquerdo de baixo
