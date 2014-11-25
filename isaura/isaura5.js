@@ -16,6 +16,7 @@ function carregaAssetsLixo(){
 		{src:"pisca.png", id:"pisca"},
 		{src:"sim.png", id:"sim"},
 		{src:"nao.png", id:"nao"},
+		{src:"back2.png", id:"back"},
 		{src:"lixos/amassado.png", id:"amassado"},
 		{src:"lixos/balde.png", id:"baldeMetal"},
 		{src:"lixos/baldo.png", id:"baldePlastico"},
@@ -40,7 +41,7 @@ function preloadCompletoLixo(evt){
 
 	var lagoa = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 200, 800, 400));
 	var fundo = new createjs.Bitmap(preloadIsaura.getResult("back"));
-	containerJogoLixo.addChild(lagoa);
+	containerJogoLixo.addChild(fundo);
 
 	containerJogoLixo.addChild(isaura);
 
