@@ -14,6 +14,7 @@ var windowVar ;
 var right;
 var left;
 var botaoSom;
+var containerTutorialPanorama;
 
 var bigObjectFlag = false;
 
@@ -31,10 +32,12 @@ function carregaAssetsPanorama(){
 		{src:"images/cenarios/lagoa.png", id:"secao2"},
 		{src:"sprites/mark.png", id:"mark"},
 		{src:"sprites/raia.png", id:"raia"},
+		{src:"sprites/raiaCaixa.png", id:"raiaLagoa"},
 		{src:"sprites/relogio.png", id:"relogio"},
 		{src:"sprites/bruxaSprite.png", id:"bruxinha"},
 		{src:"sprites/bruxaSprite2.png", id:"bruxinhaRun"},
 		{src:"sprites/meninaBike2.png", id:"meninaBike"},
+		{src:"sprites/tutorial.png", id:"tutorialPanorama"},
 		{src:"sprites/bila.png", id:"bila"},
 		{src:"sprites/peao.png", id:"peao"},
 		{src:"sprites/corda.png", id:"corda"},
@@ -45,6 +48,7 @@ function carregaAssetsPanorama(){
 		{src:"images/icons/seta.png", id:"seta"},
 		{src:"images/icons/mais.png", id:"mais"},
 		{src:"images/icons/som.png", id:"som"},
+		{src:"images/icons/balaoFala.png", id:"balaoFala"},
 		];
 	preloadPanorama.loadManifest(manifestCenario, true, "assets/");
 	
@@ -67,7 +71,7 @@ function carregaAssetsPanorama(){
 	var manifestAudio = [
 		{id:"flip", src:"flip.mp3"},
 		{id:"poim", src:"poim.mp3"},
-		{id:"magia", src:"magia.mp3"},
+		{id:"magia", src:"bila.wav"},
 		{id:"baiao", src:"baiao.wav"},
 		{id:"risada menina", src:"risada_menina.mp3"},
 	];
@@ -86,7 +90,7 @@ function handleCompletePanorama(event) {
 
 function clickableMark(evt){
 if(balao.balaoAtivo != evt.target.id){
-	buleiro.x = evt.target.x + evt.target.width;
+	buleiro.x = evt.target.x + evt.target.width/2;
 	buleiro.y = evt.target.y - 20;
 	evt.target.parent.addChild(buleiro);
 	}
@@ -151,7 +155,96 @@ function panorama() {
 	panoramaIsActive = true;
 	createjs.Tween.removeAllTweens();
 	loopBike();
+	tutorialPanorama();
  }
+
+function tutorialPanorama(){
+	var maoTuto = maoClique;
+	maoTuto.alpha = 1;
+	maoTuto.x = 720;
+	maoTuto.y = 485;
+	containerTutorialPanorama = new createjs.Container();
+	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
+	fundoTuto.alpha = 0.5;
+	containerTutorialPanorama.addChild(fundoTuto);
+	
+	var balaoTuto = new createjs.Container();
+	
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 200, 200, 5 ));
+	balaoTuto.x = 15;
+	balaoTuto.y = 380;
+	balaoTuto.addChild(shapeBalao);
+	
+	var titulo = new createjs.Text("Bem vindo!", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 15;
+	titulo.y = 15;
+	balaoTuto.addChild(titulo);
+	
+	var texto = new createjs.Text("Use as setas do teclado ou as da tela para andar pela praça", "20px FiraSans", "#000000");
+	texto.x = 15;
+	texto.y = 75;
+	texto.lineWidth = 170;
+	texto.lineHeight = 25;
+	balaoTuto.addChild(texto);
+	
+	containerTutorialPanorama.addChild(criaBotaoTutoPanorama());
+	containerTutorialPanorama.addChild(criaTutorialPanorama());
+	containerTutorialPanorama.addChild(balaoTuto);
+	containerTutorialPanorama.addChild(maoTuto);
+	stage.addChild(containerTutorialPanorama);
+	containerTutorialPanorama.scaleX = containerTutorial.scaleY = 0;
+	containerTutorialPanorama.regX = 400;
+	containerTutorialPanorama.regY = 300;
+	containerTutorialPanorama.x = 400;
+	containerTutorialPanorama.y = 300;
+	createjs.Tween.get(containerTutorialPanorama, {override : true}).to({ scaleX : 1, scaleY : 1} , 500);
+}
+
+function criaTutorialPanorama(){
+	var data = {
+		framerate: 60,
+		images: [preloadPanorama.getResult("tutorialPanorama")],
+		frames: {
+			width:740, height:500
+		},
+		animations: {
+			idle: [1, 70]
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 30;
+	animation.y = 15; //secao1.height/2;
+
+	return animation;
+}
+
+function criaBotaoTutoPanorama(){
+	var botao = new createjs.Container();
+	
+	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 120, 50, 5 ));
+	botao.addChild(shapeBotao);
+	
+	var titulo = new createjs.Text("Bó bulir!", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 0;
+	botao.addChild(titulo);
+	
+	botao.x = 650;
+	botao.y = 485;
+	
+	botao.on("click", function(evt){
+		createjs.Tween.get(containerTutorialPanorama, {override : true}).to({ scaleX : 0, scaleY : 0} , 500);
+		panoramaIsActive = true;
+	});
+	
+	return botao;
+	//titulo.y = 15;
+	
+}
+
 var fadeOutScreen;
 function criaSecao1(){
 	//Containers não possuem width e height definido, por isso estou pegando os da imagem
@@ -159,7 +252,7 @@ function criaSecao1(){
 	bitmap.y = -373;
 	secao1.width = bitmap.image.width;
 	secao1.height = bitmap.image.height;
-	var maxPositionX = - (secao1.width - stage.canvas.width);
+	var maxPositionX = - (secao1.width + 1000 - stage.canvas.width);
 	dragContainer.maxPositionX = maxPositionX; //Limites de posicionamento dele
 	dragContainer.x = 0;
 	//dragContainer.y = dragContainer.maxPositionY; //Só para começar no canto esquerdo de baixo
@@ -171,6 +264,8 @@ function criaSecao1(){
 	secao1.addChild(criaBruxinha());
 	//secao1.addChild(criaRelogio());
 	secao1.addChild(criaBela());
+	secao1.addChild(criaPeao());
+	
 		
 	raia = new createjs.Bitmap("assets/sprites/raia.png");
 	raia.x = 2250;
@@ -194,7 +289,6 @@ function criaSecao1(){
 	meninaOlha = criaOlha()
 	secao1.addChild(meninaOlha);	
 }
-
 function criaOlha(){
 	var data = {
 		framerate: 60,
@@ -210,11 +304,11 @@ function criaOlha(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.x = 2040;
+	animation.x = 2140;
 	animation.y = 320; //secao1.height/2;
 	animation.scaleX = animation.scaleY = 0.6;
 	animation.som = "risada menina";
-	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX + 20;
+	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX - 50;
 	animation.height = animation.spriteSheet.getFrameBounds(0).height*animation.scaleY;
  
 	animation.id = "Olha!";
@@ -231,9 +325,6 @@ function criaOlha(){
 	
 	return animation;
 }
-
-
-
 function adicionaBalengo(){
 	stage.addChild(containerBalengo);
 	stage.addChild(fadeOutScreen);
@@ -248,45 +339,30 @@ function criaSecao2(){
 	secao2.height = bitmap2.image.height;
 	secao2.x = secao1.width;
 	secao2.addChild(bitmap2);
+
+	var raiaLagoa = new createjs.Bitmap(preloadPanorama.getResult("raiaLagoa"));
+	raiaLagoa.scaleX = raiaLagoa.scaleY = 0.1;
+	raiaLagoa.width = raiaLagoa.image.width*raiaLagoa.scaleX;
+	raiaLagoa.id = "raia lagoa";
+	raiaLagoa.x = 500;
+	raiaLagoa.y = 200; 
+	raiaLagoa.on("click", function(evt){
+		createjs.Tween.get(baiao).to({volume : 0}, 900);
+		botaoSom.gotoAndPlay("off");
+		fadeOutScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
+		fadeOutScreen.alpha = 0;
+		stage.addChild(fadeOutScreen);
+		createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).call(carregaAssetsLixo).to({alpha : 0}, 500);
+		createjs.Tween.get(containerJogoLixo, {override : true}).wait(1000).to({ scaleX : 1, scaleY : 1} , 2500);
+		panoramaIsActive = false;
+	});
+	raiaLagoa.on("mouseover", clickableMark);
+	raiaLagoa.on("mouseout", clickableOut);
+	buleiro.scaleX = buleiro.scaleY = 0.1;
+	secao2.addChild(raiaLagoa);
 }
 
-function criaHUD(){
-	/*
-	var rectRight = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(stage.canvas.width*0.9, 0, 80, stage.canvas.height));
-	var dragRight= new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
-	dragRight.hitArea = rectRight;
-	dragRight.addEventListener("mouseover", overR);
-	dragRight.addEventListener("mouseout", function (evt){ moveRight = false});
-	dragRight.addEventListener("click", clickR);
-	stage.addChild(dragRight);	
-	
-	
-	var rectLeft = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, 80, stage.canvas.height));
-	var dragLeft = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
-	dragLeft.hitArea = rectLeft; 
-	dragLeft.addEventListener("mouseover", overL);
-	dragLeft.addEventListener("mouseout", function (evt){ moveLeft = false});
-	dragLeft.addEventListener("click", clickL);
-	stage.addChild(dragLeft);
-	
-	/*
-	var rectUp = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, 0, stage.canvas.width, 60));
-	var dragUp = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
-	dragUp.hitArea = rectUp; 
-	dragUp.addEventListener("click", clickU);
-	stage.addChild(dragUp);
-	
-	
-	
-	var rectDown = new createjs.Shape(new createjs.Graphics().beginFill("#00000").drawRect(0, stage.canvas.height*0.9, stage.canvas.width, 60));
-	var dragDown = new createjs.Shape(new createjs.Graphics().drawRect(0, 0, stage.canvas.width, stage.canvas.height));
-	dragDown.hitArea = rectDown; 
-	dragDown.addEventListener("click", clickD);
-	stage.addChild(dragDown);*/
-	
-	
-	
-	
+function criaHUD(){	
 	right = criaSeta();//new createjs.Bitmap(preloadPanorama.getResult("setad"));
 	right.scaleX = -1;
 	right.x = stage.canvas.width - 10;
@@ -449,7 +525,7 @@ function overR(event){
 }
 
 function clickR(event){
-	if( dragContainer.y == 0){
+	if(panoramaIsActive && dragContainer.y == 0){
 		var positionX = dragContainer.x - stage.canvas.width;
 		moveRight = false;
 		if(positionX >= dragContainer.maxPositionX && dragContainer.y == 0){
@@ -466,7 +542,7 @@ function overL(event){
 }
 
 function clickL(event){
-	if( dragContainer.y == 0){
+	if( panoramaIsActive && dragContainer.y == 0){
 		var positionX = dragContainer.x + stage.canvas.width;
 		moveLeft = false;
 		
@@ -478,7 +554,7 @@ function clickL(event){
 }
 
 function clickU(){
-	if(dragContainer.x<-1800 && dragContainer.x > -secao1.width){
+	if(panoramaIsActive && dragContainer.x<-1800 && dragContainer.x > -secao1.width){
 		createjs.Tween.get(dragContainer,  {override : true}).to({ y : 373} , 2500, createjs.Ease.getElasticOut(1, 2));
 		maoClique.alpha = 0;
 		createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
@@ -500,8 +576,44 @@ function anima(evt){
 		criaBalao(evt.target, evt.target.balaoW, evt.target.balaoH);
 		criaImagens(evt.target.id, evt.target.numFotos);
 		addFotosRegras(evt.target.id);
-		
 	}
+}
+
+function criaPeao(){
+	var  clicado = false;
+	var data = {
+		framerate: 30,
+		images: [preloadPanorama.getResult("peao")],
+		frames: {
+			width:715, height:343
+		},
+		animations: {
+			idle:[0],
+			run: [0, 69, "loop"],
+			loop: [10, 69, true],
+		}
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.x = 1580;
+	animation.y = 120; //secao1.height/2;
+	animation.scaleX = animation.scaleY = 0.2;
+	animation.som = "";
+	var bounds = animation.spriteSheet.getFrameBounds(0);
+	animation.width = bounds.width*animation.scaleX;
+	animation.height = bounds.height*animation.scaleY;
+	
+	var rectHit = new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, bounds.width, bounds.height));
+	animation.hitArea = rectHit;
+	animation.id = "Peão";
+	animation.texto= "Sabia que tem gente que consegue soltar o peão e fazer com que ele gire na palma da mão? Tenta aí com a sua turma!\n\nClica no botão laranja pra ver uma galera fazendo beyblade!";
+		
+	animation.on("click", anima);
+	animation.on("mouseover", clickableMark);
+	animation.on("mouseout", clickableOut);
+	
+	return animation;
 }
 
 function criaBruxinha(){
@@ -519,8 +631,8 @@ function criaBruxinha(){
 
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
-	animation.x = 1350;
-	animation.y = 320; //secao1.height/2;
+	animation.x = 1450;
+	animation.y = 340; //secao1.height/2;
 	animation.scaleX = animation.scaleY = 0.35;
 	animation.som = "risada menina";
 	animation.width = animation.spriteSheet.getFrameBounds(0).width*animation.scaleX + 20;
@@ -659,12 +771,12 @@ function criaBela(){
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var animation = new createjs.Sprite(spriteSheet, "idle");
 	animation.scaleX = animation.scaleY = 0.4;
-	animation.x = 800;
+	animation.x = 820;
 	animation.y = 250;	
 	animation.regY = 120;
 	animation.som = "magia";
 	animation.id = "bila";
-	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar mais leva tudo!";
+	animation.texto= "A bila é uma brincadeira muito massa! Elas são apostadas num triângulo e quem biçar leva pra casa!";
 	var bounds = animation.spriteSheet.getFrameBounds(0);
 	animation.width = bounds.width*animation.scaleX + 20;
 	animation.height = bounds.height*animation.scaleY;
@@ -684,52 +796,78 @@ function criaBela(){
 
 function criaBalao(animationAlvo){
 	balao.removeAllChildren();
-
-	//var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 300, 5 ));
-	var balaoShape = new createjs.Bitmap(preloadPanorama.getResult("balao"));
-	balao.addChild(balaoShape);
-	balaoShape.shadow = new createjs.Shadow("#000000", 10, 10, 40);
-	balaoShape.shadow.alpha = 0;
-	var titulo = new createjs.Text(animationAlvo.id, "50px Bahiana", "#ffffff");
-	var b = titulo.getBounds();
-	titulo.x = 200 - b.width/2;
-	titulo.y = 35;
-	console.log( b.height);
-	
-	var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
-	texto.x = 30;
-	texto.y = 90;
-	texto.lineWidth = 355;
-	texto.lineHeight = 25;
-	//balao.addChild(shapeBalao);
-	balao.addChild(titulo);
-	balao.addChild(texto);
-	
-	balao.balaoAtivo = animationAlvo.id;
-	balao.regY = 300;
-	balao.regX = 0;
-	balao.x = animationAlvo.x + animationAlvo.width;
-	balao.y = animationAlvo.y + animationAlvo.height;	
-	
-	if(balao.y <= 300)
-	{
-		balao.regY = 0;
-		balao.y = animationAlvo.y;
-	}
-	
-	if(balao.x + 400 > -dragContainer.maxPositionX + 800)
-	{
-		balao.regX = 400;
-		balao.x = animationAlvo.x;
-		createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 480} , 1000);
-	}
-	
-	else if(animationAlvo.width>=250){
-		createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x} , 1000);
-		bigObjectFlag = true;
+	if(animationAlvo.id == "Olha!"){
+		var balaoShape = new createjs.Bitmap(preloadPanorama.getResult("balaoFala"));
+		balao.addChild(balaoShape);
+		balaoShape.scaleX = balaoShape.scaleY = 0.25;
+		var titulo = new createjs.Text(animationAlvo.id, "50px Bahiana", "#ffffff");
+		var b = titulo.getBounds();
+		titulo.x = 140 - b.width/2;
+		titulo.y = 10;
+		console.log( b.height);
+		
+		var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
+		texto.x = 40;
+		texto.y = 60;
+		texto.lineWidth = 200;
+		texto.lineHeight = 25;
+		//balao.addChild(shapeBalao);
+		balao.addChild(titulo);
+		balao.addChild(texto);
+		
+		balao.balaoAtivo = animationAlvo.id;
+		balao.regY = 163;
+		balao.regX = 0;
+		balao.x = animationAlvo.x + animationAlvo.width;
+		balao.y = animationAlvo.y;	
+		createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 80 + (240 - animationAlvo.width)/2} , 1000);
 	}
 	else{
-		createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 80} , 1000);
+		var balaoShape = new createjs.Bitmap(preloadPanorama.getResult("balao"));
+		balao.addChild(balaoShape);
+		balaoShape.shadow = new createjs.Shadow("#000000", 10, 10, 40);
+		balaoShape.shadow.alpha = 0;
+		var titulo = new createjs.Text(animationAlvo.id, "50px Bahiana", "#ffffff");
+		var b = titulo.getBounds();
+		titulo.x = 200 - b.width/2;
+		titulo.y = 35;
+		console.log( b.height);
+		
+		var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
+		texto.x = 30;
+		texto.y = 90;
+		texto.lineWidth = 355;
+		texto.lineHeight = 25;
+		//balao.addChild(shapeBalao);
+		balao.addChild(titulo);
+		balao.addChild(texto);
+		
+		balao.balaoAtivo = animationAlvo.id;
+		balao.regY = 300;
+		balao.regX = 0;
+		balao.x = animationAlvo.x + animationAlvo.width;
+		balao.y = animationAlvo.y + animationAlvo.height;	
+
+		if(balao.y <= 300)
+		{
+			balao.regY = 0;
+			balao.y = animationAlvo.y;
+		}
+		
+		if(balao.x + 400 > -dragContainer.maxPositionX + 800)
+		{
+			balao.regX = 400;
+			balao.x = animationAlvo.x;
+			createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 480} , 1000);
+		}
+		
+		else if(animationAlvo.width>=250){
+			createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x} , 1000);
+			bigObjectFlag = true;
+		}
+		else{
+			createjs.Tween.get(dragContainer).to({ x : -animationAlvo.x + 80 + (240 - animationAlvo.width)/2} , 1000);
+		}
 	}
 		
 	dragContainer.addChild(balao);
@@ -739,31 +877,44 @@ function criaBalao(animationAlvo){
 }
 
 function addFotosRegras(id){
-	var mais = new createjs.Bitmap(preloadPanorama.getResult("mais"));
-	//mais.scaleX = mais.scaleY = 0.25;
-	mais.x = 375 - mais.image.width;
-	mais.y = 285 - mais.image.height;
-	mais.id = id;
-	mais.on("click",createPopup);
-	balao.addChild(mais);
-	balao.addChild(imageContainer);
-	var b = imageContainer.getBounds();
-	imageContainer.x = 30 + b.width/2;
-	imageContainer.y = 300 - b.height/2 - 15;
+	if(id == "bruxinha" || id == "Olha!" || id == "bila"){
+		balao.addChild(imageContainer);
+		var b = imageContainer.getBounds();
+		imageContainer.x = 200;
+		imageContainer.y = 300 - b.height/2 - 15;
+	}
+	else{
+		var mais = new createjs.Bitmap(preloadPanorama.getResult("mais"));
+		//mais.scaleX = mais.scaleY = 0.25;
+		mais.x = 375 - mais.image.width;
+		mais.y = 285 - mais.image.height;
+		mais.id = id;
+		mais.width = mais.image.width;
+		mais.height = mais.image.height;
+		mais.on("click",createPopup);
+		mais.on("mouseover", clickableMark);
+		mais.on("mouseout", clickableOut);
+		balao.addChild(mais);
+		balao.addChild(imageContainer);
+		var b = imageContainer.getBounds();
+		imageContainer.x = 30 + b.width/2;
+		imageContainer.y = 300 - b.height/2 - 15;
+	}
 }
 
 function createPopup(evt){
+	switchMusica();
 	if(!windowVar ){
 		windowVar = window.open("", evt.target.id, "height=255, width=335", true);
 		windowVar.document.clear();
 		windowVar.document.write('<title>' + evt.target.id + '</title>');
-		windowVar.document.write('<video  controls>  <source src="'+evt.target.id+'.m4v" type="video/mp4"> </video>');
+		windowVar.document.write('<video  width="320" height="240" controls>  <source src="'+evt.target.id+'.mp4" type="video/mp4"> </video>');
 	}
 	else if( windowVar.name != evt.target.id){
 		windowVar.close();
 		windowVar = window.open("", evt.target.id, "height=255, width=335", true);
 		windowVar.document.write('<title>' + evt.target.id + '</title>');
-		windowVar.document.write('<video  controls>  <source src="'+evt.target.id+'.m4v" type="video/mp4"> </video>');
+		windowVar.document.write('<video  width="320" height="240" controls>  <source src="'+evt.target.id+'.mp4" type="video/mp4" width = "320" height = "240"> </video>');
 		}
 	else{
 		windowVar.focus();
@@ -771,7 +922,6 @@ function createPopup(evt){
 }
 
 function keyPressed(event) {
-	
 		switch(event.keyCode) 
 		{
 			case 37:
@@ -810,7 +960,7 @@ function keyUp(event) {
 
 function tickPanorama(event) {	
 	gerenciaAlphaHUD();
-	if (moveRight) {
+	if (panoramaIsActive && moveRight) {
        dragContainer.x -= 10;
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";
@@ -818,7 +968,7 @@ function tickPanorama(event) {
 	   maoClique.alpha = 0;
 	   }
 	   
-	else if (moveLeft) {
+	else if (panoramaIsActive && moveLeft) {
        dragContainer.x += 10;
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";
@@ -826,7 +976,7 @@ function tickPanorama(event) {
 	   maoClique.alpha = 0;
 	   }
 
-	else if (moveUp) {
+	else if (panoramaIsActive && moveUp) {
        dragContainer.x += 10;
 	   createjs.Tween.get(balao).to({scaleX:0, scaleY:0, visible:true},500, createjs.Ease.getElasticInOut(6, 2));
 	   balao.balaoAtivo = "";

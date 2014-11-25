@@ -7,14 +7,7 @@ var isaura = new criaIsaura();
 var preloadIsaura = new createjs.LoadQueue(false);
 
 function carregaAssetsLixo(){
-
-	var canvas = document.getElementById("canvas");
-	stage = new createjs.Stage(canvas);
-
-	stage.enableMouseOver(20); 
-
 	preloadIsaura.on("complete", preloadCompletoLixo);
-
 	var manifest = [
 		{src:"lixeiraMetal.png", id:"lixeiraMetal"},
 		{src:"lixoPlasticos.png", id:"lixeiraPlasticos"},
@@ -46,6 +39,7 @@ function preloadCompletoLixo(evt){
 	stage.mouseMoveOutside = true;
 
 	var lagoa = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 200, 800, 400));
+	var fundo = new createjs.Bitmap(preloadIsaura.getResult("back"));
 	containerJogoLixo.addChild(lagoa);
 
 	containerJogoLixo.addChild(isaura);
@@ -70,6 +64,8 @@ function preloadCompletoLixo(evt){
 	lixeiraPapel.x = 695;
 	lixeiraPapel.y = 20;
 	containerJogoLixo.addChild(lixeiraPapel);
+
+	containerJogoLixo.scaleX = containerJogoLixo.scaleY = 0;
 	stage.addChild(containerJogoLixo);
 	geraLixo();
 }
@@ -239,10 +235,10 @@ function voltaParaOLago(evt){
 
 function loopLixo(evt){
 	if( evt.target.rotation == 10 && !evt.target.clicado){
-		createjs.Tween.get(evt.target).to({ rotation : -10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
+		createjs.Tween.get(evt.target).to({ rotation : -10} , 2500).call(loopLixo);
 	}
 	if(evt.target.rotation == -10 && !evt.target.clicado){
-		createjs.Tween.get(evt.target).to({ rotation : 10} , 2500, createjs.Ease.getPowOut(3)).call(loopLixo);
+		createjs.Tween.get(evt.target).to({ rotation : 10} , 2500).call(loopLixo);
 	}
 }
 

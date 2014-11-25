@@ -30,7 +30,6 @@ var maoDoMenino = new createjs.Point(0,0);
 var moveMeninoRight = false;
 var moveMeninoLeft = false;
 
-
 function carregaAssetsBalengo(){
 	preloadBalengo.on("complete", handleCompleteBalengo);
 
@@ -353,7 +352,7 @@ function tickBalengo(event) {
 		{
 			secao1.removeChild(raia);
 			secao1.removeChild(meninaOlha);
-			dragContainer.maxPositionX -=  secao2.width;
+			dragContainer.maxPositionX -=  secao2.width + 30;
 			winBalengo = true;
 			criaAnimacao();
 			quadrinho1.gotoAndPlay("anima");
