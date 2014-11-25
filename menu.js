@@ -212,7 +212,7 @@ function btnClicked(event){
 		teste();
 	}
 	if(event.target == bitmapCredit){
-		creditos();
+		//creditos();
 	}
 	if(event.target == seta){
 	createjs.Tween.get(containerMenu, {override : true}).to({ x : 0} , 2000);

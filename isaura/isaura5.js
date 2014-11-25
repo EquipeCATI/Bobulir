@@ -5,10 +5,14 @@ var lixeiraPlastico;
 var containerJogoLixo = new createjs.Container();
 var isaura = new criaIsaura();
 var preloadIsaura = new createjs.LoadQueue(false);
+var animacaoFinal;
 
 function carregaAssetsLixo(){
 	preloadIsaura.on("complete", preloadCompletoLixo);
 	var manifest = [
+		{src:"final1.png", id:"quadrinhoFinal1"},
+		{src:"final2.png", id:"quadrinhoFinal2"},
+		{src:"final3.png", id:"quadrinhoFinal3"},
 		{src:"lixeiraMetal.png", id:"lixeiraMetal"},
 		{src:"lixoPlasticos.png", id:"lixeiraPlasticos"},
 		{src:"lixeiraVidro.png", id:"lixeiraVidro"},
@@ -32,6 +36,17 @@ function carregaAssetsLixo(){
 		];
 
 	preloadIsaura.loadManifest(manifest, true, "isaura/");
+
+	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+ 
+	var audioPath = "isaura/";
+	var manifestAudio = [
+		{id:"rap", src:"rapDoLixo.m4a"},
+		{id:"sim", src:"sim.wav"},
+		{id:"nao", src:"nao.wav"},
+	];
+	createjs.Sound.alternateExtensions = ["mp3"];
+	createjs.Sound.registerManifest(manifestAudio, audioPath);
 
 	}
 
@@ -68,6 +83,7 @@ function preloadCompletoLixo(evt){
 
 	containerJogoLixo.scaleX = containerJogoLixo.scaleY = 0;
 	stage.addChild(containerJogoLixo);
+	createjs.Sound.play("rap");
 	geraLixo();
 }
 
@@ -83,7 +99,11 @@ function verificaLixeira(lixo){
 			console.log("soltou vidro na lixeira certa");
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
-		}else isaura.gotoAndPlay("nao");
+			createjs.Sound.play("sim");
+			countV--;
+		}else{ isaura.gotoAndPlay("nao");
+		createjs.Sound.play("nao");
+		}
 	}
 	
 	else if(lixo.tipo == "metal"){
@@ -95,7 +115,12 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
-		}else isaura.gotoAndPlay("nao");
+			createjs.Sound.play("sim");
+			countM--;
+		}else{
+		 isaura.gotoAndPlay("nao");
+		 createjs.Sound.play("nao");
+		}
 	}
 	
 	else if(lixo.tipo == "papel"){
@@ -107,7 +132,11 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
-		}else isaura.gotoAndPlay("nao");
+			createjs.Sound.play("sim");
+			countPp--;
+		}else{ isaura.gotoAndPlay("nao");
+		createjs.Sound.play("nao");
+	}
 	}
 	
 	else if(lixo.tipo == "plastico"){
@@ -119,17 +148,23 @@ function verificaLixeira(lixo){
 		{
 			containerJogoLixo.removeChild(lixo);
 			isaura.gotoAndPlay("sim");
-		}else isaura.gotoAndPlay("nao");
+			createjs.Sound.play("sim");
+			countPl--;
+		}else {
+			isaura.gotoAndPlay("nao");
+			createjs.Sound.play("nao");
+			}
+
 	}
 	
 }
-
+var countV = 0;
+var countPl = 0;
+var countM = 0;
+var countPp = 0;
 function geraLixo(){
 	var lixo;
-	var countV = 0;
-	var countPl = 0;
-	var countM = 0;
-	var countPp = 0;
+	
 	
 	//criando o lixo
 	for(var i = 0; i<12; i++){
@@ -138,8 +173,8 @@ function geraLixo(){
 		var rand = parseInt(Math.random()*4);
 		switch(rand){
 			case 0:
-				countV++;
-				if(countV <= 3){
+				if(countV < 3){
+					countV++;
 					lixo = spriteLixoVidro(countV);
 					lixo.tipo = "vidro";
 					console.log("cria verde. cont: "+ countV);
@@ -150,8 +185,8 @@ function geraLixo(){
 			break;
 
 			case 1:
-				countPl++
-				if(countPl <= 3){
+				if(countPl < 3){
+					countPl++
 					lixo = spriteLixoPlastico(countPl);
 					lixo.tipo = "plastico";
 					console.log("cria vermelho. cont: "+ countPl);
@@ -163,8 +198,8 @@ function geraLixo(){
 			break;
 
 			case 2:
-				countM++;
-				if(countM <= 3){
+				if(countM < 3){
+					countM++;
 					lixo = spriteLixoMetal(countM);
 					lixo.tipo = "metal";
 					console.log("cria amarelo. cont: "+ countM);
@@ -176,8 +211,8 @@ function geraLixo(){
 			break;
 
 			case 3:
-				countPp++;
-				if(countPp <= 3){
+				if(countPp < 3){
+					countPp++;
 					lixo = spriteLixoPapel(countPp);
 					lixo.tipo = "papel";
 					console.log("cria azul. cont: "+ countPp);
@@ -220,14 +255,112 @@ function geraLixo(){
 			//listener quando o botão é solto
 			lixo.on("pressup", function(evt) { 
 				verificaLixeira(evt.target);
+				console.log("countPp" + countPp);
+				console.log("countM" + countM);
+				console.log("countPl" + countPl);
+				console.log("countV" + countV);
+				if(countPp == 0 && countM == 0 && countPl == 0 && countV == 0){
+					console.log("entrou");
+					containerJogoLixo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600)));
+					/*
+					quadrinhoFinal1 = criaQuadrinhoFinal1();
+					quadrinhoFinal2 = criaQuadrinhoFinal2();
+					quadrinhoFinal3 = criaQuadrinhoFinal3();
+					containerJogoLixo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600)));
+					containerJogoLixo.addChild(quadrinhoFinal1);
+					containerJogoLixo.addChild(quadrinhoFinal2);
+					containerJogoLixo.addChild(quadrinhoFinal3);
+					containerJogoLixo.on("tick", iniciaAnimacaoFinal);*/
+
+				}
 				if(evt.target){
 					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500).call(voltaParaOLago).to({ rotation : 10, clicado : false} , 1).call(loopLixo);
-					
 				}
 				console.log("Soltou " + evt.target.tipo); 
 			});
 		}
 	}
+}
+var quadrinhoFinal1;
+var quadrinhoFinal2;
+var quadrinhoFinal3;
+
+function criaQuadrinhoFinal1(){
+	var data = {
+		framerate: 24,
+		images: [preloadBalengo.getResult("quadrinhoFinal1")],
+		frames: {
+			width:800, height:192
+		},
+		animations: {
+			idle: [0],
+			anima : [0, 50, false],
+			termina : [49]
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.y = 5;
+	//animation.spriteSheet.getAnimation("click").speed = 50;
+	return animation;
+}
+
+function criaQuadrinhoFinal2(){
+	var data = {
+		framerate: 24,
+		images: [preloadBalengo.getResult("quadrinhoFinal2")],
+		frames: {
+			width:800, height:400
+		},
+		animations: {
+			idle : [0],
+			anima : [0, 49, false],
+			termina : [48],
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.y = 10;
+	//animation.spriteSheet.getAnimation("click").speed = 50;
+	return animation;
+}
+
+function criaQuadrinhoFinal3(){
+	var data = {
+		framerate: 24,
+		images: [preloadBalengo.getResult("quadrinhoFinal3")],
+		frames: {
+			width:800, height:600
+		},
+		animations: {
+			idle : [0],
+			anima : [0, 49, false]
+        },
+	};
+
+	var spriteSheet = new createjs.SpriteSheet(data);
+	var animation = new createjs.Sprite(spriteSheet, "idle");
+	animation.y = 10;
+	//animation.spriteSheet.getAnimation("click").speed = 50;
+	return animation;
+}
+function iniciaAnimacaoFinal(){
+	
+	if(quadrinhoFinal3.currentFrame != 49){
+		if(quadrinhoFinal1.currentFrame == 50){
+			quadrinhoFinal1.gotoAndPlay("termina");
+			quadrinhoFinal2.gotoAndPlay("anima");
+			}
+		if(quadrinhoFinal2.currentFrame == 49){
+			quadrinhoFinal2.gotoAndPlay("termina");
+			quadrinhoFinal3.gotoAndPlay("anima")
+			}
+	}
+
+	else{
+		}
 }
 
 function voltaParaOLago(evt){
@@ -460,7 +593,7 @@ function spriteLixoPlastico(cont){
 		framerate: 10,
 		images: [preloadIsaura.getResult("baldePlastico")],
 		frames: {
-			width:140, height:143
+			width:110, height:143
 		},
 		animations: {
 			normal: 0,

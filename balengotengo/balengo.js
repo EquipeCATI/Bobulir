@@ -352,7 +352,7 @@ function tickBalengo(event) {
 		{
 			secao1.removeChild(raia);
 			secao1.removeChild(meninaOlha);
-			dragContainer.maxPositionX -=  secao2.width + 30;
+			dragContainer.maxPositionX -=  secao2.width;
 			winBalengo = true;
 			criaAnimacao();
 			quadrinho1.gotoAndPlay("anima");

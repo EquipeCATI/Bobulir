@@ -89,12 +89,11 @@ function handleCompletePanorama(event) {
 }
 
 function clickableMark(evt){
-if(balao.balaoAtivo != evt.target.id){
+if(balao.balaoAtivo != evt.target.id && panoramaIsActive){
 	buleiro.x = evt.target.x + evt.target.width/2;
 	buleiro.y = evt.target.y - 20;
 	evt.target.parent.addChild(buleiro);
 	}
-	evt.target.on("click", clickableOut);
 }
 
 function clickableOut(evt){
@@ -152,7 +151,6 @@ function panorama() {
  function terminouMenu(){
 	stage.removeChild(containerMenu);
 	criaHUD();
-	panoramaIsActive = true;
 	createjs.Tween.removeAllTweens();
 	loopBike();
 	tutorialPanorama();
@@ -520,7 +518,7 @@ function criaSeta(){
 }
 
 function overR(event){
-	 if(dragContainer.y == 0)
+	 if(panoramaIsActive && dragContainer.y == 0)
 		moveRight = true;
 }
 
@@ -537,7 +535,7 @@ function clickR(event){
 }
 
 function overL(event){
-	if(dragContainer.y == 0)
+	if(panoramaIsActive && dragContainer.y == 0)
 		moveLeft = true;
 }
 
