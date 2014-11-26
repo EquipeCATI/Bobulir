@@ -91,7 +91,10 @@ function getBalengo()
 	
 	menino = criaMenino();
 	balengotengo = new createjs.Bitmap(preloadBalengo.getResult("balengotengo"));
-	
+	balengotengo.regX = balengotengo.image.width/2;  //Pontos de rotação
+	balengotengo.regY = balengotengo.image.height/2;
+
+	balengotengo.scaleX = balengotengo.scaleY = 0.2;
 	alvo = new createjs.Bitmap(preloadBalengo.getResult("alvo"));
 	alvo.scaleX = alvo.scaleY = 0.7;
 	menino.scaleX = menino.scaleY = 0.5;

@@ -39,7 +39,7 @@ function carregaAssetsPanorama(){
 		{src:"sprites/meninaBike2.png", id:"meninaBike"},
 		{src:"sprites/tutorial.png", id:"tutorialPanorama"},
 		{src:"sprites/bila.png", id:"bila"},
-		{src:"sprites/peao.png", id:"peao"},
+		{src:"sprites/peao.png", id:"piao"},
 		{src:"sprites/corda.png", id:"corda"},
 		{src:"sprites/olha.png", id:"olha"},
 		{src:"sprites/dedada.png", id:"maoClique"},
@@ -157,20 +157,18 @@ function panorama() {
  }
 
 function tutorialPanorama(){
-	var maoTuto = maoClique;
-	maoTuto.alpha = 1;
-	maoTuto.x = 720;
-	maoTuto.y = 485;
+
 	containerTutorialPanorama = new createjs.Container();
+	
 	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
 	fundoTuto.alpha = 0.5;
 	containerTutorialPanorama.addChild(fundoTuto);
 	
 	var balaoTuto = new createjs.Container();
 	
-	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 200, 200, 5 ));
-	balaoTuto.x = 15;
-	balaoTuto.y = 380;
+	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 200, 5 ));
+	balaoTuto.x = 200;
+	balaoTuto.y = 330;
 	balaoTuto.addChild(shapeBalao);
 	
 	var titulo = new createjs.Text("Bem vindo!", "50px Bahiana", "#ffffff");
@@ -179,24 +177,36 @@ function tutorialPanorama(){
 	titulo.y = 15;
 	balaoTuto.addChild(titulo);
 	
-	var texto = new createjs.Text("Use as setas do teclado ou as da tela para andar pela praça", "20px FiraSans", "#000000");
+	var texto = new createjs.Text(" Aqui você pode explorar nosso bairro pra aprender e se aventurar. Use as setas laterais ou as setas do teclado para se locomover, como na animação acima.", "20px FiraSans", "#000000");
 	texto.x = 15;
 	texto.y = 75;
-	texto.lineWidth = 170;
+	texto.lineWidth = 350;
 	texto.lineHeight = 25;
 	balaoTuto.addChild(texto);
-	
-	containerTutorialPanorama.addChild(criaBotaoTutoPanorama());
+
+	var textoClick = new createjs.Text(" Pode começar a clicar!", "20px FiraSans", "#ffffff");
+	textoClick.x = 95;
+	textoClick.y = 225;
+	textoClick.lineWidth = 300;
+	textoClick.lineHeight = 25;
+	balaoTuto.addChild(textoClick);
+
+	stage.addChild(containerTutorialPanorama);
 	containerTutorialPanorama.addChild(criaTutorialPanorama());
 	containerTutorialPanorama.addChild(balaoTuto);
-	containerTutorialPanorama.addChild(maoTuto);
-	stage.addChild(containerTutorialPanorama);
+	
 	containerTutorialPanorama.scaleX = containerTutorial.scaleY = 0;
 	containerTutorialPanorama.regX = 400;
 	containerTutorialPanorama.regY = 300;
 	containerTutorialPanorama.x = 400;
 	containerTutorialPanorama.y = 300;
 	createjs.Tween.get(containerTutorialPanorama, {override : true}).to({ scaleX : 1, scaleY : 1} , 500);
+
+	containerTutorialPanorama.on("click", function (){
+		createjs.Tween.get(containerTutorialPanorama, {override : true}).to({ scaleX : 0, scaleY : 0} , 500);
+		panoramaIsActive = true;
+	});
+
 }
 
 function criaTutorialPanorama(){
@@ -581,7 +591,7 @@ function criaPeao(){
 	var  clicado = false;
 	var data = {
 		framerate: 30,
-		images: [preloadPanorama.getResult("peao")],
+		images: [preloadPanorama.getResult("piao")],
 		frames: {
 			width:715, height:343
 		},
@@ -604,8 +614,8 @@ function criaPeao(){
 	
 	var rectHit = new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect(0, 0, bounds.width, bounds.height));
 	animation.hitArea = rectHit;
-	animation.id = "Peão";
-	animation.texto= "Sabia que tem gente que consegue soltar o peão e fazer com que ele gire na palma da mão? Tenta aí com a sua turma!\n\nClica no botão laranja pra ver uma galera fazendo beyblade!";
+	animation.id = "Pião";
+	animation.texto= "Sabia que tem gente que consegue soltar o pião e fazer com que ele gire na palma da mão? Tenta aí com a sua turma!\n\nClica no botão laranja pra ver uma galera fazendo beyblade!";
 		
 	animation.on("click", anima);
 	animation.on("mouseover", clickableMark);
@@ -984,6 +994,8 @@ function tickPanorama(event) {
 }
 
 function gerenciaAlphaHUD(){
+	
+
 	if(dragContainer.x <= dragContainer.maxPositionX ||  dragContainer.y != 0){
 		moveRight = false;
 		right.alpha = 0;
@@ -1010,6 +1022,13 @@ function gerenciaAlphaHUD(){
 	}
 	else
 		down.alpha = 0;
+
+	if(!panoramaIsActive){
+		right.alpha = 0;
+		left.alpha=0;
+		up.alpha = 0;
+		down.alpha = 0;
+	}
 	/*	
 	if(!dragContainer.y == 0 && maoClique.y<=400)
 		maoClique.alpha = 0;

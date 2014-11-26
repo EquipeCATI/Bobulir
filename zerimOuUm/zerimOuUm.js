@@ -26,7 +26,17 @@ function carregaAssetsZerim(){
 		{src:"0ou1.png", id:"0ou1"},
 		];
 	preloadZerim.loadManifest(manifest, true, "zerimOuUm/");
-	}
+
+	if (!createjs.Sound.initializeDefaultPlugins()) {return;}
+ 
+	var audioPath = "zerimOuUm/";
+	var manifestAudio = [
+		{id:"ieei", src:"ieei.wav"},
+		{id:"zerimOUm", src:"zerimOUm.wav"},
+	];
+	createjs.Sound.alternateExtensions = ["mp3"];
+	createjs.Sound.registerManifest(manifestAudio, audioPath);
+}
 	
 function stop() {
 	if (preloadZerim != null) { preloadZerim.close(); }
@@ -129,6 +139,7 @@ function clicou(evt){
 	jogador2.alpha = 0;
 	jogador3.alpha = 0;
 	containerZerim.addChild(animacaoZerim);
+	createjs.Sound.play("zerimOUm");
 	if (evt.target == botao0){
 		jogador.gotoAndPlay("zero");
 		jogador1.gotoAndPlay("um");
@@ -154,6 +165,7 @@ function exibeZerim(){
 		jogador2.alpha = 1;
 		jogador3.alpha = 1;
 		var iei = new createjs.Bitmap(preloadZerim.getResult("iei"));
+		createjs.Sound.play("ieei");
 		iei.scaleX = iei.scaleY = 0;
 		iei.regX = iei.image.width/2;
 		iei.regY = iei.image.height/2;
@@ -239,6 +251,7 @@ function criaMaoZerim(){
 	};
 	var spriteSheet = new createjs.SpriteSheet(data);
 	var mao = new createjs.Sprite(spriteSheet, "idle");
+	mao.hitArea = new createjs.Shape(new createjs.Graphics().beginFill("#ffffff").drawRect( 0, 0, 100, 100));
 	
 	return mao;
 }

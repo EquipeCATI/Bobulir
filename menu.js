@@ -9,6 +9,8 @@ var preloadMenu = new createjs.LoadQueue(false);
 var pipa;
 var emFlor;
 var bobulir;
+var botaoVoltar = criaBotaoVoltar();
+var credito;
 //var pipa = spritePipa("assets/sprites/spritePipa.png");
 
 
@@ -33,6 +35,7 @@ function carregaAssets(){
 		{src:"images/bobulir/bobulir.png", id:"bobulir"},
 		{src:"images/bobulir/bobulirDanca.png", id:"danca"},
 		{src:"images/bobulir/bobulirPoim.png", id:"poim"},
+		{src:"creditos.png", id:"credito"},
 		];
 	preloadMenu.loadManifest(manifest, true, "assets/");
 	var audioPath = "assets/audio/";
@@ -103,7 +106,11 @@ function menu(){
 	}
 	
 	containerMenu.addChild(containerFundo);
-
+	credito = new createjs.Bitmap(preloadMenu.getResult("credito"));
+	credito.y = 600;
+	credito.regX = credito.image.width/2;
+	credito.x = 1200;
+	containerMenu.addChild(credito);
 	//criação do Botão start.
 	//bitmapStart = new createjs.Bitmap("startBtn.png");
 	bitmapStart = criaIniciar();//spriteBotao(preloadMenu.getResult('iniciar'));
@@ -146,6 +153,9 @@ function menu(){
 	stage.addChild(containerMenu);
 	emFlor = createjs.Sound.play("emflor");
 	emFlor.volume = 0.2;
+
+	//adicionando o botao dos Creditos para voltar.
+	containerMenu.addChild(botaoVoltar);
 
 	bitmapCredit.on("click", btnClicked);
 	bitmapCredit.on("mouseover", over);
@@ -212,7 +222,7 @@ function btnClicked(event){
 		teste();
 	}
 	if(event.target == bitmapCredit){
-		//creditos();
+		creditos();
 	}
 	if(event.target == seta){
 	createjs.Tween.get(containerMenu, {override : true}).to({ x : 0} , 2000);
@@ -290,19 +300,33 @@ function tick(){
 }
 
  function creditos(){
- 	stage.removeAllChildren();
- 	carregaAssetsLixo();
- 	/*seta.x = 20;
- 	seta.y = 20;
- 	containerCreditos.addChild(seta);
-	containerCreditos.x = 800;
-	containerMenu.addChild(containerCreditos);
-	createjs.Tween.get(containerMenu, {override : true}).to({ x : -800} , 2000);
+ 	createjs.Tween.get(containerMenu).to({ x : -800} ,500).call(loopCred);
 
-	
- 	seta.on("click", btnClicked);
-	seta.addEventListener("mouseover", over);
-	seta.addEventListener("mouseout", out);
-	seta.addEventListener("mousedown", down);*/
+ }
+
+ function loopCred(){
+ 	createjs.Tween.get(credito).to({ y : -credito.image.height} ,30000).to({ y : 600} , 1).call(loopCred);
  }
  
+ function criaBotaoVoltar(){
+	var botao = new createjs.Container();
+	
+	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 100, 50, 5 ));
+	botao.addChild(shapeBotao);
+	
+	var titulo = new createjs.Text("Voltar", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 50 - b.width/2;
+	botao.addChild(titulo);
+	
+	botao.x = 820;
+	botao.y = 530;
+	
+	botao.on("click", function(evt){
+		createjs.Tween.get(containerMenu).to({ x : 0} , 500);
+	});
+	
+	return botao;
+	//titulo.y = 15;
+	
+}
