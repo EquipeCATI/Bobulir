@@ -4,7 +4,6 @@ var containerFundo = new createjs.Container();
 var containerCreditos = new createjs.Container();
 var bitmapStart;
 var bitmapCredit;
-var seta;
 var preloadMenu = new createjs.LoadQueue(false);
 var pipa;
 var emFlor;
@@ -28,7 +27,6 @@ function carregaAssets(){
 		{src:"sprites/spritePipa.png", id:"pipa"},
 		{src:"images/icons/iniciar.png", id:"iniciar"},
 		{src:"images/icons/creditos.png", id:"creditos"},
-		{src:"images/icons/setas.png", id:"setas"},
 		{src:"images/nuv/nuvemPequena.png", id:"nuvem1"},
 		{src:"images/nuv/nuvemMedia.png", id:"nuvem2"},
 		{src:"images/nuv/nuvemGrande.png", id:"nuvem3"},
@@ -115,7 +113,6 @@ function menu(){
 	//bitmapStart = new createjs.Bitmap("startBtn.png");
 	bitmapStart = criaIniciar();//spriteBotao(preloadMenu.getResult('iniciar'));
 	bitmapCredit = criaCreditos();
-	seta = spriteBotao(preloadMenu.getResult('setas'));
 
 	bitmapStart.x = 400;
 	bitmapStart.y = 500;
@@ -224,9 +221,6 @@ function btnClicked(event){
 	if(event.target == bitmapCredit){
 		creditos();
 	}
-	if(event.target == seta){
-	createjs.Tween.get(containerMenu, {override : true}).to({ x : 0} , 2000);
-	}
 
 }
 
@@ -324,6 +318,8 @@ function tick(){
 	
 	botao.on("click", function(evt){
 		createjs.Tween.get(containerMenu).to({ x : 0} , 500);
+		createjs.Tween.removeTweens(credito);
+		credito.y = 600;
 	});
 	
 	return botao;
