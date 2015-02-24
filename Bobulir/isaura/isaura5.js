@@ -279,7 +279,7 @@ function geraLixo(){
 					quadrim1.gotoAndPlay("anima");
 				}
 				if(evt.target){
-					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 2500).call(voltaParaOLago).to({ rotation : 10, clicado : false} , 1).call(loopLixo);
+					createjs.Tween.get(evt.target, {override : true}).to({ x : evt.target.Xoriginal, y : evt.target.Yoriginal} , 1000).call(voltaParaOLago).to({ rotation : 10, clicado : false} , 1).call(loopLixo);
 				}
 			});
 		}
