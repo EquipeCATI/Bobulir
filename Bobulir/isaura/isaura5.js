@@ -2,12 +2,13 @@ var lixeiraVidro;
 var lixeiraMetal;
 var lixeiraPapel;
 var lixeiraPlastico;
-var containerJogoLixo = new createjs.Container();
+var containerJogoLixo;
 var isaura = new criaIsaura();
 var preloadIsaura = new createjs.LoadQueue(false);
 var quadrim1;
 var quadrim2;
 var quadrim3;
+var rap;
 
 function carregaAssetsLixo(){
 	preloadIsaura.on("complete", preloadCompletoLixo);
@@ -55,6 +56,7 @@ function carregaAssetsLixo(){
 	}
 
 function preloadCompletoLixo(evt){
+	containerJogoLixo = new createjs.Container();
 	stage.mouseMoveOutside = true;
 
 	var lagoa = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRect(0, 200, 800, 400));
@@ -85,14 +87,12 @@ function preloadCompletoLixo(evt){
 	containerJogoLixo.addChild(lixeiraPapel);
 
 	containerJogoLixo.scaleX = containerJogoLixo.scaleY = 0;
-	stage.addChild(containerJogoLixo);
-	var rap = createjs.Sound.play("rap");
-	rap.volume = 0.6;
-	geraLixo();
-	criaTutorialIsaura();
+
 	quadrim1 = criaQuadrinhoFinal1();
 	quadrim2 = criaQuadrinhoFinal2();
 	quadrim3 = criaQuadrinhoFinal3();
+
+
 }
 
 var sim;
@@ -183,8 +183,6 @@ var countPp = 0;
 
 function geraLixo(){
 	var lixo;
-	
-	
 	//criando o lixo
 	for(var i = 0; i<12; i++){
 		var flag = false;
@@ -238,7 +236,7 @@ function geraLixo(){
 			break;
 
 			default:
-				alert("erro!");
+				alert("erro!" + rand);
 		}
 
 		if(flag == false){
@@ -270,7 +268,6 @@ function geraLixo(){
 			lixo.on("pressup", function(evt) { 
 				verificaLixeira(evt.target);
 				if(countPp == 0 && countM == 0 && countPl == 0 && countV == 0){
-					console.log("entrou");
 					containerJogoLixo.addChild(new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600)));
 					containerJogoLixo.addChild(quadrim1);
 					containerJogoLixo.addChild(quadrim2);
@@ -371,6 +368,91 @@ function criaFim(){
 	containerFinal.addChild(credito);
 	loopCred();
 	stage.addChild(containerFinal);
+	stage.addChild(criaBotaoVoltarF());
+	containerJogoLixo.removeAllChildren();
+	containerJogoLixo.removeAllEventListeners();
+	containerJogoLixo = undefined;
+	stage.removeChild(containerJogoLixo);
+}
+
+function criaBotaoVoltarI(){
+	var botao = new createjs.Container();
+	
+	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 100, 50, 5 ));
+	botao.addChild(shapeBotao);
+	
+	var titulo = new createjs.Text("Voltar", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 50 - b.width/2;
+	botao.addChild(titulo);
+	
+	botao.x = 20;
+	botao.y = 20;
+	
+	botao.on("click", function(evt){
+		blackScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
+		blackScreen.alpha = 0;
+		stage.addChild(blackScreen);
+		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
+		createjs.Tween.get(containerZerim, {override : true}).wait(500).to({ alpha : 1} , 100).call(voltarI);
+	});
+	
+	return botao;
+	//titulo.y = 15;	
+}
+
+function voltarI(){
+	countV = 0;
+	countPl = 0;
+	countM = 0;
+	countPp = 0;
+	containerJogoLixo.removeAllChildren();
+	containerJogoLixo.removeAllEventListeners();
+	containerJogoLixo = undefined;
+		
+	stage.removeChild(containerJogoLixo);
+	rap = undefined;
+	createjs.Sound.stop();
+	panoramaIsActive = true;
+	switchMusica();
+}
+
+function criaBotaoVoltarF(){
+	var botao = new createjs.Container();
+	
+	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 100, 50, 5 ));
+	botao.addChild(shapeBotao);
+	
+	var titulo = new createjs.Text("Voltar", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 50 - b.width/2;
+	botao.addChild(titulo);
+	
+	botao.x = 20;
+	botao.y = 20;
+	
+	botao.on("click", function(evt){
+		blackScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
+		blackScreen.alpha = 0;
+		stage.addChild(blackScreen);
+		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
+		createjs.Tween.get(containerZerim, {override : true}).wait(500).to({ alpha : 1} , 100).call(voltarF);
+	});
+	
+	return botao;
+	//titulo.y = 15;	
+}
+
+function voltarF(){
+	containerFinal.removeAllChildren();
+	containerFinal.removeAllEventListeners();
+	countV = 0;
+	countPl = 0;
+	countM = 0;
+	countPp = 0;	
+	stage.removeChild(containerFinal);
+	rap.volume = 0;
+	panoramaIsActive = true;
 }
 
 function criaMeninoRaia(){
@@ -625,7 +707,7 @@ function spriteLixoPlastico(cont){
 		},
 		animations: {
 			normal: 0,
-			dragged: 0
+			dragged: 1
 		}
 		};
 
@@ -657,7 +739,9 @@ function spriteLixoPlastico(cont){
 }
 
 function criaTutorialIsaura(){
-	
+	rap = createjs.Sound.play("rap");
+	rap.volume = 0.6;
+	geraLixo();
 	contTutorial = new createjs.Container();
 	var fundoTutoHitArea = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
 	var fundoTuto = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRoundRect(0, 0, stage.canvas.width, stage.canvas.height, 10));
@@ -669,7 +753,7 @@ function criaTutorialIsaura(){
 	
 	var shapeBalao = new createjs.Shape(new createjs.Graphics().beginFill("#6fc5ce").drawRoundRect( 0, 0, 400, 200, 5 ));
 	balaoTuto.x = 200;
-	balaoTuto.y = 380;
+	balaoTuto.y = 200;
 	balaoTuto.addChild(shapeBalao);
 	
 	var titulo = new createjs.Text("Coleta da Isaura", "50px Bahiana", "#ffffff");
@@ -710,14 +794,14 @@ function criaBotaoIsaura(){
 	botao.addChild(titulo);
 	
 	botao.x = 150;
-	botao.y = -60;
+	botao.y = 210;
 	
 	botao.on("click", function(evt){
 		createjs.Tween.get(contTutorial, {override : true}).to({ scaleX : 0, scaleY : 0, status : "volta"} , 500);
-		endTutorialBalengo = true;
+		containerJogoLixo.addChild(criaBotaoVoltarI());
 	});
 	
-	return botao;
+	return botao
 	//titulo.y = 15;
 	
 }

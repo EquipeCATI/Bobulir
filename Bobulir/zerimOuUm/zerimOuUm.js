@@ -84,7 +84,8 @@ function cria0ou1(){
 	return animation;
 }
 
-function getZerim(stage){	
+function getZerim(){	
+	containerZerim = new createjs.Container();
 	animacaoZerim = cria0ou1();
 	botao0 = criaMaoZerim();
 	botao1 = criaMaoZerim();
@@ -109,7 +110,7 @@ function getZerim(stage){
 	var fundo = new createjs.Bitmap(preloadZerim.getResult("back"));
 	containerZerim.addChild(fundo);
 
-	
+	console.log("blz");
 	botao0.gotoAndPlay("zero");
 	botao0.x = 200;
 	botao0.y = 500;
@@ -128,8 +129,7 @@ function getZerim(stage){
 	
 	containerZerim.addChild(botao0);
 	containerZerim.addChild(botao1);
-	
-	stage.addChild(containerZerim);
+
 	criaTutorialZerim();
 }
 

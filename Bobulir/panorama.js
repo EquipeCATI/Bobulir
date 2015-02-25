@@ -85,6 +85,7 @@ function stop() {
 	
 function handleCompletePanorama(event) {
 	carregaAssetsBalengo();
+	carregaAssetsLixo();
 	panorama();
 }
 
@@ -124,7 +125,6 @@ function criaBuleiro(){
 }
 
 function panorama() {
-	console.log("teste");
 	dragContainer.y = 973;
 	createjs.Ticker.on("tick", tickPanorama);
 	createjs.Ticker.setFPS(20);
@@ -279,14 +279,14 @@ function criaSecao1(){
 	raia.x = 2250;
 	raia.y = -60;
 	raia.on("click", function(event){
-		console.log("raia");
-		if(!containerBalengo)
-		getBalengo();
+			getBalengo();
 			fadeOutScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
 			fadeOutScreen.alpha = 0;
+			adicionaBalengo();
+			containerBalengo.alpha = 0;
 			stage.addChild(fadeOutScreen);
-			createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).call(adicionaBalengo).to({alpha : 0}, 500);
-			createjs.Tween.get(containerBalengo, {override : true}).wait(1000).to({ scaleX : 1, scaleY : 1} , 2500).call(criaTutorial);
+			createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).to({alpha : 0}, 500);
+			createjs.Tween.get(containerBalengo, {override : true}).wait(500).to({ alpha : 1}, 0).wait(500).to({ scaleX : 1, scaleY : 1} , 2500).call(criaTutorial);
 			panoramaIsActive = false;
 		});
 	raia.width = raia.image.width;
@@ -335,7 +335,9 @@ function criaOlha(){
 }
 function adicionaBalengo(){
 	stage.addChild(containerBalengo);
-	stage.addChild(fadeOutScreen);
+}
+function adicionaLixo(){
+	stage.addChild(containerJogoLixo);
 }
 
 function criaSecao2(){
@@ -355,13 +357,15 @@ function criaSecao2(){
 	raiaLagoa.x = 500;
 	raiaLagoa.y = 200; 
 	raiaLagoa.on("click", function(evt){
-		createjs.Tween.get(baiao).to({volume : 0}, 900);
-		botaoSom.gotoAndPlay("off");
+		preloadCompletoLixo();
+		if(baiao.volume == 0.2)
+			switchMusica();
 		fadeOutScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
 		fadeOutScreen.alpha = 0;
+		adicionaLixo();
 		stage.addChild(fadeOutScreen);
-		createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).call(carregaAssetsLixo).to({alpha : 0}, 500);
-		createjs.Tween.get(containerJogoLixo, {override : true}).wait(1000).to({ scaleX : 1, scaleY : 1} , 2500);
+		createjs.Tween.get(fadeOutScreen, {override : true}).to({ alpha : 1} , 500).to({alpha : 0}, 500);
+		createjs.Tween.get(containerJogoLixo, {override : true}).wait(500).to({ scaleX : 1, scaleY : 1} , 1).wait(500).call(criaTutorialIsaura);
 		panoramaIsActive = false;
 	});
 	raiaLagoa.on("mouseover", clickableMark);
@@ -471,8 +475,10 @@ function switchMusica(){
 	if(baiao.volume == 0.2){
 		baiao.volume = 0;
 		botaoSom.gotoAndPlay("off");
+		createjs.Sound.stop();
 		}
 	else{
+		baiao = createjs.Sound.play("baiao", {loop : 100});
 		baiao.volume = 0.2;
 		botaoSom.gotoAndPlay("on");
 		}
@@ -750,7 +756,6 @@ function criaBike(){
 }
 
 function loopBike(){
-	console.log(meninaBike.direcao);
 	if(meninaBike.direcao == "vindo"){
 		meninaBike.scaleX = -1;
 		createjs.Tween.get(meninaBike).to({ x : -1000, direcao : "indo"} , 10000).call(loopBike);
@@ -812,7 +817,6 @@ function criaBalao(animationAlvo){
 		var b = titulo.getBounds();
 		titulo.x = 140 - b.width/2;
 		titulo.y = 10;
-		console.log( b.height);
 		
 		var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
 		texto.x = 40;
@@ -839,7 +843,6 @@ function criaBalao(animationAlvo){
 		var b = titulo.getBounds();
 		titulo.x = 200 - b.width/2;
 		titulo.y = 35;
-		console.log( b.height);
 		
 		var texto = new createjs.Text(animationAlvo.texto, "20px FiraSans", "#000000");
 		texto.x = 30;

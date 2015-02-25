@@ -182,7 +182,6 @@ function criaBobulir(){
 
 function criaNuvensEsq(){
 		var nNuvem = parseInt(Math.random()*3 +1);
-		console.log(nNuvem);
 		var img = preloadMenu.getResult("nuvem" + nNuvem);
 		var nuvem = new createjs.Bitmap(img);
 		nuvem.x = 100 + Math.random()*800;
@@ -194,7 +193,6 @@ function criaNuvensEsq(){
 }
 function criaNuvensDir(){
 		var nNuvem = parseInt(Math.random()*3 +1);
-		console.log(nNuvem);
 		var img = preloadMenu.getResult("nuvem" + nNuvem);
 		var nuvem = new createjs.Bitmap(img);
 		nuvem.x = 100 + Math.random()*800;

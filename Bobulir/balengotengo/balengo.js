@@ -126,9 +126,11 @@ function getBalengo()
 	containerBalengo.addChild(menino);
 	containerBalengo.addChild(balengotengo);
 	
+	
 	containerBalengo.scaleX = containerBalengo.scaleY = 2;
 	containerBalengo.regX = 450;
 	containerBalengo.x = 450;
+	
 	back.on("mousedown", mDown);
 	back.on("pressmove", mMove);
 	back.on("pressup", joga);
@@ -202,6 +204,7 @@ function criaBotaoTuto(){
 	botao.on("click", function(evt){
 		createjs.Tween.get(containerTutorial, {override : true}).to({ scaleX : 0, scaleY : 0, status : "volta"} , 500);
 		endTutorialBalengo = true;
+		containerBalengo.addChild(criaBotaoVoltarB());
 	});
 	
 	return botao;
@@ -290,7 +293,6 @@ function joga()
 	line.graphics.clear();
 	angle = Math.atan2(pontoI.y - pontoF.y, pontoI.x - pontoF.x ); 
 	angle = angle * (180/Math.PI);
-	console.log(angle);
 	if(!lancou)
 	{
 		//Cálculo da força inicial, distribuída de acordo com o angulo
@@ -355,7 +357,7 @@ function tickBalengo(event) {
 		{
 			secao1.removeChild(raia);
 			secao1.removeChild(meninaOlha);
-			dragContainer.maxPositionX -=  secao2.width;
+			dragContainer.maxPositionX -=  secao2.width - 50;
 			winBalengo = true;
 			criaAnimacao();
 			quadrinho1.gotoAndPlay("anima");
@@ -372,8 +374,46 @@ function tickBalengo(event) {
 		stage.removeChild(quadrinho2);
 		stage.removeChild(quadrinho3);
 	}
+
+
 }
 
+function criaBotaoVoltarB(){
+	var botao = new createjs.Container();
+	
+	var shapeBotao = new createjs.Shape(new createjs.Graphics().beginFill("#ed682c").drawRoundRect( 0, 0, 100, 50, 5 ));
+	botao.addChild(shapeBotao);
+	
+	var titulo = new createjs.Text("Voltar", "50px Bahiana", "#ffffff");
+	var b = titulo.getBounds();
+	titulo.x = 50 - b.width/2;
+	botao.addChild(titulo);
+	
+	botao.x = 20;
+	botao.y = 20;
+	
+	botao.on("click", function(evt){
+		blackScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
+		blackScreen.alpha = 0;
+		stage.addChild(blackScreen);
+		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
+		createjs.Tween.get(containerZerim, {override : true}).wait(500).to({ alpha : 1} , 100).call(voltar);
+	});
+	
+	return botao;
+	//titulo.y = 15;	
+}
+
+function voltar(){
+	lancou = false;
+	line.graphics.clear();
+	containerBalengo.removeAllChildren();
+	containerBalengo.removeAllEventListeners();
+	containerBalengo = undefined;
+		
+	stage.removeChild(containerBalengo);
+	panoramaIsActive = true;
+}
 
 function poeBalengoNaMao(){
 	balengotengo.x =  maoDoMenino.x; 
@@ -396,7 +436,11 @@ function exibeAnimacao(evt){
 	else{
 		blackScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
 		blackScreen.alpha = 0;
-		getZerim(stage);
+		console.log("zerim will get");
+		getZerim();
+		console.log("zerim did get");
+		stage.addChild(containerZerim);
+		console.log("zerim add");
 		containerZerim.alpha = 0;
 		stage.addChild(blackScreen);
 		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
@@ -407,7 +451,6 @@ function exibeAnimacao(evt){
 }
 function finalizaAnimacao(){
 	containerAnimacao.removeAllChildren();
-	
 }
 
 function criaAnimacao(){
