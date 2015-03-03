@@ -355,7 +355,7 @@ function tickBalengo(event) {
 	{
 		if(!winBalengo)
 		{
-			secao1.removeChild(raia);
+			raia.alpha = 0;
 			secao1.removeChild(meninaOlha);
 			dragContainer.maxPositionX -=  secao2.width - 50;
 			winBalengo = true;
@@ -368,6 +368,7 @@ function tickBalengo(event) {
 		containerBalengo.removeAllChildren();
 		containerBalengo.removeAllEventListeners();
 		containerBalengo = undefined;
+		panoramaIsActive = true;
 		
 		stage.removeChild(containerBalengo);
 		stage.removeChild(quadrinho1);
@@ -442,6 +443,7 @@ function exibeAnimacao(evt){
 		stage.addChild(containerZerim);
 		console.log("zerim add");
 		containerZerim.alpha = 0;
+		clickD();
 		stage.addChild(blackScreen);
 		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
 		createjs.Tween.get(containerZerim, {override : true}).wait(500).to({ alpha : 1} , 100).call(finalizaAnimacao);

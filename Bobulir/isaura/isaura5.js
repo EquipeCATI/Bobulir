@@ -357,10 +357,10 @@ function iniciaAnimacaoFinal(){
 			containerJogoLixo.removeAllEventListeners();
 		}
 }
-
+var containerFinal;
 function criaFim(){
 	credito.x = 400;
-	var containerFinal = new createjs.Container();
+	containerFinal = new createjs.Container();
 	var fundo = new createjs.Bitmap(preloadIsaura.getResult("backFinal"));
 	containerFinal.x = -5;
 	containerFinal.addChild(fundo);
@@ -368,7 +368,7 @@ function criaFim(){
 	containerFinal.addChild(credito);
 	loopCred();
 	stage.addChild(containerFinal);
-	stage.addChild(criaBotaoVoltarF());
+	containerFinal.addChild(criaBotaoVoltarF());
 	containerJogoLixo.removeAllChildren();
 	containerJogoLixo.removeAllEventListeners();
 	containerJogoLixo = undefined;
@@ -393,7 +393,7 @@ function criaBotaoVoltarI(){
 		blackScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
 		blackScreen.alpha = 0;
 		stage.addChild(blackScreen);
-		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
+		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).wait(100).to({alpha : 0}, 500);
 		createjs.Tween.get(containerZerim, {override : true}).wait(500).to({ alpha : 1} , 100).call(voltarI);
 	});
 	
@@ -435,8 +435,7 @@ function criaBotaoVoltarF(){
 		blackScreen = new createjs.Shape(new createjs.Graphics().beginFill("#000000").drawRect(0, 0, 800, 600));
 		blackScreen.alpha = 0;
 		stage.addChild(blackScreen);
-		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(finalizaAnimacao).wait(100).to({alpha : 0}, 500);
-		createjs.Tween.get(containerZerim, {override : true}).wait(500).to({ alpha : 1} , 100).call(voltarF);
+		createjs.Tween.get(blackScreen, {override : true}).to({ alpha : 1} , 500).call(voltarF).wait(100).to({alpha : 0}, 500);
 	});
 	
 	return botao;
@@ -444,15 +443,17 @@ function criaBotaoVoltarF(){
 }
 
 function voltarF(){
-	containerFinal.removeAllChildren();
+	console.log("entrou");
 	containerFinal.removeAllEventListeners();
-	countV = 0;
-	countPl = 0;
-	countM = 0;
-	countPp = 0;	
+	createjs.Tween.removeTweens(credito);
+	credito.y = 600;
 	stage.removeChild(containerFinal);
-	rap.volume = 0;
+	console.log("removeu");
+	createjs.Sound.stop();
 	panoramaIsActive = true;
+	switchMusica();
+	raia.alpha = 1;
+
 }
 
 function criaMeninoRaia(){
