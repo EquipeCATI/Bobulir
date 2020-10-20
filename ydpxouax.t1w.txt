@@ -1,0 +1,19 @@
+﻿Revert "Lixo para quando clicado"
+
+This reverts commit 8941df515e5eb5d2c2bf2e7151974fa13415226e.
+
+Conflicts:
+	isaura/isaura5.js
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# You are currently reverting commit 8941df5.
+#
+# Changes to be committed:
+#	new file:   isaura/isaura4.js
+#	modified:   isaura/isaura5.js
+#
+
